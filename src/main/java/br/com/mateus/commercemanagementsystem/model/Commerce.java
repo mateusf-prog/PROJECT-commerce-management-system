@@ -1,6 +1,5 @@
 package br.com.mateus.commercemanagementsystem.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -8,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -36,6 +36,7 @@ public class Commerce {
     @Column(name = "commerce_adress")
     private String adress;
 
+    @OneToMany(mappedBy = "commerce")
     @Setter(AccessLevel.NONE)
     private List<Client> clients;
 
@@ -47,7 +48,6 @@ public class Commerce {
         this.cnpj = cnpj;
         this.phoneNumber = phoneNumber;
         this.adress = adress;
-        this.clients = new ArrayList<>();
     }
 
     @Override

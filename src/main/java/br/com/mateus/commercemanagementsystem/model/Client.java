@@ -4,12 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -17,7 +18,7 @@ import lombok.Data;
 import lombok.Setter;
 
 @Entity
-@Table(name = "client")
+@Table(name = "clients")
 @Data
 public class Client {
 
@@ -42,9 +43,13 @@ public class Client {
     @Column(name = "client_adress")
     private String adress;
 
-    @Column(name = "client_payments")
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<Payment> payments;
+    @OneToMany(mappedBy = "client") 
+    @Setter(AccessLevel.NONE)
+    private List<Payment> payments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "commerce_id")
+    private Commerce commerce;
 
     public Client() {
     }
@@ -55,7 +60,6 @@ public class Client {
         this.cpf = cpf;
         this.phoneNumber = phoneNumber;
         this.adress = adress;
-        this.payments = new ArrayList<>();
     }
 
     @Override

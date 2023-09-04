@@ -1,7 +1,6 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -28,18 +27,15 @@ public class Order {
     @Column(name = "order_code")
     private String code;
 
-    @Column(name = "order_client")
+    /*@Column(name = "order_client")
     @Setter(AccessLevel.NONE)
-    private Client client;
+    private Client client;*/
 
     @Column(name = "order_totalValue")
     private BigDecimal totalValue;
 
-    @Column(name = "order_payment")
-    private Payment payment;
-
-    @Setter(AccessLevel.NONE)
-    private List<OrderItem> orderItens;
+    /*@Column(name = "order_payment")
+    private Payment payment;*/
 
     public Order() {
     }
@@ -47,8 +43,7 @@ public class Order {
     public Order(String code, BigDecimal totalValue, Payment payment, List<OrderItem> orderItens) {
         this.code = code;
         this.totalValue = totalValue;
-        this.payment = payment;
-        this.orderItens = new ArrayList<>();
+        //this.payment = payment;
     }
 
     @Override
@@ -83,14 +78,10 @@ public class Order {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("-- Order --")
-          .append("\nClient: ").append(client)
-          .append("\nPayment: ").append(payment)
+          //.append("\nClient: ").append(client)
+          //.append("\nPayment: ").append(payment)
           .append("\nTotal value: ").append(totalValue)
           .append("\nOrder Items: ");
-        
-        for (OrderItem item : orderItens) {
-            sb.append("\n").append(item.toString());
-        }
     
         return sb.toString();
     }
