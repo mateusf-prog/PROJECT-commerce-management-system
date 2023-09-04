@@ -36,9 +36,15 @@ public class Commerce {
     @Column(name = "commerce_adress")
     private String adress;
 
+    // define relationships
+    
     @OneToMany(mappedBy = "commerce")
     @Setter(AccessLevel.NONE)
     private List<Client> clients;
+
+    @OneToMany(mappedBy = "commerce")
+    @Setter(AccessLevel.NONE)
+    private List<Order> orders;
 
     public Commerce() {
     }

@@ -43,6 +43,8 @@ public class Client {
     @Column(name = "client_adress")
     private String adress;
 
+    // define relationships
+    
     @OneToMany(mappedBy = "client") 
     @Setter(AccessLevel.NONE)
     private List<Payment> payments = new ArrayList<>();
@@ -50,6 +52,10 @@ public class Client {
     @ManyToOne
     @JoinColumn(name = "commerce_id")
     private Commerce commerce;
+
+    @OneToMany(mappedBy = "client")
+    @Setter(AccessLevel.NONE)
+    private List<Order> orders;
 
     public Client() {
     }

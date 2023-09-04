@@ -1,13 +1,15 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -27,23 +29,31 @@ public class Order {
     @Column(name = "order_code")
     private String code;
 
-    /*@Column(name = "order_client")
-    @Setter(AccessLevel.NONE)
-    private Client client;*/
-
     @Column(name = "order_totalValue")
     private BigDecimal totalValue;
 
-    /*@Column(name = "order_payment")
-    private Payment payment;*/
+    // define relationships
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    @Setter(AccessLevel.NONE)
+    private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "commerce_id")
+    @Setter(AccessLevel.NONE)
+    private Commerce commerce;
+
+    @OneToOne(mappedBy = "order")
+    private Payment payment;
 
     public Order() {
     }
 
-    public Order(String code, BigDecimal totalValue, Payment payment, List<OrderItem> orderItens) {
+    public Order(String code, BigDecimal totalValue, Payment payment, Client client) {
         this.code = code;
         this.totalValue = totalValue;
-        //this.payment = payment;
+        this.client = client;
     }
 
     @Override
@@ -78,13 +88,9 @@ public class Order {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("-- Order --")
-          //.append("\nClient: ").append(client)
-          //.append("\nPayment: ").append(payment)
-          .append("\nTotal value: ").append(totalValue)
-          .append("\nOrder Items: ");
+        .append("\nClient: ").append(client.getName())
+        .append("\nTotal value: ").append(totalValue);
     
         return sb.toString();
-    }
-
-    
+    }  
 }

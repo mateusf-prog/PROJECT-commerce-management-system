@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -43,6 +45,8 @@ public class Payment {
     @Column(name = "payment_date")
     private LocalDateTime date;
 
+    // define relationships
+
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
@@ -50,6 +54,10 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "client_id") 
     private Client client;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_payment_id")
+    private Order order;
     
     public Payment() {
     }
