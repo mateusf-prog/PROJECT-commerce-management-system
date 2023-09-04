@@ -3,6 +3,8 @@ package br.com.mateus.commercemanagementsystem.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.ManyToAny;
+
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import jakarta.persistence.Column;
@@ -12,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -38,7 +41,7 @@ public class Payment {
     @Column(name = "payment_value")
     private BigDecimal value;
 
-    @Column(name = "paymment_date")
+    @Column(name = "payment_date")
     private LocalDateTime date;
 
     @Column(name = "payment_status")
@@ -46,6 +49,8 @@ public class Payment {
     private PaymentStatus status;
 
     @Column(name = "payment_client")
+    @ManyToAny
+    @JoinColumn(name = "client_id")
     private Client client;
     
     public Payment() {
