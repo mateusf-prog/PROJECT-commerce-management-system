@@ -10,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -41,6 +43,12 @@ public class Product {
     @Column(name = "product_category")
     @Enumerated(EnumType.STRING)
     private Categories category;
+
+    // define relationships
+
+    @ManyToOne
+    @JoinColumn(name = "commerce_id")
+    private Commerce commerce;
     
     public Product() {
     }

@@ -23,7 +23,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    @Setter()
+    @Setter(AccessLevel.NONE)
     private int id;
 
     @Column(name = "order_code")
@@ -35,7 +35,7 @@ public class Order {
     // define relationships
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", unique = false)
     @Setter(AccessLevel.NONE)
     private Client client;
 

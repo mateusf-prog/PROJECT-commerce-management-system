@@ -55,8 +55,8 @@ public class Payment {
     @JoinColumn(name = "client_id") 
     private Client client;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_payment_id")
+    @OneToOne
+    @JoinColumn(name = "order_id")
     private Order order;
     
     public Payment() {

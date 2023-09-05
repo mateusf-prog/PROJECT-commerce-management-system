@@ -46,6 +46,10 @@ public class Commerce {
     @Setter(AccessLevel.NONE)
     private List<Order> orders;
 
+    @OneToMany(mappedBy = "commerce")
+    @Setter(AccessLevel.NONE)
+    private List<Product> products;
+
     public Commerce() {
     }
 
