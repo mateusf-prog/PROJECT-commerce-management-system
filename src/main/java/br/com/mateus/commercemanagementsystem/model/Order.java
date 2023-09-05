@@ -35,7 +35,7 @@ public class Order {
     // define relationships
 
     @ManyToOne
-    @JoinColumn(name = "client_id", unique = false)
+    @JoinColumn(name = "client_id")
     @Setter(AccessLevel.NONE)
     private Client client;
 
@@ -53,6 +53,7 @@ public class Order {
     public Order(String code, BigDecimal totalValue, Payment payment, Client client) {
         this.code = code;
         this.totalValue = totalValue;
+        this.payment = payment;
         this.client = client;
     }
 

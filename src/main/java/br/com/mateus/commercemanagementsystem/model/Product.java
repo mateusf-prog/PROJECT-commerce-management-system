@@ -53,12 +53,13 @@ public class Product {
     public Product() {
     }
 
-    public Product(String code, String name, BigDecimal price, int quantity, Categories category) {
+    public Product(String code, String name, BigDecimal price, int quantity, Categories category, Commerce commerce) {
         this.code = code;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.category = category;
+        this.commerce = commerce;
     }
 
     @Override

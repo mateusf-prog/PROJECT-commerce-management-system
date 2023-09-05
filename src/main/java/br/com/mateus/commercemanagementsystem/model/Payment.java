@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -45,11 +44,11 @@ public class Payment {
     @Column(name = "payment_date")
     private LocalDateTime date;
 
-    // define relationships
-
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
+
+    // define relationships
 
     @ManyToOne
     @JoinColumn(name = "client_id") 
@@ -62,8 +61,9 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(PaymentType paymentType, BigDecimal value, LocalDateTime date,PaymentStatus status, Client client) {
+    public Payment(PaymentType paymentType, String code, BigDecimal value, LocalDateTime date,PaymentStatus status, Client client) {
         this.paymentType = paymentType;
+        this.code = code;
         this.value = value;
         this.date = date;
         this.status = status;
