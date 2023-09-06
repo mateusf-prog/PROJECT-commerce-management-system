@@ -39,7 +39,7 @@ public class Order {
     private Payment payment;
 
     @OneToMany
-    @JoinColumn(name = "order_items_id")
+    @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
 
     public Order() {
