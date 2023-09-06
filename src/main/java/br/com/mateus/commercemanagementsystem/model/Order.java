@@ -1,14 +1,16 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -19,14 +21,9 @@ import lombok.Setter;
 @Table(name = "orders")
 @Data
 public class Order {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
-    @Setter(AccessLevel.NONE)
-    private int id;
 
-    @Column(name = "order_code")
+    @Id
+    @Column(name = "order_code", unique = true)
     private String code;
 
     @Column(name = "order_totalValue")
@@ -47,14 +44,21 @@ public class Order {
     @OneToOne(mappedBy = "order")
     private Payment payment;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @Column(name = "order_items")
+    private List<OrderItem> orderItems = new ArrayList<>();
+
     public Order() {
     }
 
-    public Order(String code, BigDecimal totalValue, Payment payment, Client client) {
+    public Order(String code, BigDecimal totalValue, Payment payment, Client client,
+            Commerce commerce, List<OrderItem> orderItems) {
         this.code = code;
         this.totalValue = totalValue;
         this.payment = payment;
         this.client = client;
+        this.commerce = commerce;
+        this.orderItems = new ArrayList<>();
     }
 
     @Override
@@ -66,8 +70,6 @@ public class Order {
         if (getClass() != obj.getClass())
             return false;
         Order other = (Order) obj;
-        if (id != other.id)
-            return false;
         if (code == null) {
             if (other.code != null)
                 return false;
@@ -80,10 +82,9 @@ public class Order {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + id;
         result = prime * result + ((code == null) ? 0 : code.hashCode());
         return result;
-    }
+    }  
 
     @Override
     public String toString() {
@@ -93,5 +94,5 @@ public class Order {
         .append("\nTotal value: ").append(totalValue);
     
         return sb.toString();
-    }  
+    }
 }

@@ -17,17 +17,12 @@ import lombok.Setter;
 @Table(name = "commerces")
 @Data
 public class Commerce {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "commerce_id")
-    @Setter(AccessLevel.NONE)
-    private int id;
 
     @Column(name = "commerce_name")
     private String name;
 
-    @Column(name = "commerce_cnpj")
+    @Id
+    @Column(name = "commerce_cnpj", unique = true)
     private String cnpj;
 
     @Column(name = "commerce_phone")
@@ -69,8 +64,6 @@ public class Commerce {
         if (getClass() != obj.getClass())
             return false;
         Commerce other = (Commerce) obj;
-        if (id != other.id)
-            return false;
         if (cnpj == null) {
             if (other.cnpj != null)
                 return false;
@@ -83,7 +76,6 @@ public class Commerce {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + id;
         result = prime * result + ((cnpj == null) ? 0 : cnpj.hashCode());
         return result;
     }

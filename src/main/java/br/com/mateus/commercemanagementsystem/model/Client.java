@@ -21,12 +21,6 @@ import lombok.Setter;
 @Table(name = "clients")
 @Data
 public class Client {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "client_id")
-    @Setter(AccessLevel.NONE)
-    private int id;
     
     @Column(name = "client_name")
     private String name;
@@ -34,7 +28,8 @@ public class Client {
     @Column(name = "client_birthdate")
     private LocalDate birthdate;
 
-    @Column(name = "client_cpf")
+    @Id
+    @Column(name = "client_cpf", unique = true)
     private String cpf;
 
     @Column(name = "client_phoneNumber")
@@ -60,12 +55,13 @@ public class Client {
     public Client() {
     }
 
-    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String adress) {
+    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String adress, Commerce commerce) {
         this.name = name;
         this.birthdate = birthdate;
         this.cpf = cpf;
         this.phoneNumber = phoneNumber;
         this.adress = adress;
+        this.commerce = commerce;
     }
 
     @Override
@@ -77,8 +73,6 @@ public class Client {
         if (getClass() != obj.getClass())
             return false;
         Client other = (Client) obj;
-        if (id != other.id)
-            return false;
         if (cpf == null) {
             if (other.cpf != null)
                 return false;
@@ -91,11 +85,10 @@ public class Client {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + id;
         result = prime * result + ((cpf == null) ? 0 : cpf.hashCode());
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "-- Client --"

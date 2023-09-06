@@ -26,12 +26,7 @@ import lombok.Setter;
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    @Column(name = "payment_id")
-    private int id;
-
-    @Column(name = "payment_code")
+    @Column(name = "payment_code", unique = true)
     private String code;
 
     @Column(name = "payment_type")
@@ -61,13 +56,15 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(PaymentType paymentType, String code, BigDecimal value, LocalDateTime date,PaymentStatus status, Client client) {
+    public Payment(PaymentType paymentType, String code, BigDecimal value, 
+                LocalDateTime date,PaymentStatus status, Client client, Order order) {
         this.paymentType = paymentType;
         this.code = code;
         this.value = value;
         this.date = date;
         this.status = status;
         this.client = client;
+        this.order = order;
     }
 
     @Override
@@ -79,7 +76,10 @@ public class Payment {
         if (getClass() != obj.getClass())
             return false;
         Payment other = (Payment) obj;
-        if (id != other.id)
+        if (code == null) {
+            if (other.code != null)
+                return false;
+        } else if (!code.equals(other.code))
             return false;
         return true;
     }
@@ -88,7 +88,7 @@ public class Payment {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + id;
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
         return result;
     }
 
