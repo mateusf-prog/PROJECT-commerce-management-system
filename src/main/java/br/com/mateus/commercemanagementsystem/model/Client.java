@@ -6,11 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -30,6 +26,7 @@ public class Client {
 
     @Id
     @Column(name = "client_cpf", unique = true)
+    @Setter(AccessLevel.NONE)
     private String cpf;
 
     @Column(name = "client_phoneNumber")
@@ -44,24 +41,19 @@ public class Client {
     @Setter(AccessLevel.NONE)
     private List<Payment> payments = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "commerce_id")
-    private Commerce commerce;
-
     @OneToMany(mappedBy = "client")
     @Setter(AccessLevel.NONE)
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     public Client() {
     }
 
-    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String adress, Commerce commerce) {
+    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String adress) {
         this.name = name;
         this.birthdate = birthdate;
         this.cpf = cpf;
         this.phoneNumber = phoneNumber;
         this.adress = adress;
-        this.commerce = commerce;
     }
 
     @Override

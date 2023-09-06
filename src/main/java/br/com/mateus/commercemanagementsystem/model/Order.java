@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -36,28 +35,21 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private Client client;
 
-    @ManyToOne
-    @JoinColumn(name = "commerce_id")
-    @Setter(AccessLevel.NONE)
-    private Commerce commerce;
-
     @OneToOne(mappedBy = "order")
     private Payment payment;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @Column(name = "order_items")
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @OneToMany
+    @JoinColumn(name = "order_id")
+    private List<OrderItem> orderItems;
 
     public Order() {
     }
 
-    public Order(String code, BigDecimal totalValue, Payment payment, Client client,
-            Commerce commerce, List<OrderItem> orderItems) {
+    public Order(String code, BigDecimal totalValue, Payment payment, Client client, List<OrderItem> orderItems) {
         this.code = code;
         this.totalValue = totalValue;
         this.payment = payment;
         this.client = client;
-        this.commerce = commerce;
         this.orderItems = new ArrayList<>();
     }
 

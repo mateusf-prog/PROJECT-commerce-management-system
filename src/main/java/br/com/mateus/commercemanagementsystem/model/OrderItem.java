@@ -7,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -20,7 +18,7 @@ import lombok.Setter;
 public class OrderItem {
 
     @Id
-    @Column(name = "order_items_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private int id;
 
@@ -32,19 +30,14 @@ public class OrderItem {
 
     @Column(name = "product_price")
     private BigDecimal price;
-    
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
 
     public OrderItem() {
     }
 
-    public OrderItem(String productName, int quantity, BigDecimal price, Order order) {
+    public OrderItem(String productName, int quantity, BigDecimal price) {
         this.productName = productName;
         this.quantity = quantity;
         this.price = price;
-        this.order = order;
     }
 
     @Override
@@ -70,6 +63,4 @@ public class OrderItem {
     }
 
     
-
-
 }

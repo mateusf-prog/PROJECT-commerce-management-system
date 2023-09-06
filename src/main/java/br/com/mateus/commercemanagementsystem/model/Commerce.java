@@ -1,12 +1,12 @@
 package br.com.mateus.commercemanagementsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -33,17 +33,20 @@ public class Commerce {
 
     // define relationships
     
-    @OneToMany(mappedBy = "commerce")
+    @OneToMany
+    @JoinColumn(name = "commerce_id")
     @Setter(AccessLevel.NONE)
-    private List<Client> clients;
+    private List<Client> clients = new ArrayList<>();
 
-    @OneToMany(mappedBy = "commerce")
+    @OneToMany
+    @JoinColumn(name = "commerce_id")
     @Setter(AccessLevel.NONE)
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "commerce")
+    @OneToMany
+    @JoinColumn(name = "commerce_id")
     @Setter(AccessLevel.NONE)
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
 
     public Commerce() {
     }

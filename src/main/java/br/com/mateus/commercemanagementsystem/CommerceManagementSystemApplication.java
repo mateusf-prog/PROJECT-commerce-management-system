@@ -61,23 +61,22 @@ public class CommerceManagementSystemApplication {
 
 			LocalDate birthDate = LocalDate.of(2023, 9, 3);
 			Client client = new Client("Rayllam", birthDate, "784569624554",
-			"5566889966", "Rua 1, Belo Horizonte, MG", commerce);
+			"5566889966", "Rua 1, Belo Horizonte, MG");
 
 			Client client2 = new Client("Diogo", birthDate, "88995566337",
-			"2358749616", "Rua 2, Paripiranga, BA", commerce1);
+			"2358749616", "Rua 2, Paripiranga, BA");
 			clientRepository.save(client);
 
 			Client client3 = new Client("Mateus", birthDate, "12345678900",
-			"15484787985", "Rua 3, São José dos Campos, SP", commerce2);
+			"15484787985", "Rua 3, São José dos Campos, SP");
 
 			clientRepository.save(client);
 			clientRepository.save(client2);
 			clientRepository.save(client3);
 
-			OrderItem item = new OrderItem("Geladeira", 10, new BigDecimal("20000"), null);
-			OrderItem item1 = new OrderItem("Playstation", 5, new BigDecimal("15000"), null);
-			OrderItem item2 = new OrderItem("Mesa", 1, new BigDecimal("1500.00"), null);
-			OrderItem item3 = new OrderItem("Shirt", 1, new BigDecimal("1500.00"), null);
+			OrderItem item = new OrderItem("Geladeira", 10, new BigDecimal("20000"));
+			OrderItem item1 = new OrderItem("Playstation", 5, new BigDecimal("15000"));
+			OrderItem item2 = new OrderItem("Mesa", 1, new BigDecimal("1500.00"));
 
 			List<OrderItem> items = new ArrayList<>();
 			items.add(item);
@@ -86,13 +85,9 @@ public class CommerceManagementSystemApplication {
 
 			// testing crud order
 
-			Order order = new Order("CM200", new BigDecimal("220.50"), null, client, commerce, items);
-			Order order1 = new Order("CM120", new BigDecimal("500.50"), null, client2, commerce1, items);
-			Order order2 = new Order("CM350", new BigDecimal("700.50"), null, client3, commerce2, items);
-
-			item.setOrder(order);
-			item1.setOrder(order1);
-			item2.setOrder(order2);
+			Order order = new Order("CM200", new BigDecimal("220.50"), null, client, items);
+			Order order1 = new Order("CM120", new BigDecimal("500.50"), null, client2, items);
+			Order order2 = new Order("CM350", new BigDecimal("700.50"), null, client3, items);
 
 			orderRepository.save(order);
 			orderRepository.save(order1);
@@ -127,11 +122,11 @@ public class CommerceManagementSystemApplication {
 			// testing crud product
 
 			Product product = new Product("PRD200", "Playstation", new BigDecimal("1800.00"), 
-			2, Categories.ELETRONICS, commerce);
+			2, Categories.ELETRONICS);
 			Product product1 = new Product("PRD500", "Shirt", new BigDecimal("70.00"), 
-			8, Categories.CLOTHING, commerce1);
+			8, Categories.CLOTHING);
 			Product product2 = new Product("PRD700", "Bike", new BigDecimal("1200.00"), 
-			1, Categories.SPORTING, commerce2);
+			1, Categories.SPORTING);
 
 			productRepository.save(product);
 			productRepository.save(product1);

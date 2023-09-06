@@ -7,15 +7,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 
 @Entity
 @Table(name = "products")
@@ -38,23 +32,16 @@ public class Product {
     @Column(name = "product_category")
     @Enumerated(EnumType.STRING)
     private Categories category;
-
-    // define relationships
-
-    @ManyToOne
-    @JoinColumn(name = "commerce_id")
-    private Commerce commerce;
     
     public Product() {
     }
 
-    public Product(String code, String name, BigDecimal price, int quantity, Categories category, Commerce commerce) {
+    public Product(String code, String name, BigDecimal price, int quantity, Categories category) {
         this.code = code;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.category = category;
-        this.commerce = commerce;
     }
 
     @Override
