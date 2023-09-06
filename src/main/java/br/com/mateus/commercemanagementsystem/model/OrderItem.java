@@ -25,10 +25,10 @@ public class OrderItem {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "product_quantity")
+    @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "product_price")
+    @Column(name = "price")
     private BigDecimal price;
 
     public OrderItem() {

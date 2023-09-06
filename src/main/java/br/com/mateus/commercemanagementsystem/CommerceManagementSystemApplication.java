@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import br.com.mateus.commercemanagementsystem.model.Client;
-import br.com.mateus.commercemanagementsystem.model.Commerce;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Payment;
@@ -22,7 +21,6 @@ import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;
-import br.com.mateus.commercemanagementsystem.repository.CommerceRepository;
 import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
@@ -36,26 +34,9 @@ public class CommerceManagementSystemApplication {
 	}
 
 	@Bean
-    public CommandLineRunner myCommandLineRunner(ClientRepository clientRepository, CommerceRepository commerceRepository, 
-					OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository,
-					OrderItemRepository orderItemRepository) {
+    public CommandLineRunner myCommandLineRunner(ClientRepository clientRepository, OrderRepository orderRepository, 
+					PaymentRepository paymentRepository, ProductRepository productRepository, OrderItemRepository orderItemRepository) {
         return (args) -> {
- 
-			// testing crud commerce
-
-			Commerce commerce = new Commerce("Petshop", "12365793443541/0001-02", 
-			"12345678978", "teste endereço loja");
-
-			Commerce commerce1 = new Commerce("Mercado", "123612319541/0001-02", 
-			"984949494651", "teste endereço loja");
-
-			Commerce commerce2 = new Commerce("Barbearia", "1236512379541/0001-02", 
-			"321656466456", "teste endereço loja");
-
-			commerceRepository.save(commerce);
-			commerceRepository.save(commerce1);
-			commerceRepository.save(commerce2);
-
 
 			// testing crud client
 
@@ -109,7 +90,7 @@ public class CommerceManagementSystemApplication {
 			date, PaymentStatus.COMPLETED, client2, order1);
 
 			Payment payment3 = new Payment(PaymentType.BOLETO, "PG191", new BigDecimal("880.20"), 
-			date, PaymentStatus.COMPLETED, client3, order2);
+			date, PaymentStatus.COMPLETED, client3,order2);
 
 			paymentRepository.save(payment);
 			paymentRepository.save(payment2);

@@ -22,20 +22,20 @@ import lombok.Data;
 public class Payment {
 
     @Id
-    @Column(name = "payment_code", unique = true)
+    @Column(name = "code", unique = true)
     private String code;
 
-    @Column(name = "payment_type")
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
-    @Column(name = "payment_value")
+    @Column(name = "value")
     private BigDecimal value;
 
-    @Column(name = "payment_date")
+    @Column(name = "date")
     private LocalDateTime date;
 
-    @Column(name = "payment_status")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
@@ -46,7 +46,7 @@ public class Payment {
     private Client client;
 
     @OneToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
     
     public Payment() {

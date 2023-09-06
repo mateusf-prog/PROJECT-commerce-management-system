@@ -18,21 +18,21 @@ import lombok.Setter;
 @Data
 public class Client {
     
-    @Column(name = "client_name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "client_birthdate")
+    @Column(name = "birthdate")
     private LocalDate birthdate;
 
     @Id
-    @Column(name = "client_cpf", unique = true)
+    @Column(name = "cpf", unique = true)
     @Setter(AccessLevel.NONE)
     private String cpf;
 
-    @Column(name = "client_phoneNumber")
+    @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @Column(name = "client_adress")
+    @Column(name = "adress")
     private String adress;
 
     // define relationships

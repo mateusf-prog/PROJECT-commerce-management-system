@@ -17,19 +17,19 @@ import lombok.Data;
 public class Product {
 
     @Id
-    @Column(name = "product_code", unique = true)
+    @Column(name = "code", unique = true)
     private String code;
 
-    @Column(name = "product_name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "product_price")
+    @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "product_quantity")
+    @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "product_category")
+    @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private Categories category;
     

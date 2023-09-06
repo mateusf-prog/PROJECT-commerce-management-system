@@ -22,7 +22,7 @@ import lombok.Setter;
 public class Order {
 
     @Id
-    @Column(name = "order_code", unique = true)
+    @Column(name = "code", unique = true)
     private String code;
 
     @Column(name = "order_totalValue")
@@ -39,7 +39,7 @@ public class Order {
     private Payment payment;
 
     @OneToMany
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_items_id")
     private List<OrderItem> orderItems;
 
     public Order() {
