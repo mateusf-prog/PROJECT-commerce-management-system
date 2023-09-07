@@ -2,6 +2,7 @@ package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
@@ -23,7 +24,7 @@ public class Payment {
 
     @Id
     @Column(name = "code", unique = true)
-    private String code;
+    private Long code;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
@@ -45,15 +46,14 @@ public class Payment {
     @JoinColumn(name = "client_id") 
     private Client client;
 
-    @OneToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @OneToOne(mappedBy = "payment")
     private Order order;
     
     public Payment() {
     }
 
-    public Payment(PaymentType paymentType, String code, BigDecimal value, 
-                LocalDateTime date,PaymentStatus status, Client client, Order order) {
+    public Payment(PaymentType paymentType, Long code, BigDecimal value, LocalDateTime date,
+                   PaymentStatus status, Client client, Order order) {
         this.paymentType = paymentType;
         this.code = code;
         this.value = value;
@@ -64,28 +64,16 @@ public class Payment {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Payment other = (Payment) obj;
-        if (code == null) {
-            if (other.code != null)
-                return false;
-        } else if (!code.equals(other.code))
-            return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return Objects.equals(code, payment.code);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((code == null) ? 0 : code.hashCode());
-        return result;
+        return Objects.hash(code);
     }
 
     @Override

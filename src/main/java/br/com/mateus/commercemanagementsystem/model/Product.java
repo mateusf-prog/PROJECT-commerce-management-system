@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 import jakarta.persistence.Column;
@@ -18,7 +19,7 @@ public class Product {
 
     @Id
     @Column(name = "code", unique = true)
-    private String code;
+    private Long code;
 
     @Column(name = "name")
     private String name;
@@ -36,7 +37,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(String code, String name, BigDecimal price, int quantity, Categories category) {
+    public Product(Long code, String name, BigDecimal price, int quantity, Categories category) {
         this.code = code;
         this.name = name;
         this.price = price;
@@ -45,28 +46,16 @@ public class Product {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Product other = (Product) obj;
-        if (code == null) {
-            if (other.code != null)
-                return false;
-        } else if (!code.equals(other.code))
-            return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(code, product.code);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((code == null) ? 0 : code.hashCode());
-        return result;
+        return Objects.hash(code);
     }
 
     @Override

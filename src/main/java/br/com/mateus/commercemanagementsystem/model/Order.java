@@ -3,6 +3,7 @@ package br.com.mateus.commercemanagementsystem.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +24,7 @@ public class Order {
 
     @Id
     @Column(name = "code", unique = true)
-    private String code;
+    private Long code;
 
     @Column(name = "order_totalValue")
     private BigDecimal totalValue;
@@ -35,7 +36,8 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private Client client;
 
-    @OneToOne(mappedBy = "order")
+    @OneToOne
+    @JoinColumn(name = "payment_id")
     private Payment payment;
 
     @OneToMany
@@ -45,7 +47,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String code, BigDecimal totalValue, Payment payment, Client client, List<OrderItem> orderItems) {
+    public Order(Long code, BigDecimal totalValue, Payment payment, Client client, List<OrderItem> orderItems) {
         this.code = code;
         this.totalValue = totalValue;
         this.payment = payment;
@@ -54,29 +56,17 @@ public class Order {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Order other = (Order) obj;
-        if (code == null) {
-            if (other.code != null)
-                return false;
-        } else if (!code.equals(other.code))
-            return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(code, order.code);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((code == null) ? 0 : code.hashCode());
-        return result;
-    }  
+        return Objects.hash(code);
+    }
 
     @Override
     public String toString() {
