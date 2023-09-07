@@ -42,6 +42,7 @@ public class Order {
 
     @OneToMany
     @JoinColumn(name = "order_id")
+    @Setter(AccessLevel.NONE)
     private List<OrderItem> orderItems;
 
     public Order() {
