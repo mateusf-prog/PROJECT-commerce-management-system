@@ -17,6 +17,6 @@ O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoqu
 - Integrar uma API (mock), para gerar um boleto ou código PIX e enviar para o cliente via email.
 
 ### Diagrama de classes
-<img src="/assets/img/uml-class.png">
+<img src="/uml-class.png">
 
 
