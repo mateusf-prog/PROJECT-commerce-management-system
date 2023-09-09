@@ -16,7 +16,7 @@ O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoqu
 - Aplicar filtros para pesquisa de clientes, pagamentos (filtrar por nome, CPF).
 - Integrar uma API (mock), para gerar um boleto ou código PIX e enviar para o cliente via email.
 
-### Diagrama de classes
+### Camada modelo:
 <img src="/uml-class.png">
 
 
