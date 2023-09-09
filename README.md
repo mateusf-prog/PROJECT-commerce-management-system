@@ -16,6 +16,8 @@ O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoqu
 - Aplicar filtros para pesquisa de clientes, pagamentos (filtrar por nome, CPF).
 - Integrar uma API (mock), para gerar um boleto ou código PIX e enviar para o cliente via email.
 
+  OBS:Este projeto tem como objetivo principal a prática e o estudo, sendo passível de conter eventuais erros. Comprometo-me a corrigi-los e a aprimorar o código, buscando mantê-lo o mais limpo possível.
+
 ### Camada modelo:
 <img src="/uml-class.png">
 
