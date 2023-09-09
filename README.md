@@ -19,4 +19,5 @@ O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoqu
 ### Camada modelo:
 <img src="/uml-class.png">
 
-
+### Camada serviço:
+<img src="/service-layer.png">
