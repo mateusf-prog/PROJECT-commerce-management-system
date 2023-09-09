@@ -41,7 +41,7 @@ public class CommerceManagementSystemApplication {
 			Client mateus = new Client("Mateus", birthdate, "12345678900", "1291978003", "endereço");
 
 			LocalDateTime date = LocalDateTime.now();
-			Payment payment = new Payment(PaymentType.BOLETO, 1258L, new BigDecimal("1500.00"), date,
+			Payment payment = new Payment(PaymentType.BOLETO, 778895L, new BigDecimal("1500.00"), date,
 					PaymentStatus.COMPLETED, mateus, null);
 
 			OrderItem item1 = new OrderItem("playstation", 3, new BigDecimal("4500.00"));
