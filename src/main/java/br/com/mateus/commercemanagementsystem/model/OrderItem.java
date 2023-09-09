@@ -2,12 +2,7 @@ package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -31,13 +26,20 @@ public class OrderItem {
     @Column(name = "price")
     private BigDecimal price;
 
+    // define relationships
+
+    @ManyToOne()
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     public OrderItem() {
     }
 
-    public OrderItem(String productName, int quantity, BigDecimal price) {
+    public OrderItem(String productName, int quantity, BigDecimal price, Order order) {
         this.productName = productName;
         this.quantity = quantity;
         this.price = price;
+        this.order = order;
     }
 
     @Override

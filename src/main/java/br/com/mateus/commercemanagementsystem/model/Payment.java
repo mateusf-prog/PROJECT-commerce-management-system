@@ -43,7 +43,7 @@ public class Payment {
     // define relationships
 
     @ManyToOne
-    @JoinColumn(name = "client_id") 
+    @JoinColumn(name = "client_cpf")
     private Client client;
 
     @OneToOne(mappedBy = "payment")

@@ -38,33 +38,33 @@ public class CommerceManagementSystemApplication {
 			// create objects
 
 			LocalDate birthdate = LocalDate.of(2023, 12, 15);
-			Client mateus = new Client("Mateus", birthdate, "12345678900", "1291978003", "endereço");
+			Client mateus = new Client("Mateus", birthdate, "123445678900", "1291978003",
+					"endereço");
+
+			clientRepository.save(mateus);
 
 			LocalDateTime date = LocalDateTime.now();
-			Payment payment = new Payment(PaymentType.BOLETO, 778895L, new BigDecimal("1500.00"), date,
-					PaymentStatus.COMPLETED, mateus, null);
+			Payment payment = new Payment(PaymentType.BOLETO, 7890L, new BigDecimal("1500.00"),
+					date, PaymentStatus.COMPLETED, mateus, null);
 
-			OrderItem item1 = new OrderItem("playstation", 3, new BigDecimal("4500.00"));
+			paymentRepository.save(payment);
 
-			Product playstation = new Product(1122L, "playstation", new BigDecimal("1500.00"),
+			Product playstation = new Product(4687L, "playstation", new BigDecimal("1500.00"),
 					80, Categories.ELETRONICS);
 
-			// create list with product and add list to order
+			productRepository.save(playstation);
 
-			List<OrderItem> orderItems = new ArrayList<OrderItem>();
+			List<OrderItem> orderItems = new ArrayList<>();
+			OrderItem item1 = new OrderItem("playstation", 3, new BigDecimal("4500.00"), null);
 			orderItems.add(item1);
 
-			Order order = new Order(1329L, new BigDecimal("1500.00"), payment, mateus, orderItems);
+			Order order = new Order(7956L, new BigDecimal("1500.00"), payment, mateus, orderItems);
 
-			// set order in payment
-			payment.setOrder(order);
-
-			// persisting data
-			clientRepository.save(mateus);
+			item1.setOrder(order); // set order on OrderItem before persist order
+			payment.setOrder(order); // set order on Payment before persist order
 			orderRepository.save(order);
 			orderItemRepository.save(item1);
-			productRepository.save(playstation);
-			paymentRepository.save(payment);
+
 		};
 	}
 }

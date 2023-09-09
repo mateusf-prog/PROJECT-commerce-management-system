@@ -40,10 +40,9 @@ public class Order {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
-    @OneToMany
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order")
     @Setter(AccessLevel.NONE)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public Order() {
     }
@@ -53,7 +52,7 @@ public class Order {
         this.totalValue = totalValue;
         this.payment = payment;
         this.client = client;
-        this.orderItems = new ArrayList<>();
+        this.orderItems = orderItems;
     }
 
     @Override
