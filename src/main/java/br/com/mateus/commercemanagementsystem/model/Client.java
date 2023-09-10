@@ -4,11 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -37,11 +33,11 @@ public class Client {
 
     // define relationships
     
-    @OneToMany(mappedBy = "client") 
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
     private List<Payment> payments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
 

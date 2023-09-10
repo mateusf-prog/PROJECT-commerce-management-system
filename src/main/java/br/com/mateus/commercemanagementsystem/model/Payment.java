@@ -6,15 +6,7 @@ import java.util.Objects;
 
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -46,7 +38,7 @@ public class Payment {
     @JoinColumn(name = "client_cpf")
     private Client client;
 
-    @OneToOne(mappedBy = "payment")
+    @OneToOne(mappedBy = "payment",cascade = CascadeType.ALL)
     private Order order;
     
     public Payment() {
