@@ -68,7 +68,7 @@ public class CommerceManagementSystemApplication {
 
 			// test ClientService
 
-			 clientService.deleteByCpf("123445678900");
+			clientService.deleteByCpf("123445678900");
 		};
 	}
 }

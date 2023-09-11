@@ -38,7 +38,7 @@ public class Payment {
     @JoinColumn(name = "client_cpf")
     private Client client;
 
-    @OneToOne(mappedBy = "payment",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "payment")
     private Order order;
     
     public Payment() {
@@ -53,28 +53,5 @@ public class Payment {
         this.status = status;
         this.client = client;
         this.order = order;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Payment payment = (Payment) o;
-        return Objects.equals(code, payment.code);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(code);
-    }
-
-    @Override
-    public String toString() {
-        return "-- Payment --"
-            + "\nCode: " + code
-            + "\nClient: " + client.getName()
-            + "\nDate: " + date
-            + "\nValue: " + value
-            + "\nStatus: " + status;
     }
 }

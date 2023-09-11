@@ -30,7 +30,7 @@ public class ClientService {
     public String deleteByCpf(String cpf) {
 
         if (clientRepository.findByCpf(cpf) == null) {
-            return "Client não encontrado!";
+            return "Cliente não encontrado!";
         } else {
             clientRepository.deleteByCpf(cpf);
             return "Cliente deletado com sucesso!";

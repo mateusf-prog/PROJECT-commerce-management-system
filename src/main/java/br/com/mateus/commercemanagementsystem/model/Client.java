@@ -28,12 +28,12 @@ public class Client {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @Column(name = "adress")
-    private String adress;
+    @Column(name = "address")
+    private String address;
 
     // define relationships
     
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client")
     @Setter(AccessLevel.NONE)
     private List<Payment> payments = new ArrayList<>();
 
@@ -44,46 +44,11 @@ public class Client {
     public Client() {
     }
 
-    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String adress) {
+    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String address) {
         this.name = name;
         this.birthdate = birthdate;
         this.cpf = cpf;
         this.phoneNumber = phoneNumber;
-        this.adress = adress;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Client other = (Client) obj;
-        if (cpf == null) {
-            if (other.cpf != null)
-                return false;
-        } else if (!cpf.equals(other.cpf))
-            return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((cpf == null) ? 0 : cpf.hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "-- Client --"
-            + "\nName: " + name
-            + "\nBirthdate: " + birthdate
-            + "\nCPF: " + cpf
-            + "\nPhone number: " + phoneNumber
-            + "\nAdress: " + adress; 
+        this.address = address;
     }
 }

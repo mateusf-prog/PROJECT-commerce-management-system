@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -38,27 +39,5 @@ public class Product {
         this.price = price;
         this.quantity = quantity;
         this.category = category;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(code, product.code);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(code);
-    }
-
-    @Override
-    public String toString() {
-        return "-- Product --"
-            + "\nCode: " + code
-            + "\nName: " + name
-            + "\nPrice: " + price
-            + "\nCategory: " + category;
     }
 }
