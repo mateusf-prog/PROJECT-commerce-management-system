@@ -17,19 +17,18 @@ public class OrderItem {
     @Setter(AccessLevel.NONE)
     private int id;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
     // define relationships
 
     @ManyToOne()
-    @JoinColumn(name = "order_id")
     private Order order;
 
     public OrderItem() {

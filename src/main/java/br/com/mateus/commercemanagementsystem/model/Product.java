@@ -15,26 +15,26 @@ public class Product {
 
     @Id
     @Column(name = "code", unique = true)
-    private Long code;
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "category")
+    @Column(name = "category", nullable = false)
     @Enumerated(EnumType.STRING)
     private Categories category;
     
     public Product() {
     }
 
-    public Product(Long code, String name, BigDecimal price, int quantity, Categories category) {
-        this.code = code;
+    public Product(Long id, String name, BigDecimal price, int quantity, Categories category) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.quantity = quantity;

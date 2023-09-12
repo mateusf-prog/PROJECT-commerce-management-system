@@ -14,21 +14,20 @@ import lombok.Setter;
 @Data
 public class Client {
     
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "birthdate")
+    @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
 
     @Id
-    @Column(name = "cpf", unique = true)
-    @Setter(AccessLevel.NONE)
+    @Column(name = "cpf", unique = true, nullable = false)
     private String cpf;
 
-    @Column(name = "phoneNumber")
+    @Column(name = "phoneNumber", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
     private String address;
 
     // define relationships
@@ -37,7 +36,7 @@ public class Client {
     @Setter(AccessLevel.NONE)
     private List<Payment> payments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client")
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
 

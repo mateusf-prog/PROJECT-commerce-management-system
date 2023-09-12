@@ -15,27 +15,26 @@ import lombok.Data;
 public class Payment {
 
     @Id
-    @Column(name = "code", unique = true)
-    private Long code;
+    @Column(name = "id", unique = true)
+    private Long id;
 
-    @Column(name = "type")
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
-    @Column(name = "value")
+    @Column(name = "value", nullable = false)
     private BigDecimal value;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
     // define relationships
 
     @ManyToOne
-    @JoinColumn(name = "client_cpf")
     private Client client;
 
     @OneToOne(mappedBy = "payment")
@@ -44,10 +43,10 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(PaymentType paymentType, Long code, BigDecimal value, LocalDateTime date,
+    public Payment(PaymentType paymentType, Long id, BigDecimal value, LocalDateTime date,
                    PaymentStatus status, Client client, Order order) {
         this.paymentType = paymentType;
-        this.code = code;
+        this.id = id;
         this.value = value;
         this.date = date;
         this.status = status;

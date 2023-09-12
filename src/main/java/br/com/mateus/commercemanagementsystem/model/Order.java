@@ -16,21 +16,19 @@ import lombok.Setter;
 public class Order {
 
     @Id
-    @Column(name = "code", unique = true)
-    private Long code;
+    @Column(name = "id", unique = true, nullable = false)
+    private Long id;
 
-    @Column(name = "order_totalValue")
+    @Column(name = "order_totalValue", nullable = false)
     private BigDecimal totalValue;
 
     // define relationships
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
     @Setter(AccessLevel.NONE)
     private Client client;
 
     @OneToOne
-    @JoinColumn(name = "payment_id")
     private Payment payment;
 
     @OneToMany(mappedBy = "order")
@@ -40,8 +38,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long code, BigDecimal totalValue, Payment payment, Client client, List<OrderItem> orderItems) {
-        this.code = code;
+    public Order(Long id, BigDecimal totalValue, Payment payment, Client client, List<OrderItem> orderItems) {
+        this.id = id;
         this.totalValue = totalValue;
         this.payment = payment;
         this.client = client;
