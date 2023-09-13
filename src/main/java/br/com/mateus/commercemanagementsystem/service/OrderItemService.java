@@ -9,7 +9,7 @@ public interface OrderItemService {
     OrderItem createOrderItem(OrderItem item);
     OrderItem readOrderItem(OrderItem item);
     OrderItem updateOrderItem(OrderItem item);
-    OrderItem deleteOrderItem(OrderItem item);
+    String deleteById(Long id);
 
     void setQuantity(OrderItem item, int quantity);
     void setPrice(OrderItem item, BigDecimal price);
@@ -17,5 +17,7 @@ public interface OrderItemService {
     BigDecimal calculateTotalPrice(OrderItem item);
     BigDecimal getTotalPrice(OrderItem item);
 
-    boolean isInStock(OrderItem item);
+    boolean checkStockAvailability(OrderItem item);
+    boolean validateQuantityItem(OrderItem item);
+    boolean validatePrice(OrderItem item);
 }

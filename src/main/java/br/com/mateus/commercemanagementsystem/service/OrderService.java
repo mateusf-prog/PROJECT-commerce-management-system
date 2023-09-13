@@ -9,11 +9,15 @@ public interface OrderService {
     Order createOrder(Order order);
     Order readOrder(Order order);
     Order updateOrder(Order order);
-    Order deleteOrder(Order order);
+    String deleteById(Long id);
     Order findById(Long id);
 
     void addItem(OrderItem item);
     void removeItem(OrderItem item);
     void setPayment(Payment payment);
     void changePayment(Payment payment);
+
+    boolean validateExistenceClientInOrder(Order order);
+    boolean validateExistencePaymentInOrder(Order order);
+    boolean validateOrderItemsInOrder(Order order);
 }

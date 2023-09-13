@@ -31,7 +31,7 @@ public class CommerceManagementSystemApplication {
 	@Bean
     public CommandLineRunner myCommandLineRunner (ClientRepository clientRepository, OrderRepository orderRepository,
 												  PaymentRepository paymentRepository, ProductRepository productRepository,
-												  OrderItemRepository orderItemRepository, ClientServiceImpl clientService) {
+												  OrderItemRepository orderItemRepository) {
         return (args) -> {
 
 			// create objects

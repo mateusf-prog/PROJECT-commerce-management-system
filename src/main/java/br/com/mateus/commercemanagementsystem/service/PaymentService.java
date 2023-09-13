@@ -9,12 +9,16 @@ public interface PaymentService {
     Payment createPayment(Payment payment);
     Payment updatePayment(Payment payment);
     Payment readPayment(Payment payment);
-    Payment deletePayment(Payment payment);
+    String deleteById(Long id);
 
     String changePaymentType(Payment payment, PaymentType type);
     String changePaymentStatus(Payment payment, PaymentStatus status);
     String sendToEmail(Payment payment, String email);
     String cancelPayment(Payment payment);
+
     Payment processPayment(Payment payment);
     PaymentStatus callPaymentApi(Payment payment);
+
+    boolean validateExistenceClientInPayment(Payment payment);
+    boolean validateExistenceOrderInPayment(Payment payment);
 }

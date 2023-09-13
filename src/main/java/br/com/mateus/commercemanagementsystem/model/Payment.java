@@ -34,7 +34,7 @@ public class Payment {
 
     // define relationships
 
-    @ManyToOne
+    @ManyToOne()
     private Client client;
 
     @OneToOne(mappedBy = "payment")
