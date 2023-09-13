@@ -4,11 +4,9 @@ import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
-import br.com.mateus.commercemanagementsystem.service.ClientService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Bean;
 
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;
@@ -33,7 +31,7 @@ public class CommerceManagementSystemApplication {
 	@Bean
     public CommandLineRunner myCommandLineRunner (ClientRepository clientRepository, OrderRepository orderRepository,
 												  PaymentRepository paymentRepository, ProductRepository productRepository,
-												  OrderItemRepository orderItemRepository, ClientService clientService) {
+												  OrderItemRepository orderItemRepository, ClientServiceImpl clientService) {
         return (args) -> {
 
 			// create objects

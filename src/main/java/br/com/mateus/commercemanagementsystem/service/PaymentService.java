@@ -1,25 +1,20 @@
 package br.com.mateus.commercemanagementsystem.service;
 
-import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.model.Payment;
-import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
+import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 
-import java.util.List;
+public interface PaymentService {
 
-@Service
-public class PaymentService {
+    Payment createPayment(Payment payment);
+    Payment updatePayment(Payment payment);
+    Payment readPayment(Payment payment);
+    Payment deletePayment(Payment payment);
 
-    @Autowired
-    private PaymentRepository paymentRepository;
-
-    public void setNullEntityPaymentsBeforeRemoveClient(Client client) {
-
-        List<Payment> payments = paymentRepository.findPaymentsByClient(client);
-
-        for (Payment payment : payments) {
-            payment.setClient(null);
-        }
-    }
+    String changePaymentType(Payment payment, PaymentType type);
+    String changePaymentStatus(Payment payment, PaymentStatus status);
+    String sendToEmail(Payment payment, String email);
+    String cancelPayment(Payment payment);
+    Payment processPayment(Payment payment);
+    PaymentStatus callPaymentApi(Payment payment);
 }

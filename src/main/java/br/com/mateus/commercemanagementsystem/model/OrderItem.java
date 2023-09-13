@@ -15,7 +15,7 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private int id;
+    private Long id;
 
     @Column(name = "product_name", nullable = false)
     private String productName;
