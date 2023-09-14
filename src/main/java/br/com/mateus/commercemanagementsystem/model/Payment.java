@@ -34,7 +34,7 @@ public class Payment {
 
     // define relationships
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
 
     @OneToOne(mappedBy = "payment")

@@ -4,9 +4,11 @@ import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
+import br.com.mateus.commercemanagementsystem.service.serviceImpl.ClientServiceImpl;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Bean;
 
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;
@@ -31,12 +33,12 @@ public class CommerceManagementSystemApplication {
 	@Bean
     public CommandLineRunner myCommandLineRunner (ClientRepository clientRepository, OrderRepository orderRepository,
 												  PaymentRepository paymentRepository, ProductRepository productRepository,
-												  OrderItemRepository orderItemRepository) {
+												  OrderItemRepository orderItemRepository, ClientServiceImpl clientService) {
         return (args) -> {
 
 			// create objects
 
-			LocalDate birthdate = LocalDate.of(2023, 12, 15);
+			/*LocalDate birthdate = LocalDate.of(2023, 12, 15);
 			Client mateus = new Client("Mateus", birthdate, "123445678900", "1291978003",
 					"endereço");
 			Client diogo = new Client("Diogo", birthdate, "615649798765", "123456789",
@@ -97,7 +99,17 @@ public class CommerceManagementSystemApplication {
 
 			orderItemRepository.save(item1);
 			orderItemRepository.save(item2);
-			orderItemRepository.save(item3);
+			orderItemRepository.save(item3);*/
+
+			LocalDate birthdate = LocalDate.of(2000, 10, 25);
+			Client client = new Client("José", birthdate, "84484564698", "89547856987",
+					"Rua 123");
+
+			System.out.println(clientService.findByName("José"));
+
+			System.out.println("Encontrar por nome: José");
+			clientService.findByName("José");
+
 		};
 	}
 }

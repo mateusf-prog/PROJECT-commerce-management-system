@@ -7,18 +7,18 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ClientService {
 
     Client updateClient(Client client);
     Client createClient(Client client);
-    Client readClient(Client client);
     String deleteByCpf(String cpf);
     Client findByCpf(String cpf);
-    Client findByName(String name);
+    Optional<Client> findByName(String name);
 
-    List<Order> findOrders(Client client);
-    List<Payment> findPayments(Client client);
+    List<Order> findOrders(String cpf);
+    List<Payment> findPayments(String cpf);
 
     boolean validateClientName(Client client);
     boolean validateClientPhoneNumber(Client client);
