@@ -34,9 +34,6 @@ public class Payment {
 
     // define relationships
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Client client;
-
     @OneToOne(mappedBy = "payment")
     private Order order;
     
@@ -44,13 +41,12 @@ public class Payment {
     }
 
     public Payment(PaymentType paymentType, Long id, BigDecimal value, LocalDateTime date,
-                   PaymentStatus status, Client client, Order order) {
+                   PaymentStatus status, Order order) {
         this.paymentType = paymentType;
         this.id = id;
         this.value = value;
         this.date = date;
         this.status = status;
-        this.client = client;
         this.order = order;
     }
 }

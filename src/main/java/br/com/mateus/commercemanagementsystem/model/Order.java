@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,11 +17,15 @@ import lombok.Setter;
 public class Order {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "order_totalValue", nullable = false)
     private BigDecimal totalValue;
+
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
     // define relationships
 
@@ -38,11 +43,12 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, BigDecimal totalValue, Payment payment, Client client, List<OrderItem> orderItems) {
-        this.id = id;
+    public Order(BigDecimal totalValue, Payment payment, Client client,
+                 List<OrderItem> orderItems, LocalDateTime date) {
         this.totalValue = totalValue;
         this.payment = payment;
         this.client = client;
         this.orderItems = orderItems;
+        this.date = date;
     }
 }

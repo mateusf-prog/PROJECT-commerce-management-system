@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.client.ClientAlreadyExistsException;
+import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNoHasOrdersException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.InvalidClientDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Client;
@@ -9,12 +10,12 @@ import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;
 import br.com.mateus.commercemanagementsystem.service.ClientService;
 import jakarta.transaction.Transactional;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,39 +84,29 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    @Transactional
-    public Optional<Client> findByName(String name) {
+    public List<Client> findByName(String name) {
 
-        Optional<Client> client = clientRepository.findByName(name);
+        List<Client> results = clientRepository.findByName(name);
 
-        if (client.isEmpty()) {
-            throw new ClientNotFoundException("Cliente não encontrado!");
+        if (results.isEmpty()) {
+            throw new ClientNotFoundException("Nenhum resultado encontrado!");
         } else {
-            return client;
+            return results;
         }
     }
 
+
     @Override
-    public List<Order> findOrders(String cpf) {
+    public List<Order> findOrdersByClient(String cpf) {
 
         Client client = clientRepository.findByCpf(cpf);
 
         if (client == null) {
             throw new ClientNotFoundException("Cliente não encontrado!");
+        } else if (client.getOrders().isEmpty()) {
+            throw new ClientNoHasOrdersException("Cliente não possui nenhum pedido!");
         } else {
             return client.getOrders();
-        }
-    }
-
-    @Override
-    public List<Payment> findPayments(String cpf) {
-
-        Client client = clientRepository.findByCpf(cpf);
-
-        if (client == null) {
-            throw new ClientNotFoundException("Cliente não encontrado!");
-        } else {
-            return client.getPayments();
         }
     }
 

@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 public class CommerceManagementSystemApplication {
@@ -102,13 +103,22 @@ public class CommerceManagementSystemApplication {
 			orderItemRepository.save(item3);*/
 
 			LocalDate birthdate = LocalDate.of(2000, 10, 25);
-			Client client = new Client("José", birthdate, "84484564698", "89547856987",
+			Client jose = new Client("José", birthdate, "84489664698", "89547856987",
 					"Rua 123");
 
-			System.out.println(clientService.findByName("José"));
+			clientService.createClient(jose);
+			/*List<Client> clients = clientService.findByName("José");
 
-			System.out.println("Encontrar por nome: José");
-			clientService.findByName("José");
+			System.out.println("\nEncontrar por nome: José...\n");
+			for (Client result : clients) {
+				System.out.println(result);
+			}*/
+
+			Order order = new Order(new BigDecimal("250.00"), null, jose, null);
+
+			orderRepository.save(order);
+
+			clientService.findOrdersByClient("84484564698");
 
 		};
 	}

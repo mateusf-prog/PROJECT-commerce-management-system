@@ -31,12 +31,8 @@ public class Client {
     private String address;
 
     // define relationships
-    
-    @OneToMany(mappedBy = "client")
-    @Setter(AccessLevel.NONE)
-    private List<Payment> payments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", fetch=FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
 
