@@ -3,6 +3,9 @@ package br.com.mateus.commercemanagementsystem.service;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Payment;
+import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
+
+import java.util.Optional;
 
 public interface OrderService {
 
@@ -15,9 +18,7 @@ public interface OrderService {
     void addItem(OrderItem item);
     void removeItem(OrderItem item);
     void setPayment(Payment payment);
-    void changePayment(Payment payment);
+    String changePaymentType(PaymentType paymentType);
 
-    boolean validateExistenceClientInOrder(Order order);
-    boolean validateExistencePaymentInOrder(Order order);
-    boolean validateOrderItemsInOrder(Order order);
+    Optional<Exception> checkValidations(Order order);
 }
