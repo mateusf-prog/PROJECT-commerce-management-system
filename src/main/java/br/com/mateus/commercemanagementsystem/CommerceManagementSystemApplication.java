@@ -102,24 +102,19 @@ public class CommerceManagementSystemApplication {
 			orderItemRepository.save(item2);
 			orderItemRepository.save(item3);*/
 
-			LocalDate birthdate = LocalDate.of(2000, 10, 25);
-			Client jose = new Client("José", birthdate, "84489664698", "89547856987",
-					"Rua 123");
+			List<Client> listClients = clientService.findByName("José");
 
-			clientService.createClient(jose);
-			/*List<Client> clients = clientService.findByName("José");
+			Client client1 = new Client();
 
-			System.out.println("\nEncontrar por nome: José...\n");
-			for (Client result : clients) {
-				System.out.println(result);
-			}*/
+			for (Client client : listClients) {
+				client1 = client;
+			}
 
-			Order order = new Order(new BigDecimal("250.00"), null, jose, null);
+			Order order = new Order(new BigDecimal("250.00"), null, client1, null, LocalDateTime.now());
+			Order order2 = new Order(new BigDecimal("500.00"), null, client1, null, LocalDateTime.now());
+			Order order3 = new Order(new BigDecimal("1000.00"), null, client1, null, LocalDateTime.now());
 
-			orderRepository.save(order);
-
-			clientService.findOrdersByClient("84484564698");
-
+			System.out.println(clientService.findOrdersByClientCpf("84439664698"));
 		};
 	}
 }

@@ -26,7 +26,6 @@ public class ClientServiceImpl implements ClientService {
     private ClientRepository clientRepository;
 
     @Override
-    @Transactional
     public Client updateClient(Client client) {
 
          if (isClientDataValid(client)) {
@@ -41,7 +40,6 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    @Transactional
     public Client createClient(Client client) {
 
         Client queryClient = clientRepository.findByCpf(client.getCpf());
@@ -58,7 +56,6 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    @Transactional
     public String deleteByCpf(String cpf) {
 
         Client client = clientRepository.findByCpf(cpf);
@@ -97,7 +94,7 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public List<Order> findOrdersByClient(String cpf) {
+    public List<Order> findOrdersByClientCpf(String cpf) {
 
         Client client = clientRepository.findByCpf(cpf);
 

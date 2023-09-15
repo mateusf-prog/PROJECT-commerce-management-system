@@ -40,4 +40,8 @@ public class OrderItem {
         this.price = price;
         this.order = order;
     }
+
+    public String toString() {
+        return "Name: " + productName + ", quantity: " + quantity + ", price: " + price + ", order: " + order.getId();
+    }
 }

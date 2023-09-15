@@ -17,7 +17,7 @@ public interface ClientService {
     Client findByCpf(String cpf);
     List<Client> findByName(String name);
 
-    List<Order> findOrdersByClient(String cpf);
+    List<Order> findOrdersByClientCpf(String cpf);
 
     boolean validateClientName(Client client);
     boolean validateClientPhoneNumber(Client client);

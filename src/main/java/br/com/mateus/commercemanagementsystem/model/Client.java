@@ -46,4 +46,22 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Client [")
+                .append("cpf=").append(cpf)
+                .append(", name=").append(name)
+                .append(", birthdate=").append(birthdate)
+                .append(", phoneNumber=").append(phoneNumber)
+                .append(", address=").append(address)
+                .append("]\n");
+
+        sb.append("Orders:\n");
+        for (Order order : orders) {
+            sb.append(order).append("\n");
+        }
+        return sb.toString();
+    }
 }

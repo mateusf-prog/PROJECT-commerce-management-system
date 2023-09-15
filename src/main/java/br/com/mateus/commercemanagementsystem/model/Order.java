@@ -36,7 +36,7 @@ public class Order {
     @OneToOne
     private Payment payment;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -51,4 +51,24 @@ public class Order {
         this.orderItems = orderItems;
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Order [")
+                .append("id: ").append(id)
+                .append(", totalValue: ").append(totalValue)
+                .append(", date=").append(date)
+                .append(", client: ").append(client != null ? client.getName() : "N/A")
+                .append(", payment: ").append(payment != null ? payment.getId() : "N/A")
+                .append("]\n");
+
+        sb.append("Order Items:\n");
+        for (OrderItem item : orderItems) {
+            sb.append(item).append("\n");
+        }
+
+        return sb.toString();
+    }
+
 }
