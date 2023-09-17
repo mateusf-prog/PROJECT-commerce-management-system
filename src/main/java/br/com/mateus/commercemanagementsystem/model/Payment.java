@@ -15,7 +15,8 @@ import lombok.Data;
 public class Payment {
 
     @Id
-    @Column(name = "id", unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "type", nullable = false)
@@ -40,10 +41,9 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(PaymentType paymentType, Long id, BigDecimal value, LocalDateTime date,
+    public Payment(PaymentType paymentType, BigDecimal value, LocalDateTime date,
                    PaymentStatus status, Order order) {
         this.paymentType = paymentType;
-        this.id = id;
         this.value = value;
         this.date = date;
         this.status = status;

@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.service;
 
+import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Payment;
@@ -18,7 +19,7 @@ public interface OrderService {
     void addItem(OrderItem item);
     void removeItem(OrderItem item);
     void setPayment(Payment payment);
-    String changePaymentType(PaymentType paymentType);
+    String changePaymentType(Order order,PaymentType paymentType);
 
-    Optional<Exception> checkValidations(Order order);
+    void checkValidations(Order order);
 }
