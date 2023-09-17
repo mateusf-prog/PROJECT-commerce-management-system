@@ -3,13 +3,14 @@ package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotContainClientException;
 import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotContainItemsException;
 import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotContainPaymentException;
-import br.com.mateus.commercemanagementsystem.model.Client;
+import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
+    @Transactional
     public Order createOrder(Order order) {
 
         try {
@@ -35,27 +37,53 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order readOrder(Order order) {
-        return null;
-    }
-
-    @Override
+    @Transactional
     public Order updateOrder(Order order) {
-        return null;
+
+        Optional<Order> orderQuery = findById(order.getId());
+
+        if (orderQuery.isPresent()) {
+            try {
+                checkValidations(order);
+                orderRepository.save(order);
+            } catch (Exception e) {
+                throw e;
+            }
+        } else {
+            throw new OrderNotFoundException("Order id not found!");
+        }
+
+        return order;
     }
 
     @Override
+    @Transactional
     public String deleteById(Long id) {
-        return null;
+
+        Optional<Order> order = findById(id);
+
+        if (order.isEmpty()) {
+            throw new OrderNotFoundException("Order not found!");
+        } else {
+            orderRepository.deleteById(id);
+            return "Order deleted!";
+        }
     }
 
     @Override
-    public Order findById(Long id) {
-        return null;
+    public Optional<Order> findById(Long id) {
+
+        Optional<Order> order = orderRepository.findById(id);
+
+        if (order.isEmpty()) {
+            throw new OrderNotFoundException("Order not found!");
+        } else {
+            return order;
+        }
     }
 
     @Override
-    public void addItem(OrderItem item) {
+    public void addItem(Order order, OrderItem item) {
 
     }
 

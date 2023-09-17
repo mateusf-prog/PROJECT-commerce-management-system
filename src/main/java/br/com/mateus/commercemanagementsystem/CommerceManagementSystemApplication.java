@@ -52,9 +52,11 @@ public class CommerceManagementSystemApplication {
 			List<OrderItem> orderItems = new ArrayList<>();
 			orderItems.add(orderItem);
 
-			Order order = new Order(new BigDecimal("250.00"), payment, client, orderItems, LocalDateTime.now());
+			Order order = new Order(new BigDecimal("250.00"), payment, client, null, LocalDateTime.now());
 
-			clientService.createClient(client);
+
+
+			//clientService.createClient(client);
 			paymentRepository.save(payment);
 			orderService.createOrder(order);
 			orderItemRepository.save(orderItem);
