@@ -19,7 +19,6 @@ public interface OrderService {
     String removeItem(Order order, OrderItem item);
 
     String setPayment(Order order, Payment payment);
-    String changePaymentType(Order order,PaymentType paymentType);
 
     void checkValidations(Order order);
 }

@@ -4,23 +4,20 @@ import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface ProductService {
 
     Product createProduct(Product product);
-    Product readProduct(Product product);
+    Optional<Product> findById(Long id);
     Product updateProduct(Product product);
     String deleteProduct(Product product);
     Product findByName(String name);
-    Product findById(Long id);
 
     String adjustStockQuantity(Long id, int quantity);
     Product setPrice(Long id, BigDecimal price);
 
     Product setCategory(Product product, Categories category);
 
-    boolean validateProductName(Product product);
-    boolean validateProductQuantity(Product product);
-    boolean validateProductPrice(Product product);
-    boolean validateProductCategory(Product product);
+    void checkValidations(Product product);
 }

@@ -56,8 +56,10 @@ public class CommerceManagementSystemApplication {
 
 			Order order = new Order(new BigDecimal("250.00"), payment, client, orderItems, LocalDateTime.now());
 
+			payment.setOrder(order);
+
 			//clientService.createClient(client);
-			/*orderService.addItem(order, item);
+			orderService.addItem(order, item);
 			orderService.addItem(order, item1);
 			orderService.addItem(order, item2);
 			orderService.addItem(order, item3);
@@ -65,12 +67,19 @@ public class CommerceManagementSystemApplication {
 			item1.setOrder(order);
 			item2.setOrder(order);
 			item3.setOrder(order);
+
 			paymentRepository.save(payment);
 			orderService.createOrder(order);
+
 			orderItemRepository.save(item);
 			orderItemRepository.save(item1);
 			orderItemRepository.save(item2);
-			orderItemRepository.save(item3);*/
+			orderItemRepository.save(item3);
+
+			payment.setPaymentType(PaymentType.PIX);
+			paymentRepository.save(payment);
+			orderService.setPayment(order, payment);
+
 			System.out.println("----REMOVENDO ITEMS----");
 			orderService.removeItem(order, item2);
 			orderItemRepository.delete(item2);

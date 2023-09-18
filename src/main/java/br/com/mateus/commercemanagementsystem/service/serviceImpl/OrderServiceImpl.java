@@ -1,21 +1,15 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
-import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotContainClientException;
-import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotContainItemsException;
-import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotContainPaymentException;
-import br.com.mateus.commercemanagementsystem.exceptions.order.OrderNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.order.*;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Payment;
-import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -85,43 +79,52 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public String addItem(Order order, OrderItem item) {
 
         if (order != null && item != null) {
             if (!order.getOrderItems().contains(item)) {
                 order.getOrderItems().add(item);
-                return "Produto adicionado!";
+                checkValidations(order);
+                orderRepository.save(order);
+                return "Produto adicionado!"; // falta salvar o novo orderitem no banco de dados
             } else {
-                return "Item já adicionado!";
+                throw new AddOrRemoveOrderItemInvalidException("Item já existe no pedido!");
             }
         } else {
-            return "Verifique os items e tente novamente!";
+            throw new AddOrRemoveOrderItemInvalidException("Verifique os items e tente novamente!");
         }
     }
 
     @Override
+    @Transactional
     public String removeItem(Order order, OrderItem item) {
 
         if(order != null && item != null) {
             if(order.getOrderItems().contains(item)) {
-                order.getOrderItems().remove(item);
+                order.getOrderItems().remove(item);  // falta salvar o novo orderitem no banco de dados
+                checkValidations(order);
+                orderRepository.save(order);
                 return "Produto removido!";
             } else {
-                return "Item não consta no carrinho!";
+                throw new AddOrRemoveOrderItemInvalidException("Item não existe no pedido!");
             }
         } else {
-            return "Verifique o item e tente novamente!";
+            throw new AddOrRemoveOrderItemInvalidException("Verifique os items e tente novamente!");
         }
     }
 
     @Override
     public String setPayment(Order order, Payment payment) {
-        return null;
-    }
 
-    @Override
-    public String changePaymentType(Order order, PaymentType paymentType) {
-        return null;
+        if (payment != null) {
+            order.setPayment(payment);
+            checkValidations(order);
+            updateOrder(order);
+            return "Pagamento alterado!"; // falta salvar o novo payment no banco de dados
+        } else {
+            throw new InvalidPaymentChangeException("O novo tipo de pagamento deve ser válido!");
+        }
     }
 
     // validations
