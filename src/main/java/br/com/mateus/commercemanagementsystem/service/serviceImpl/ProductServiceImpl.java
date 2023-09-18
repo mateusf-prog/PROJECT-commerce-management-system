@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
@@ -53,19 +54,34 @@ public class ProductServiceImpl implements ProductService {
         } else {
             checkValidations(product);
             productRepository.save(product);
-            return product
+            return product;
         }
     }
 
     @Override
     @Transactional
-    public String deleteProduct(Product product) {
-        return null;
+    public String deleteProduct(Long id) {
+
+        Optional<Product> productQuery = productRepository.findById(id);
+
+        if (productQuery.isEmpty()) {
+            throw new ProductNotFoundException("Produto não encontrado!");
+        } else {
+            productRepository.deleteById(id);
+            return "Produto deletado com sucesso!";
+        }
     }
 
     @Override
-    public Product findByName(String name) {
-        return null;
+    public List<Product> findByName(String name) {
+
+        List<Product> products = productRepository.findByName(name);
+
+        if (products.isEmpty()) {
+            throw new ProductNotFoundException("Produto não encontrado!");
+        } else {
+            return products;
+        }
     }
 
     @Override

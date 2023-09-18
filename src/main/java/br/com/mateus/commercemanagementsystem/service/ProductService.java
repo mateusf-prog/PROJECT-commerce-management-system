@@ -4,6 +4,7 @@ import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
@@ -11,8 +12,8 @@ public interface ProductService {
     Product createProduct(Product product);
     Optional<Product> findById(Long id);
     Product updateProduct(Product product);
-    String deleteProduct(Product product);
-    Product findByName(String name);
+    String deleteProduct(Long id);
+    List<Product> findByName(String name);
 
     String adjustStockQuantity(Long id, int quantity);
     Product setPrice(Long id, BigDecimal price);
