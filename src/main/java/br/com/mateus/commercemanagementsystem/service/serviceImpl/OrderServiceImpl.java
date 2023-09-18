@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
                 throw e;
             }
         } else {
-            throw new OrderNotFoundException("Order id not found!");
+            throw new OrderNotFoundException("Order ID not found!");
         }
 
         return order;
@@ -83,18 +85,38 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void addItem(Order order, OrderItem item) {
+    public String addItem(Order order, OrderItem item) {
 
+        if (order != null && item != null) {
+            if (!order.getOrderItems().contains(item)) {
+                order.getOrderItems().add(item);
+                return "Produto adicionado!";
+            } else {
+                return "Item já adicionado!";
+            }
+        } else {
+            return "Verifique os items e tente novamente!";
+        }
     }
 
     @Override
-    public void removeItem(OrderItem item) {
+    public String removeItem(Order order, OrderItem item) {
 
+        if(order != null && item != null) {
+            if(order.getOrderItems().contains(item)) {
+                order.getOrderItems().remove(item);
+                return "Produto removido!";
+            } else {
+                return "Item não consta no carrinho!";
+            }
+        } else {
+            return "Verifique o item e tente novamente!";
+        }
     }
 
     @Override
-    public void setPayment(Payment payment) {
-
+    public String setPayment(Order order, Payment payment) {
+        return null;
     }
 
     @Override

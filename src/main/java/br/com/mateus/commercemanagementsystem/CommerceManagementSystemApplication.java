@@ -48,18 +48,32 @@ public class CommerceManagementSystemApplication {
 			Payment payment = new Payment(PaymentType.BOLETO, new BigDecimal("250.00"), LocalDateTime.now(),
 					PaymentStatus.COMPLETED, null);
 
-			OrderItem orderItem = new OrderItem("Feijao", 10, new BigDecimal("10.00"), null);
+			OrderItem item = new OrderItem("Feijao", 10, new BigDecimal("10.00"), null);
+			OrderItem item1 = new OrderItem("Arroz", 10, new BigDecimal("10.00"), null);
+			OrderItem item2 = new OrderItem("Camisa", 10, new BigDecimal("10.00"), null);
+			OrderItem item3 = new OrderItem("Alface", 10, new BigDecimal("10.00"), null);
 			List<OrderItem> orderItems = new ArrayList<>();
-			orderItems.add(orderItem);
 
-			Order order = new Order(new BigDecimal("250.00"), payment, client, null, LocalDateTime.now());
-
-
+			Order order = new Order(new BigDecimal("250.00"), payment, client, orderItems, LocalDateTime.now());
 
 			//clientService.createClient(client);
+			/*orderService.addItem(order, item);
+			orderService.addItem(order, item1);
+			orderService.addItem(order, item2);
+			orderService.addItem(order, item3);
+			item.setOrder(order);
+			item1.setOrder(order);
+			item2.setOrder(order);
+			item3.setOrder(order);
 			paymentRepository.save(payment);
 			orderService.createOrder(order);
-			orderItemRepository.save(orderItem);
+			orderItemRepository.save(item);
+			orderItemRepository.save(item1);
+			orderItemRepository.save(item2);
+			orderItemRepository.save(item3);*/
+			System.out.println("----REMOVENDO ITEMS----");
+			orderService.removeItem(order, item2);
+			orderItemRepository.delete(item2);
 		};
 	}
 }

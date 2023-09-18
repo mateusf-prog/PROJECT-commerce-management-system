@@ -15,10 +15,10 @@ public interface OrderService {
     String deleteById(Long id);
     Optional<Order> findById(Long id);
 
-    void addItem(Order order, OrderItem item);
+    String addItem(Order order, OrderItem item);
+    String removeItem(Order order, OrderItem item);
 
-    void removeItem(OrderItem item);
-    void setPayment(Payment payment);
+    String setPayment(Order order, Payment payment);
     String changePaymentType(Order order,PaymentType paymentType);
 
     void checkValidations(Order order);
