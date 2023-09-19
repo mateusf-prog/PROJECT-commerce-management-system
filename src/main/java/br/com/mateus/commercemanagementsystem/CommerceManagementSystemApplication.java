@@ -88,18 +88,18 @@ public class CommerceManagementSystemApplication {
 
 
 			Product product = new Product("Notebook", new BigDecimal("2000.00"), 25, Categories.ELETRONICS);
-			Product product1 = new Product("Headset", new BigDecimal("80.00"), 95, Categories.ELETRONICS);
+			/*Product product1 = new Product("Headset", new BigDecimal("80.00"), 95, Categories.ELETRONICS);
 			Product product2 = new Product("Mousepad", new BigDecimal("50.00"), 80, Categories.ELETRONICS);
 			Product product3 = new Product("Monitor", new BigDecimal("800.00"), 50, Categories.ELETRONICS);
 			Product product4 = new Product("Smartphone", new BigDecimal("1800.00"), 30, Categories.ELETRONICS);
 
-			productService.createProduct(product);
+
 			productService.createProduct(product1);
 			productService.createProduct(product2);
 			productService.createProduct(product3);
-			productService.createProduct(product4);
+			productService.createProduct(product4);*/
+			productService.createProduct(product);
 
-			System.out.println(productService.findByName("copo"));
 
 		};
 	}

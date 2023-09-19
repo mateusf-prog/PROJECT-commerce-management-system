@@ -6,6 +6,7 @@ import br.com.mateus.commercemanagementsystem.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class OrderItemServiceImpl implements OrderItemService {
 
@@ -24,6 +25,11 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItem updateOrderItem(OrderItem item) {
+        return null;
+    }
+
+    @Override
+    public List<OrderItem> findAll() {
         return null;
     }
 
@@ -51,6 +57,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     public BigDecimal getTotalPrice(OrderItem item) {
         return null;
     }
+
+    // validations
 
     @Override
     public boolean checkStockAvailability(OrderItem item) {

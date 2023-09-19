@@ -14,11 +14,13 @@ public interface ProductService {
     Product updateProduct(Product product);
     String deleteProduct(Long id);
     List<Product> findByName(String name);
+    List<Product> findAll();
 
     String adjustStockQuantity(Long id, int quantity);
-    Product setPrice(Long id, BigDecimal price);
+    String setPrice(Long id, BigDecimal price);
 
-    Product setCategory(Product product, Categories category);
+    Categories parseCategory(String categoryString);
+    void validateCategory(String category);
 
     void checkValidations(Product product);
 }

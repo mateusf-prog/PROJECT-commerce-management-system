@@ -25,6 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
         try {
             checkValidations(product);
+            validateCategory(product.getCategory().toString());
             productRepository.save(product);
         } catch (Exception e) {
             throw e;
@@ -56,6 +57,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             try {
                 checkValidations(product);
+                validateCategory(product.getCategory().toString());
                 productRepository.save(product);
             } catch (Exception e) {
                 throw e;
@@ -92,18 +94,62 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> findAll() {
+
+        return productRepository.findAll();
+    }
+
+    @Override
+    @Transactional
     public String adjustStockQuantity(Long id, int quantity) {
-        return null;
+
+        Optional<Product> productQuery = productRepository.findById(id);
+
+        if (productQuery.isEmpty()) {
+            throw new ProductNotFoundException("Produto não encontrado!");
+        } else if (quantity < 0) {
+            throw new InvalidQuantityStockProductException("Quantidade inválida!");
+        } else {
+            productQuery.get().setQuantity(quantity);
+            updateProduct(productQuery.get());
+            return "Quantidade em estoque atualizada!";
+        }
     }
 
     @Override
-    public Product setPrice(Long id, BigDecimal price) {
-        return null;
+    @Transactional
+    public String setPrice(Long id, BigDecimal price) {
+
+        Optional<Product> productQuery = productRepository.findById(id);
+
+        if (productQuery.isEmpty()) {
+            throw new ProductNotFoundException("Produto não encontrado!");
+        } else if (price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidPriceProductException("Preço inválido!");
+        } else {
+            productQuery.get().setPrice(price);
+            updateProduct(productQuery.get());
+            return "Preço atualizado!";
+        }
     }
 
     @Override
-    public Product setCategory(Product product, Categories category) {
-        return null;
+    public Categories parseCategory(String categoryString) {
+        try {
+            return Categories.valueOf(categoryString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCategoryProductException("Categoria inexistente!");
+        }
+    }
+
+    @Override
+    public void validateCategory(String category) {
+
+        Categories parsedCategory = parseCategory(category);
+
+        if (parsedCategory == null) {
+            throw new InvalidCategoryProductException("Categoria inválida!");
+        }
     }
 
     @Override
