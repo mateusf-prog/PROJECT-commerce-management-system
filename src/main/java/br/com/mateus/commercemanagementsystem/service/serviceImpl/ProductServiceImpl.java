@@ -7,11 +7,13 @@ import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.service.ProductService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
@@ -52,10 +54,15 @@ public class ProductServiceImpl implements ProductService {
         if (productQuery.isEmpty()) {
             throw new ProductNotFoundException("Produto não encontrado!");
         } else {
-            checkValidations(product);
-            productRepository.save(product);
-            return product;
+            try {
+                checkValidations(product);
+                productRepository.save(product);
+            } catch (Exception e) {
+                throw e;
+            }
         }
+
+        return product;
     }
 
     @Override

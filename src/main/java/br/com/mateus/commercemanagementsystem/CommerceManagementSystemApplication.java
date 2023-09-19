@@ -7,6 +7,7 @@ import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.service.ClientService;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ClientServiceImpl;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderServiceImpl;
+import br.com.mateus.commercemanagementsystem.service.serviceImpl.ProductServiceImpl;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -37,7 +38,8 @@ public class CommerceManagementSystemApplication {
 
 	@Bean
     public CommandLineRunner myCommandLineRunner (OrderServiceImpl orderService, ClientService clientService,
-												  PaymentRepository paymentRepository, OrderItemRepository orderItemRepository) {
+												  PaymentRepository paymentRepository, OrderItemRepository orderItemRepository,
+												  ProductServiceImpl productService) {
         return (args) -> {
 
 			DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -59,7 +61,7 @@ public class CommerceManagementSystemApplication {
 			payment.setOrder(order);
 
 			//clientService.createClient(client);
-			orderService.addItem(order, item);
+			/*orderService.addItem(order, item);
 			orderService.addItem(order, item1);
 			orderService.addItem(order, item2);
 			orderService.addItem(order, item3);
@@ -82,7 +84,23 @@ public class CommerceManagementSystemApplication {
 
 			System.out.println("----REMOVENDO ITEMS----");
 			orderService.removeItem(order, item2);
-			orderItemRepository.delete(item2);
+			orderItemRepository.delete(item2);*/
+
+
+			Product product = new Product("Notebook", new BigDecimal("2000.00"), 25, Categories.ELETRONICS);
+			Product product1 = new Product("Headset", new BigDecimal("80.00"), 95, Categories.ELETRONICS);
+			Product product2 = new Product("Mousepad", new BigDecimal("50.00"), 80, Categories.ELETRONICS);
+			Product product3 = new Product("Monitor", new BigDecimal("800.00"), 50, Categories.ELETRONICS);
+			Product product4 = new Product("Smartphone", new BigDecimal("1800.00"), 30, Categories.ELETRONICS);
+
+			productService.createProduct(product);
+			productService.createProduct(product1);
+			productService.createProduct(product2);
+			productService.createProduct(product3);
+			productService.createProduct(product4);
+
+			System.out.println(productService.findByName("copo"));
+
 		};
 	}
 }
