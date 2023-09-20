@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderItemService {
 
-    OrderItem createOrderItem(OrderItem item);
+    String createOrderItem(OrderItem item);
     OrderItem readOrderItem(OrderItem item);
     OrderItem updateOrderItem(OrderItem item);
     List<OrderItem> findAll();
@@ -21,7 +21,9 @@ public interface OrderItemService {
 
     int verifyQuantityStockAvailability(OrderItem item);
 
-    boolean validateQuantityItem(OrderItem item);
+    boolean validateQuantityInStock(OrderItem item);
     boolean validatePrice(OrderItem item);
     boolean validateName(OrderItem item);
+
+    boolean checkAllValidates(OrderItem item);
 }

@@ -122,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByName(name);
 
         if (product == null) {
-            throw new ProductNotFoundException("Produto não encontrado!");
+            throw new ProductNotFoundException("Nenhum produto encontrado com o nome especificado!");
         } else {
             return product.getQuantity();
         }
