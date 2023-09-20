@@ -6,6 +6,7 @@ import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.service.ClientService;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ClientServiceImpl;
+import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderItemServiceImpl;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderServiceImpl;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ProductServiceImpl;
 import org.springframework.boot.CommandLineRunner;
@@ -39,7 +40,7 @@ public class CommerceManagementSystemApplication {
 	@Bean
     public CommandLineRunner myCommandLineRunner (OrderServiceImpl orderService, ClientService clientService,
 												  PaymentRepository paymentRepository, OrderItemRepository orderItemRepository,
-												  ProductServiceImpl productService) {
+												  ProductServiceImpl productService, OrderItemServiceImpl orderItemService) {
         return (args) -> {
 
 			DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -98,9 +99,10 @@ public class CommerceManagementSystemApplication {
 			productService.createProduct(product2);
 			productService.createProduct(product3);
 			productService.createProduct(product4);*/
-			productService.createProduct(product);
 
+			OrderItem newItem = new OrderItem("Notebook", 0, product.getPrice(), order);
 
+			System.out.println(orderItemService.validatePrice(newItem));
 		};
 	}
 }

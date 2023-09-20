@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.service;
 
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
+import br.com.mateus.commercemanagementsystem.service.serviceImpl.ProductServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,9 +18,10 @@ public interface OrderItemService {
     void setPrice(OrderItem item, BigDecimal price);
 
     BigDecimal calculateTotalPrice(OrderItem item);
-    BigDecimal getTotalPrice(OrderItem item);
 
-    boolean checkStockAvailability(OrderItem item);
+    int verifyQuantityStockAvailability(OrderItem item);
+
     boolean validateQuantityItem(OrderItem item);
     boolean validatePrice(OrderItem item);
+    boolean validateName(OrderItem item);
 }

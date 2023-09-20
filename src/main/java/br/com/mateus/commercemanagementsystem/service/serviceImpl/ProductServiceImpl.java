@@ -82,14 +82,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findByName(String name) {
+    public Product findByName(String name) {
 
-        List<Product> products = productRepository.findByName(name);
+        Product product = productRepository.findByName(name);
 
-        if (products.isEmpty()) {
+        if (product == null) {
             throw new ProductNotFoundException("Produto não encontrado!");
         } else {
-            return products;
+            return product;
         }
     }
 
@@ -113,6 +113,18 @@ public class ProductServiceImpl implements ProductService {
             productQuery.get().setQuantity(quantity);
             updateProduct(productQuery.get());
             return "Quantidade em estoque atualizada!";
+        }
+    }
+
+    @Override
+    public int checkQuantityStockAvailability(String name) {
+
+        Product product = productRepository.findByName(name);
+
+        if (product == null) {
+            throw new ProductNotFoundException("Produto não encontrado!");
+        } else {
+            return product.getQuantity();
         }
     }
 

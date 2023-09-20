@@ -13,9 +13,10 @@ public interface ProductService {
     Optional<Product> findById(Long id);
     Product updateProduct(Product product);
     String deleteProduct(Long id);
-    List<Product> findByName(String name);
+    Product findByName(String name);
     List<Product> findAll();
 
+    int checkQuantityStockAvailability(String name);
     String adjustStockQuantity(Long id, int quantity);
     String setPrice(Long id, BigDecimal price);
 
