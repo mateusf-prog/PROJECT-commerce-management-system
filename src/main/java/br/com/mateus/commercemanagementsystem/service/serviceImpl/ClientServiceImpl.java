@@ -1,29 +1,29 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
-import br.com.mateus.commercemanagementsystem.exceptions.client.ClientAlreadyExistsException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNoHasOrdersException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.InvalidClientDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.model.Order;
-import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;
 import br.com.mateus.commercemanagementsystem.service.ClientService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
+
+    public ClientServiceImpl(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     @Override
     @Transactional
@@ -39,7 +39,6 @@ public class ClientServiceImpl implements ClientService {
          }
     }
 
-
     @Override
     @Transactional
     public Client createClient(Client client) {
@@ -47,15 +46,14 @@ public class ClientServiceImpl implements ClientService {
         Client queryClient = clientRepository.findByCpf(client.getCpf());
 
         if (isClientDataValid(client)) {
-            throw new InvalidClientDataException("Dados inválidos. Verifique os dados e tente novamente!");
+            throw new EntityInvalidDataException("Dados inválidos. Verifique os dados e tente novamente!");
         } else if (queryClient != null) {
-            throw new ClientAlreadyExistsException("CPF já cadastrado!");
+            throw new EntityAlreadyExistsException("CPF já cadastrado!");
         }
 
         clientRepository.save(client);
         return client;
     }
-
 
     @Override
     @Transactional
@@ -111,9 +109,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public String formatBirthdate(LocalDate birthdate) {
+    public LocalDate formatBirthdate(String birthdateString) {
+
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return fmt.format(birthdate);
+        return LocalDate.parse(birthdateString, fmt);
     }
 
     // validations methods

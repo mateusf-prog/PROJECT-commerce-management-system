@@ -19,10 +19,10 @@ public interface ClientService {
 
     List<Order> findOrdersByClientCpf(String cpf);
 
+    LocalDate formatBirthdate(String birthdate);
+
     boolean validateClientName(Client client);
     boolean validateClientPhoneNumber(Client client);
     boolean validateClientCpfNumber(Client client);
     boolean validateClientBirthdate(Client client);
-
-    String formatBirthdate(LocalDate birthdate);
 }

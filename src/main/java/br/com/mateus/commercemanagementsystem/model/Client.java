@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class Client {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
 
