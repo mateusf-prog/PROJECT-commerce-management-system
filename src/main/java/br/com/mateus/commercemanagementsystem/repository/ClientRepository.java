@@ -5,10 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import br.com.mateus.commercemanagementsystem.model.Client;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, String> {
 
     List<Client> findByName(String name);
 
-    Client findByCpf(String cpf);
+    Optional<Client> findByCpf(String cpf);
 }

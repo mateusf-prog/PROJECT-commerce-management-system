@@ -4,10 +4,7 @@ import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -19,6 +16,24 @@ public class ClientController {
     @PostMapping("/clients")
     public ResponseEntity<Client> createClient(@RequestBody Client client) {
         clientService.createClient(client);
+        return ResponseEntity.ok().body(client);
+    }
+
+    @PutMapping("/clients")
+    public ResponseEntity<Client> updateClient(@RequestBody Client client) {
+        clientService.updateClient(client);
+        return ResponseEntity.ok().body(client);
+    }
+
+    @DeleteMapping("/clients/{id}")
+    public ResponseEntity<String> deleteClient(@PathVariable String id) {
+        clientService.deleteByCpf(id);
+        return ResponseEntity.ok().body("Deletado com sucesso!");
+    }
+
+    @GetMapping("/clients/{id}")
+    public ResponseEntity<Client> findByCpf(@PathVariable String id) {
+        Client client = clientService.findByCpf(id);
         return ResponseEntity.ok().body(client);
     }
 }

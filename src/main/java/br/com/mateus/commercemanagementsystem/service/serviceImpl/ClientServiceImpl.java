@@ -2,6 +2,8 @@ package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNoHasOrdersException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.InvalidClientDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNotFoundException;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -29,25 +32,27 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public Client updateClient(Client client) {
 
-         if (isClientDataValid(client)) {
-             throw new InvalidClientDataException("Dados inválidos. Verifique os dados e tente novamente!");
-         } else if (clientRepository.findByCpf(client.getCpf()) == null) {
-             throw new ClientNotFoundException("Cliente não encontrado!");
-         } else {
-             clientRepository.save(client);
-             return client;
+        Optional<Client> queryClient = clientRepository.findByCpf(client.getCpf());
+
+         if (queryClient.isEmpty()) {
+             throw new EntityNotFoundException("Cliente não encontrado!");
+         } else if (isClientDataValid(client)) {
+             throw new EntityInvalidDataException("Dados inválidos. Verifique os dados e tente novamente!");
          }
+
+         clientRepository.save(client);
+         return client;
     }
 
     @Override
     @Transactional
     public Client createClient(Client client) {
 
-        Client queryClient = clientRepository.findByCpf(client.getCpf());
+        Optional<Client> queryClient = clientRepository.findByCpf(client.getCpf());
 
         if (isClientDataValid(client)) {
             throw new EntityInvalidDataException("Dados inválidos. Verifique os dados e tente novamente!");
-        } else if (queryClient != null) {
+        } else if (queryClient.isPresent()) {
             throw new EntityAlreadyExistsException("CPF já cadastrado!");
         }
 
@@ -57,28 +62,25 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public String deleteByCpf(String cpf) {
+    public void deleteByCpf(String cpf) {
 
-        Client client = clientRepository.findByCpf(cpf);
+        Optional<Client> client = clientRepository.findByCpf(cpf);
 
-        if (client == null) {
-            throw new ClientNotFoundException("Cliente não encontrado!");
-        } else {
-            clientRepository.delete(client);
-            return "Cliente deletado com sucesso!";
+        if (client.isEmpty()) {
+            throw new EntityNotFoundException("Cliente não encontrado!");
         }
+        clientRepository.delete(client.get());
     }
 
     @Override
     public Client findByCpf(String cpf) {
 
-        Client client = clientRepository.findByCpf(cpf);
+        Optional<Client> queryClient = clientRepository.findByCpf(cpf);
 
-        if (client == null) {
-            throw new ClientNotFoundException("Cliente não encontrado!");
-        } else {
-            return client;
+        if (queryClient.isEmpty()) {
+            throw new EntityNotFoundException("Cliente não encontrado!");
         }
+        return queryClient.get();
     }
 
     @Override
@@ -97,23 +99,17 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Order> findOrdersByClientCpf(String cpf) {
 
-        Client client = clientRepository.findByCpf(cpf);
+        Optional<Client> client = clientRepository.findByCpf(cpf);
 
-        if (client == null) {
-            throw new ClientNotFoundException("Cliente não encontrado!");
-        } else if (client.getOrders().isEmpty()) {
-            throw new ClientNoHasOrdersException("Cliente não possui nenhum pedido!");
-        } else {
-            return client.getOrders();
+        if (client.isEmpty()) {
+            throw new EntityNotFoundException("Cliente não encontrado!");
+        } else if (client.get().getOrders().isEmpty()) {
+            throw new EntityMissingDependencyException("Cliente não possui nenhum pedido!");
         }
+
+        return client.get().getOrders();
     }
 
-    @Override
-    public LocalDate formatBirthdate(String birthdateString) {
-
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return LocalDate.parse(birthdateString, fmt);
-    }
 
     // validations methods
 

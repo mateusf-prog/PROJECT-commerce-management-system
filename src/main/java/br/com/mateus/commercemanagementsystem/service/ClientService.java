@@ -13,13 +13,11 @@ public interface ClientService {
 
     Client updateClient(Client client);
     Client createClient(Client client);
-    String deleteByCpf(String cpf);
+    void deleteByCpf(String cpf);
     Client findByCpf(String cpf);
     List<Client> findByName(String name);
 
     List<Order> findOrdersByClientCpf(String cpf);
-
-    LocalDate formatBirthdate(String birthdate);
 
     boolean validateClientName(Client client);
     boolean validateClientPhoneNumber(Client client);
