@@ -6,12 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class ClientController {
 
-    @Autowired
-    private ClientServiceImpl clientService;
+    private final ClientServiceImpl clientService;
+
+    public ClientController(ClientServiceImpl clientService) {
+        this.clientService = clientService;
+    }
 
     @PostMapping("/clients")
     public ResponseEntity<Client> createClient(@RequestBody Client client) {
@@ -35,5 +40,11 @@ public class ClientController {
     public ResponseEntity<Client> findByCpf(@PathVariable String id) {
         Client client = clientService.findByCpf(id);
         return ResponseEntity.ok().body(client);
+    }
+
+    @GetMapping("/clients/byName/{name}")
+    public ResponseEntity<List<Client>> findByName(@PathVariable String name) {
+        List<Client> list = clientService.findByName(name);
+        return ResponseEntity.ok().body(list);
     }
 }

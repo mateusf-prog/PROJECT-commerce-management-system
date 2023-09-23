@@ -89,10 +89,9 @@ public class ClientServiceImpl implements ClientService {
         List<Client> results = clientRepository.findByName(name);
 
         if (results.isEmpty()) {
-            throw new ClientNotFoundException("Nenhum resultado encontrado!");
-        } else {
-            return results;
+            throw new EntityNotFoundException("Nenhum resultado encontrado!");
         }
+        return results;
     }
 
 
