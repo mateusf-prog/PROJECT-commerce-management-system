@@ -1,5 +1,9 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.exceptions.product.*;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
@@ -23,14 +27,12 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product createProduct(Product product) {
 
-        try {
+        if (productRepository.findById(product.getId()).isPresent()) {
+            throw new EntityAlreadyExistsException("Produto já existe!");
+        } else {
             checkValidations(product);
-            validateCategory(product.getCategory().toString());
             productRepository.save(product);
-        } catch (Exception e) {
-            throw e;
         }
-
         return product;
     }
 
@@ -57,7 +59,6 @@ public class ProductServiceImpl implements ProductService {
         } else {
             try {
                 checkValidations(product);
-                validateCategory(product.getCategory().toString());
                 productRepository.save(product);
             } catch (Exception e) {
                 throw e;
@@ -74,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productQuery = productRepository.findById(id);
 
         if (productQuery.isEmpty()) {
-            throw new ProductNotFoundException("Produto não encontrado!");
+            throw new EntityNotFoundException("Produto não encontrado!");
         } else {
             productRepository.deleteById(id);
             return "Produto deletado com sucesso!";
@@ -87,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByName(name);
 
         if (product == null) {
-            throw new ProductNotFoundException("Produto não encontrado!");
+            throw new EntityNotFoundException("Produto não encontrado!");
         } else {
             return product;
         }
@@ -106,9 +107,9 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productQuery = productRepository.findById(id);
 
         if (productQuery.isEmpty()) {
-            throw new ProductNotFoundException("Produto não encontrado!");
+            throw new EntityNotFoundException("Produto não encontrado!");
         } else if (quantity < 0) {
-            throw new InvalidQuantityStockProductException("Quantidade inválida!");
+            throw new EntityInvalidDataException("Quantidade inválida!");
         } else {
             productQuery.get().setQuantity(quantity);
             updateProduct(productQuery.get());
@@ -122,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByName(name);
 
         if (product == null) {
-            throw new ProductNotFoundException("Nenhum produto encontrado com o nome especificado!");
+            throw new EntityNotFoundException("Nenhum produto encontrado com o nome especificado!");
         } else {
             return product.getQuantity();
         }
@@ -135,9 +136,9 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productQuery = productRepository.findById(id);
 
         if (productQuery.isEmpty()) {
-            throw new ProductNotFoundException("Produto não encontrado!");
+            throw new EntityNotFoundException("Produto não encontrado!");
         } else if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidPriceProductException("Preço inválido!");
+            throw new EntityInvalidDataException("Preço inválido!");
         } else {
             productQuery.get().setPrice(price);
             updateProduct(productQuery.get());
@@ -146,38 +147,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Categories parseCategory(String categoryString) {
-        try {
-            return Categories.valueOf(categoryString.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidCategoryProductException("Categoria inexistente!");
-        }
-    }
-
-    @Override
-    public void validateCategory(String category) {
-
-        Categories parsedCategory = parseCategory(category);
-
-        if (parsedCategory == null) {
-            throw new InvalidCategoryProductException("Categoria inválida!");
-        }
-    }
-
-    @Override
     public void checkValidations(Product product) {
 
         if (product.getName().isBlank() || product.getName().length() < 4) {
-            throw new InvalidNameProductException("Nome inválido!");
+            throw new EntityInvalidDataException("Nome inválido!");
         }
         if (product.getCategory() == null) {
-            throw new InvalidCategoryProductException("A categoria do produto não pode ser vazia!");
+            throw new EntityMissingDependencyException("A categoria do produto deve ser válida!");
         }
         if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidPriceProductException("O preço do produto deve ser válido!");
+            throw new EntityInvalidDataException("O preço do produto deve ser válido!");
         }
         if (product.getQuantity() < 0) {
-            throw new InvalidQuantityStockProductException("A quantidade em estoque deve ser válida!");
+            throw new EntityInvalidDataException("A quantidade em estoque deve ser válida!");
         }
     }
 }

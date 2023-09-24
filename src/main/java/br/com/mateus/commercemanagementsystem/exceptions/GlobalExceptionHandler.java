@@ -38,4 +38,12 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(400).body(error);
     }
+
+    @ExceptionHandler(EntityInvalidCategoryException.class)
+    public ResponseEntity<StandardError> invalidCategoryException(EntityInvalidCategoryException exc) {
+
+        StandardError error = new StandardError(exc.getMessage(), 400);
+
+        return ResponseEntity.status(400).body(error);
+    }
 }

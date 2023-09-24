@@ -20,8 +20,5 @@ public interface ProductService {
     String adjustStockQuantity(Long id, int quantity);
     String setPrice(Long id, BigDecimal price);
 
-    Categories parseCategory(String categoryString);
-    void validateCategory(String category);
-
     void checkValidations(Product product);
 }

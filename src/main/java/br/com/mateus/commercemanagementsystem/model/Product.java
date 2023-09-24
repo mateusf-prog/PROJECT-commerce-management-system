@@ -15,7 +15,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "code", unique = true)
+    @Column(name = "code")
     private Long id;
 
     @Column(name = "name", nullable = false)
