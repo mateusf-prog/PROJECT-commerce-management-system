@@ -12,8 +12,8 @@ public interface ProductService {
     Product createProduct(Product product);
     Optional<Product> findById(Long id);
     Product updateProduct(Product product);
-    String deleteProduct(Long id);
-    Product findByName(String name);
+    void deleteProduct(Long id);
+    Optional<Product> findByName(String name);
     List<Product> findAll();
 
     int checkQuantityStockAvailability(String name);

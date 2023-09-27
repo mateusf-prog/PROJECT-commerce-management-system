@@ -27,9 +27,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product createProduct(Product product) {
 
-        Product queryProduct = productRepository.findByName(product.getName());
+        Optional<Product> queryProduct = productRepository.findByName(product.getName());
 
-        if (queryProduct != null) {
+        if (queryProduct.isPresent()) {
             throw new EntityAlreadyExistsException("Produto já existe!");
         }
 
@@ -57,43 +57,35 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productQuery = productRepository.findById(product.getId());
 
         if (productQuery.isEmpty()) {
-            throw new ProductNotFoundException("Produto não encontrado!");
-        } else {
-            try {
-                checkValidations(product);
-                productRepository.save(product);
-            } catch (Exception e) {
-                throw e;
-            }
+            throw new EntityNotFoundException("Produto não encontrado!");
         }
 
+        checkValidations(product);
+        productRepository.save(product);
         return product;
     }
 
     @Override
     @Transactional
-    public String deleteProduct(Long id) {
+    public void deleteProduct(Long id) {
 
         Optional<Product> productQuery = productRepository.findById(id);
 
         if (productQuery.isEmpty()) {
             throw new EntityNotFoundException("Produto não encontrado!");
-        } else {
-            productRepository.deleteById(id);
-            return "Produto deletado com sucesso!";
         }
+
+        productRepository.deleteById(id);
     }
 
     @Override
-    public Product findByName(String name) {
+    public Optional<Product> findByName(String name) {
 
-        Product product = productRepository.findByName(name);
-
-        if (product == null) {
+        Optional<Product> product = productRepository.findByName(name);
+        if (product.isEmpty()) {
             throw new EntityNotFoundException("Produto não encontrado!");
-        } else {
-            return product;
         }
+        return product;
     }
 
     @Override
@@ -128,12 +120,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public int checkQuantityStockAvailability(String name) {
 
-        Product product = productRepository.findByName(name);
+        Optional<Product> product = productRepository.findByName(name);
 
-        if (product == null) {
+        if (product.isEmpty()) {
             throw new EntityNotFoundException("Nenhum produto encontrado com o nome especificado!");
         } else {
-            return product.getQuantity();
+            return product.get().getQuantity();
         }
     }
 

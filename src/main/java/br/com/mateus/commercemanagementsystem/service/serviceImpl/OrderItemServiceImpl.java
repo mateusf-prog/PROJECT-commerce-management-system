@@ -33,8 +33,8 @@ public class OrderItemServiceImpl implements OrderItemService {
             checkAllValidates(item);
             verifyQuantityStockAvailability(item);
             orderItemRepository.save(item);
-            Product product = productService.findByName(item.getProductName());
-            productService.adjustStockQuantity(product.getId(), product.getQuantity() - item.getQuantity());
+            Optional<Product> product = productService.findByName(item.getProductName());
+            productService.adjustStockQuantity(product.get().getId(), product.get().getQuantity() - item.getQuantity());
         } catch (Exception e) {
             throw e;
         }

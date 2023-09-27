@@ -24,9 +24,21 @@ public class ProductController {
         return ResponseEntity.ok().body(product);
     }
 
+    @PutMapping("/products")
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+        productService.updateProduct(product);
+        return ResponseEntity.ok().body(product);
+    }
+
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
         Optional<Product> product = productService.findById(id);
+        return ResponseEntity.ok().body(product.get());
+    }
+
+    @GetMapping("/products/name/{name}")
+    public ResponseEntity<Product> findByName(@PathVariable String name) {
+        Optional<Product> product = productService.findByName(name);
         return ResponseEntity.ok().body(product.get());
     }
 
@@ -34,5 +46,11 @@ public class ProductController {
     public ResponseEntity<List<Product>> findAll() {
         List<Product> products = productService.findAll();
         return ResponseEntity.ok().body(products);
+    }
+
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().body("Produto deletado com sucesso \n- ID " + id);
     }
 }
