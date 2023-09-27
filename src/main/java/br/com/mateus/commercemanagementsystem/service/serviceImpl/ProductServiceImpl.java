@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> product = productRepository.findById(id);
 
         if(product.isEmpty()) {
-            throw new ProductNotFoundException("Produto não encontrado!");
+            throw new EntityNotFoundException("Produto não encontrado!");
         } else {
             return product;
         }
@@ -99,7 +99,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAll() {
 
-        return productRepository.findAll();
+        List<Product> products = productRepository.findAll();
+
+        if(products.isEmpty()) {
+            throw new EntityNotFoundException("Lista vazia!");
+        }
+
+        return products;
     }
 
     @Override
