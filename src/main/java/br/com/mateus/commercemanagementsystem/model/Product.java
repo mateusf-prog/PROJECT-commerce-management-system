@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,7 +16,6 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "code")
     private Long id;
 
     @Column(name = "name", nullable = false)

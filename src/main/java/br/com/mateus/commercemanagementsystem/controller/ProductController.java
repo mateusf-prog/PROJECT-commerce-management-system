@@ -1,7 +1,6 @@
 package br.com.mateus.commercemanagementsystem.controller;
 
 import br.com.mateus.commercemanagementsystem.model.Product;
-import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ProductServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

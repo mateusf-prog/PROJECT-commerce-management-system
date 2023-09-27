@@ -27,12 +27,14 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product createProduct(Product product) {
 
-        if (productRepository.findById(product.getId()).isPresent()) {
+        Product queryProduct = productRepository.findByName(product.getName());
+
+        if (queryProduct != null) {
             throw new EntityAlreadyExistsException("Produto já existe!");
-        } else {
-            checkValidations(product);
-            productRepository.save(product);
         }
+
+        checkValidations(product);
+        productRepository.save(product);
         return product;
     }
 
