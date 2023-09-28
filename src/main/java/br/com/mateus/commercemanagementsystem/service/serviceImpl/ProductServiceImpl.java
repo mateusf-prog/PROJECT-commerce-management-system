@@ -110,11 +110,11 @@ public class ProductServiceImpl implements ProductService {
             throw new EntityNotFoundException("Produto não encontrado!");
         } else if (quantity < 0) {
             throw new EntityInvalidDataException("Quantidade inválida!");
-        } else {
-            productQuery.get().setQuantity(quantity);
-            updateProduct(productQuery.get());
-            return "Quantidade em estoque atualizada!";
         }
+
+        productQuery.get().setQuantity(quantity);
+        updateProduct(productQuery.get());
+        return "Quantidade em estoque atualizada!";
     }
 
     @Override

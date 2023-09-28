@@ -1,8 +1,7 @@
-package br.com.mateus.commercemanagementsystem.controller;
+package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ClientServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +32,7 @@ public class ClientController {
     @DeleteMapping("/clients/{id}")
     public ResponseEntity<String> deleteClient(@PathVariable String id) {
         clientService.deleteByCpf(id);
-        return ResponseEntity.ok().body("Deletado com sucesso!");
+        return ResponseEntity.ok().body("Cliente deletado com sucesso. \n - ID " + id);
     }
 
     @GetMapping("/clients/{id}")

@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.orderItem.InvalidOrderItemNameException;
 import br.com.mateus.commercemanagementsystem.exceptions.orderItem.InvalidPriceOrderItemException;
 import br.com.mateus.commercemanagementsystem.exceptions.orderItem.InvalidQuantityOrderItemException;
@@ -111,7 +112,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     public boolean validateQuantityInStock(OrderItem item) {
 
         if(item.getQuantity() <= 0) {
-            throw new InvalidQuantityOrderItemException("Quantidade inválida!");
+            throw new EntityInvalidDataException("Quantidade inválida!");
         } else {
             return false;
         }
@@ -121,7 +122,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     public boolean validatePrice(OrderItem item) {
 
         if(item.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidPriceOrderItemException("Preço inválido!");
+            throw new EntityInvalidDataException("Preço inválido!");
         } else {
             return false;
         }
@@ -131,7 +132,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     public boolean validateName(OrderItem item) {
 
         if(item.getProductName().isBlank() || item.getProductName().length() < 3) {
-            throw new InvalidOrderItemNameException("Nome inválido!");
+            throw new EntityInvalidDataException("Nome inválido!");
         } else {
             return false;
         }

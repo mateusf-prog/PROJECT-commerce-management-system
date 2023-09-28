@@ -18,6 +18,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     @Column(name = "id")
     private Long id;
 
@@ -30,7 +31,6 @@ public class Order {
     // define relationships
 
     @ManyToOne
-    @Setter(AccessLevel.NONE)
     private Client client;
 
     @OneToOne
@@ -50,6 +50,10 @@ public class Order {
         this.client = client;
         this.orderItems = orderItems;
         this.date = date;
+    }
+
+    public Order(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     @Override

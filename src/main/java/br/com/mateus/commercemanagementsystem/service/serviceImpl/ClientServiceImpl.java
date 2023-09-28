@@ -109,7 +109,6 @@ public class ClientServiceImpl implements ClientService {
         return client.get().getOrders();
     }
 
-
     // validations methods
 
     public boolean isClientDataValid(Client client) {

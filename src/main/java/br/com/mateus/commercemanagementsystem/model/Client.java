@@ -29,6 +29,9 @@ public class Client {
     @Column(name = "phoneNumber", nullable = false)
     private String phoneNumber;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "address", nullable = false)
     private String address;
 
@@ -41,29 +44,12 @@ public class Client {
     public Client() {
     }
 
-    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String address) {
+    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String address, String email) {
         this.name = name;
         this.birthdate = birthdate;
         this.cpf = cpf;
         this.phoneNumber = phoneNumber;
         this.address = address;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Client [")
-                .append("cpf=").append(cpf)
-                .append(", name=").append(name)
-                .append(", birthdate=").append(birthdate)
-                .append(", phoneNumber=").append(phoneNumber)
-                .append(", address=").append(address)
-                .append("]\n");
-
-        sb.append("Orders:\n");
-        for (Order order : orders) {
-            sb.append(order).append("\n");
-        }
-        return sb.toString();
+        this.email = email;
     }
 }

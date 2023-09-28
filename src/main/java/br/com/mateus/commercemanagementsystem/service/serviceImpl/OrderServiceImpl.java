@@ -1,144 +1,131 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.exceptions.order.*;
+import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Payment;
+import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final ClientServiceImpl clientService;
+    private final OrderItemServiceImpl orderItemService;
+    private final PaymentServiceImpl paymentService;
+
+    public OrderServiceImpl(OrderRepository orderRepository, ClientServiceImpl clientService,
+                            OrderItemServiceImpl orderItemService, PaymentServiceImpl paymentService) {
+        this.orderRepository = orderRepository;
+        this.clientService = clientService;
+        this.orderItemService = orderItemService;
+        this.paymentService = paymentService;
+    }
+
 
     @Override
     @Transactional
-    public Order createOrder(Order order) {
+    public OrderDTO createOrder(OrderDTO orderDTO) {
 
-        try {
-            checkValidations(order);
-            orderRepository.save(order);
-        } catch (Exception e) {
-            throw e;
+        checkValidations(orderDTO);
+
+        Client client = clientService.findByCpf(orderDTO.getClientCpf());
+        if(client == null) {
+            throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
-        return order;
+        for (OrderItem orderItem : orderDTO.getOrderItems()) {
+            orderItemService.checkAllValidates(orderItem);
+        }
+
+        List<OrderItem> orderItems = orderDTO.getOrderItems();
+
+        // instantiating objects
+        Order order = new Order(orderItems);
+        order.setDate(LocalDateTime.now());
+        order.setTotalValue(calculateTotalPrice(orderDTO));
+        order.setClient(client);
+
+        Payment payment = new Payment();
+        payment.setOrder(order);
+        payment.setPaymentType(orderDTO.getPaymentType());
+        payment.setValue(calculateTotalPrice(orderDTO));
+        payment.setDate(order.getDate());
+        payment.setStatus(PaymentStatus.PENDING);
+
+        paymentService.createPayment(payment);
+        order.setPayment(payment);
+        orderRepository.save(order);
+        return orderDTO;
     }
 
     @Override
-    @Transactional
     public Order updateOrder(Order order) {
-
-        Optional<Order> orderQuery = findById(order.getId());
-
-        if (orderQuery.isPresent()) {
-            try {
-                checkValidations(order);
-                orderRepository.save(order);
-            } catch (Exception e) {
-                throw e;
-            }
-        } else {
-            throw new OrderNotFoundException("Order ID not found!");
-        }
-
-        return order;
+        return null;
     }
 
     @Override
-    @Transactional
     public String deleteById(Long id) {
-
-        Optional<Order> order = findById(id);
-
-        if (order.isEmpty()) {
-            throw new OrderNotFoundException("Order not found!");
-        } else {
-            orderRepository.deleteById(id);
-            return "Order deleted!";
-        }
+        return null;
     }
 
     @Override
     public Optional<Order> findById(Long id) {
-
-        Optional<Order> order = orderRepository.findById(id);
-
-        if (order.isEmpty()) {
-            throw new OrderNotFoundException("Order not found!");
-        } else {
-            return order;
-        }
+        return Optional.empty();
     }
 
     @Override
-    @Transactional
     public String addItem(Order order, OrderItem item) {
-
-        if (order != null && item != null) {
-            if (!order.getOrderItems().contains(item)) {
-                order.getOrderItems().add(item);
-                checkValidations(order);
-                orderRepository.save(order);
-                return "Produto adicionado!"; // falta salvar o novo orderitem no banco de dados
-            } else {
-                throw new AddOrRemoveOrderItemInvalidException("Item já existe no pedido!");
-            }
-        } else {
-            throw new AddOrRemoveOrderItemInvalidException("Verifique os items e tente novamente!");
-        }
+        return null;
     }
 
     @Override
-    @Transactional
-    public String removeItem(Order order, OrderItem item) {
-
-        if(order != null && item != null) {
-            if(order.getOrderItems().contains(item)) {
-                order.getOrderItems().remove(item);  // falta salvar o novo orderitem no banco de dados
-                checkValidations(order);
-                orderRepository.save(order);
-                return "Produto removido!";
-            } else {
-                throw new AddOrRemoveOrderItemInvalidException("Item não existe no pedido!");
-            }
-        } else {
-            throw new AddOrRemoveOrderItemInvalidException("Verifique os items e tente novamente!");
-        }
+    public String removeItem(OrderDTO order, OrderItem item) {
+        return null;
     }
 
     @Override
     public String setPayment(Order order, Payment payment) {
+        return null;
+    }
 
-        if (payment != null) {
-            order.setPayment(payment);
-            checkValidations(order);
-            updateOrder(order);
-            return "Pagamento alterado!"; // falta salvar o novo payment no banco de dados
-        } else {
-            throw new InvalidPaymentChangeException("O novo tipo de pagamento deve ser válido!");
+    public BigDecimal calculateTotalPrice(OrderDTO order) {
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (OrderItem item : order.getOrderItems()) {
+            total = total.add(item.getPrice());
         }
+
+        return total;
     }
 
     // validations
 
-    public void checkValidations(Order order) {
+    public void checkValidations(OrderDTO orderDTO) {
 
-        if (order.getOrderItems().isEmpty()) {
-            throw new OrderNotContainItemsException("O pedido precisa ter pelo menos um item!");
+        if (orderDTO.getOrderItems().isEmpty()) {
+            throw new EntityMissingDependencyException("O pedido precisa ter pelo menos um item!");
         }
-        if (order.getPayment() == null) {
-            throw new OrderNotContainPaymentException("O pedido precisa ter um pagamento associado!");
+        if (orderDTO.getPaymentType() == null) {
+            throw new EntityMissingDependencyException("O pedido precisa ter um pagamento associado!");
         }
-        if (order.getClient() == null) {
-            throw new OrderNotContainClientException("O pedido precisa ter um cliente!");
+        if (orderDTO.getClientCpf() == null) {
+            throw new EntityMissingDependencyException("O pedido precisa ter um cliente!");
         }
     }
 }

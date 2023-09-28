@@ -14,11 +14,9 @@ public interface PaymentService {
     String changePaymentType(Payment payment, PaymentType type);
     String changePaymentStatus(Payment payment, PaymentStatus status);
     String sendToEmail(Payment payment, String email);
-    String cancelPayment(Payment payment);
 
     Payment processPayment(Payment payment);
     PaymentStatus callPaymentApi(Payment payment);
 
-    boolean validateExistenceClientInPayment(Payment payment);
     boolean validateExistenceOrderInPayment(Payment payment);
 }
