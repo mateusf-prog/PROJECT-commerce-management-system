@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
+import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.exceptions.order.*;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,14 +50,8 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
-        for (OrderItem orderItem : orderDTO.getOrderItems()) {
-            orderItemService.checkAllValidates(orderItem);
-        }
-
-        List<OrderItem> orderItems = orderDTO.getOrderItems();
-
         // instantiating objects
-        Order order = new Order(orderItems);
+        Order order = new Order(orderDTO.getOrderItems());
         order.setDate(LocalDateTime.now());
         order.setTotalValue(calculateTotalPrice(orderDTO));
         order.setClient(client);
@@ -67,9 +63,14 @@ public class OrderServiceImpl implements OrderService {
         payment.setDate(order.getDate());
         payment.setStatus(PaymentStatus.PENDING);
 
+        // persist
         paymentService.createPayment(payment);
         order.setPayment(payment);
-        orderRepository.save(order);
+        Order orderSaved = orderRepository.save(order);
+        for (OrderItem item : order.getOrderItems()) {
+            orderItemService.createOrderItem(item);
+        }
+        orderDTO.setId(orderSaved.getId());
         return orderDTO;
     }
 
@@ -108,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItem item : order.getOrderItems()) {
-            total = total.add(item.getPrice());
+            total = total.add(item.getPriceUnit());
         }
 
         return total;

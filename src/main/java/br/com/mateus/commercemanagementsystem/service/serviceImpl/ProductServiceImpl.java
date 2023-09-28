@@ -96,7 +96,6 @@ public class ProductServiceImpl implements ProductService {
         if(products.isEmpty()) {
             throw new EntityNotFoundException("Lista vazia!");
         }
-
         return products;
     }
 
@@ -123,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> product = productRepository.findByName(name);
 
         if (product.isEmpty()) {
-            throw new EntityNotFoundException("Nenhum produto encontrado com o nome especificado!");
+            throw new EntityNotFoundException("Nenhum produto no estoque com o nome: " + name);
         } else {
             return product.get().getQuantity();
         }

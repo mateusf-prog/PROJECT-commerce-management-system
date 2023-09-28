@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class OrderDTO {
 
+    private Long id;
     private BigDecimal totalValue;
     private String clientCpf;
     private PaymentType paymentType;

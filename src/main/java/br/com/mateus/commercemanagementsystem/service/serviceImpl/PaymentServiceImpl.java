@@ -1,6 +1,5 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
-import br.com.mateus.commercemanagementsystem.dto.PaymentDTO;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
@@ -16,7 +15,6 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentServiceImpl(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
-
 
     @Override
     public Payment createPayment(Payment payment) {

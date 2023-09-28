@@ -1,7 +1,6 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
-import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

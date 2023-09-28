@@ -28,18 +28,15 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     @Transactional
-    public String createOrderItem(OrderItem item) {
+    public void createOrderItem(OrderItem item) {
 
-        try {
-            checkAllValidates(item);
-            verifyQuantityStockAvailability(item);
-            orderItemRepository.save(item);
-            Optional<Product> product = productService.findByName(item.getProductName());
-            productService.adjustStockQuantity(product.get().getId(), product.get().getQuantity() - item.getQuantity());
-        } catch (Exception e) {
-            throw e;
-        }
-        return "Produto adicionado!";
+        checkAllValidates(item);
+        productService.checkQuantityStockAvailability(item.getProductName());
+        orderItemRepository.save(item);
+
+        // subtracting item from stock on Products in database
+        Optional<Product> product = productService.findByName(item.getProductName());
+        productService.adjustStockQuantity(product.get().getId(), product.get().getQuantity() - item.getQuantity());
     }
 
     @Override
@@ -58,7 +55,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 
         try {
             checkAllValidates(item);
-            verifyQuantityStockAvailability(item);
+            productService.checkQuantityStockAvailability(item.getProductName());
             orderItemRepository.save(item);
         } catch (Exception e) {
             throw e;
@@ -90,51 +87,22 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public BigDecimal calculateTotalPrice(OrderItem item) {
-        return item.getPrice().multiply(new BigDecimal(item.getQuantity()));
+        return item.getPriceUnit().multiply(new BigDecimal(item.getQuantity()));
     }
 
     @Override
-    public int verifyQuantityStockAvailability(OrderItem item) {
+    public void checkAllValidates(OrderItem item) {
 
-        return productService.checkQuantityStockAvailability(item.getProductName());
-    }
-
-    @Override
-    public boolean checkAllValidates(OrderItem item) {
-        return validateName(item) ||
-                validatePrice(item) ||
-                validateQuantityInStock(item);
-    }
-
-    // validations
-
-    @Override
-    public boolean validateQuantityInStock(OrderItem item) {
-
-        if(item.getQuantity() <= 0) {
+        if (item.getQuantity() <= 0) {
             throw new EntityInvalidDataException("Quantidade inválida!");
-        } else {
-            return false;
         }
-    }
 
-    @Override
-    public boolean validatePrice(OrderItem item) {
-
-        if(item.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+        if (item.getPriceUnit().compareTo(BigDecimal.ZERO) <= 0) {
             throw new EntityInvalidDataException("Preço inválido!");
-        } else {
-            return false;
         }
-    }
 
-    @Override
-    public boolean validateName(OrderItem item) {
-
-        if(item.getProductName().isBlank() || item.getProductName().length() < 3) {
+        if (item.getProductName().isBlank() || item.getProductName().length() < 3) {
             throw new EntityInvalidDataException("Nome inválido!");
-        } else {
-            return false;
         }
     }
 }

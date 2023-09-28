@@ -24,7 +24,7 @@ public class OrderItem {
     private int quantity;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    private BigDecimal priceUnit;
 
     // define relationships
 
@@ -37,11 +37,7 @@ public class OrderItem {
     public OrderItem(String productName, int quantity, BigDecimal price, Order order) {
         this.productName = productName;
         this.quantity = quantity;
-        this.price = price;
+        this.priceUnit = price;
         this.order = order;
-    }
-
-    public String toString() {
-        return "Name: " + productName + ", quantity: " + quantity + ", price: " + price + ", order: " + order.getId();
     }
 }
