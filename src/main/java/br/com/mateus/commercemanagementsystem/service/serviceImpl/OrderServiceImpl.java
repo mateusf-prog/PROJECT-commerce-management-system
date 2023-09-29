@@ -1,10 +1,8 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
-import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.exceptions.order.*;
 import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
@@ -16,10 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,27 +39,10 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO createOrder(OrderDTO orderDTO) {
 
         checkValidations(orderDTO);
+        Order order = convertOrderDTOtoOrder(orderDTO);
 
-        Client client = clientService.findByCpf(orderDTO.getClientCpf());
-        if(clientService.findByCpf(orderDTO.getClientCpf()) == null) {
-            throw new EntityNotFoundException("Cliente não encontrado.");
-        }
-
-        // instantiating objects
-        Order order = new Order(orderDTO.getOrderItems());
-        order.setDate(LocalDateTime.now());
-        order.setTotalValue(calculateTotalPrice(orderDTO));
-        order.setClient(client);
-
-        Payment payment = new Payment();
-        payment.setOrder(order);
-        payment.setPaymentType(orderDTO.getPaymentType());
-        payment.setValue(order.getTotalValue());
-        payment.setStatus(PaymentStatus.PENDING);
-
-        // persist
-        paymentService.createPayment(payment);
-        order.setPayment(payment);
+        // persist Order, Payment and OrderItems
+        paymentService.createPayment(order.getPayment());
         Order orderSaved = orderRepository.save(order);
         for (OrderItem item : order.getOrderItems()) {
             orderItemService.createOrderItem(item);
@@ -75,8 +53,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO updateOrder(OrderDTO orderDTO) {
-        return null;
 
+        return null;
     }
 
     @Override
@@ -103,6 +81,30 @@ public class OrderServiceImpl implements OrderService {
         return total;
     }
 
+    public Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
+
+        // check if cpf exists in the database
+        Client client = clientService.findByCpf(orderDTO.getClientCpf());
+        if(client == null) {
+            throw new EntityNotFoundException("Cliente não encontrado.");
+        }
+
+        // instantiating objects Order and Payment
+        Order order = new Order(orderDTO.getOrderItems());
+        order.setDate(LocalDateTime.now());
+        order.setTotalValue(calculateTotalPrice(orderDTO));
+        order.setClient(client);
+
+        Payment payment = new Payment();
+        payment.setOrder(order);
+        payment.setPaymentType(orderDTO.getPaymentType());
+        payment.setValue(order.getTotalValue());
+        payment.setStatus(PaymentStatus.PENDING);
+
+        order.setPayment(payment);
+        return order;
+    }
+
     // validations
 
     public void checkValidations(OrderDTO orderDTO) {
@@ -111,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityMissingDependencyException("O pedido precisa ter pelo menos um item!");
         }
         if (orderDTO.getPaymentType() == null) {
-            throw new EntityMissingDependencyException("O pedido precisa ter um pagamento associado!");
+            throw new EntityMissingDependencyException("O pedido precisa ter um tipo de pagamento associado!");
         }
         if (orderDTO.getClientCpf() == null) {
             throw new EntityMissingDependencyException("O pedido precisa ter um cliente!");

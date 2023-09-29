@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
+import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,10 @@ public class OrderController {
         return ResponseEntity.ok().body(order);
     }
 
-    @PutMapping("/orders")
-    public ResponseEntity<OrderDTO> updateOrder(@RequestBody OrderDTO orderDTO) {
-        return null;
-    }
+    /*@PutMapping("/orders")
+    public ResponseEntity<Order> updateOrder(@RequestBody Order order) {
+        orderService.updateOrder();
+        return ResponseEntity.ok().body(order);
+    }*/
 
 }
