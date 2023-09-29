@@ -19,10 +19,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "order_totalValue", nullable = false)
+    @Column(name = "total_value", nullable = false)
     private BigDecimal totalValue;
 
     @Column(name = "date", nullable = false)
@@ -36,7 +35,7 @@ public class Order {
     @OneToOne
     private Payment payment;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter(AccessLevel.NONE)
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -55,24 +54,4 @@ public class Order {
     public Order(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Order [")
-                .append("id: ").append(id)
-                .append(", totalValue: ").append(totalValue)
-                .append(", date=").append(date)
-                .append(", client: ").append(client != null ? client.getName() : "N/A")
-                .append(", payment: ").append(payment != null ? payment.getId() : "N/A")
-                .append("]\n");
-
-        sb.append("Order Items:\n");
-        for (OrderItem item : orderItems) {
-            sb.append(item).append("\n");
-        }
-
-        return sb.toString();
-    }
-
 }

@@ -23,21 +23,16 @@ public class OrderItem {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "price", nullable = false)
+    @Column(name = "price_unit", nullable = false)
     private BigDecimal priceUnit;
 
-    // define relationships
-
-    @ManyToOne()
-    private Order order;
 
     public OrderItem() {
     }
 
-    public OrderItem(String productName, int quantity, BigDecimal price, Order order) {
+    public OrderItem(String productName, int quantity, BigDecimal price) {
         this.productName = productName;
         this.quantity = quantity;
         this.priceUnit = price;
-        this.order = order;
     }
 }

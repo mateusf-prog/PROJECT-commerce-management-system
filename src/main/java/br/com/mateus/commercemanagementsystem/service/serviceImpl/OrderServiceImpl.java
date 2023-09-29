@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
         checkValidations(orderDTO);
 
         Client client = clientService.findByCpf(orderDTO.getClientCpf());
-        if(client == null) {
+        if(clientService.findByCpf(orderDTO.getClientCpf()) == null) {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
@@ -59,8 +59,7 @@ public class OrderServiceImpl implements OrderService {
         Payment payment = new Payment();
         payment.setOrder(order);
         payment.setPaymentType(orderDTO.getPaymentType());
-        payment.setValue(calculateTotalPrice(orderDTO));
-        payment.setDate(order.getDate());
+        payment.setValue(order.getTotalValue());
         payment.setStatus(PaymentStatus.PENDING);
 
         // persist
@@ -75,8 +74,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order updateOrder(Order order) {
+    public OrderDTO updateOrder(OrderDTO orderDTO) {
         return null;
+
     }
 
     @Override
@@ -90,16 +90,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String addItem(Order order, OrderItem item) {
-        return null;
-    }
-
-    @Override
-    public String removeItem(OrderDTO order, OrderItem item) {
-        return null;
-    }
-
-    @Override
     public String setPayment(Order order, Payment payment) {
         return null;
     }
@@ -107,11 +97,9 @@ public class OrderServiceImpl implements OrderService {
     public BigDecimal calculateTotalPrice(OrderDTO order) {
 
         BigDecimal total = BigDecimal.ZERO;
-
         for (OrderItem item : order.getOrderItems()) {
-            total = total.add(item.getPriceUnit());
+            total = total.add(item.getPriceUnit().multiply(BigDecimal.valueOf(item.getQuantity())));
         }
-
         return total;
     }
 

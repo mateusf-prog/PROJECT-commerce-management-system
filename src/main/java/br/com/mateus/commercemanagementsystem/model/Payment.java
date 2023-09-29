@@ -29,7 +29,7 @@ public class Payment {
     @Column(name = "value", nullable = false)
     private BigDecimal value;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "date")
     private LocalDateTime date;
 
     @Column(name = "status", nullable = false)
