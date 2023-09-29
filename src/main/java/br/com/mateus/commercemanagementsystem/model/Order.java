@@ -32,7 +32,7 @@ public class Order {
     @ManyToOne
     private Client client;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Payment payment;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,11 +1,15 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
 import br.com.mateus.commercemanagementsystem.service.PaymentService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -25,8 +29,16 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public Payment updatePayment(Payment payment) {
-        return null;
+
+        Optional<Payment> paymentExists = paymentRepository.findById(payment.getId());
+
+        if(paymentExists.isEmpty()) {
+            throw new EntityNotFoundException("Pagamento não encontrado - ID " + payment.getId());
+        }
+
+        return payment;
     }
 
     @Override

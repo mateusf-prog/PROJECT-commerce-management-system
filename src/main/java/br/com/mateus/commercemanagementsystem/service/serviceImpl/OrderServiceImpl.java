@@ -52,9 +52,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDTO updateOrder(OrderDTO orderDTO) {
 
-        return null;
+        Optional<Order> orderExists = orderRepository.findById(orderDTO.getId());
+
+        if (orderExists.isEmpty()) {
+            throw new EntityNotFoundException("Pedido não encontrado - ID " + orderDTO.getId());
+        }
+
+        Order order = convertOrderDTOtoOrder(orderDTO);
+        // check validations of the object
+        checkValidations(orderDTO);
+        for (OrderItem item : orderDTO.getOrderItems()) {
+            orderItemService.updateOrderItem(item);
+        }
+
+        orderRepository.save(order);
+        return orderDTO;
     }
 
     @Override

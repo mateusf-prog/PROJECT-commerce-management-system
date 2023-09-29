@@ -22,10 +22,10 @@ public class OrderController {
         return ResponseEntity.ok().body(order);
     }
 
-    /*@PutMapping("/orders")
-    public ResponseEntity<Order> updateOrder(@RequestBody Order order) {
-        orderService.updateOrder();
-        return ResponseEntity.ok().body(order);
-    }*/
+    @PutMapping("/orders")
+    public ResponseEntity<?> updateOrder(@RequestBody OrderDTO orderDTO) {
+        orderService.updateOrder(orderDTO);
+        return ResponseEntity.ok().body(orderDTO);
+    }
 
 }

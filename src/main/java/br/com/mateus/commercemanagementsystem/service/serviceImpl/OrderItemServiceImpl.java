@@ -45,21 +45,18 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
+    @Transactional
     public OrderItem updateOrderItem(OrderItem item) {
 
         Optional<OrderItem> orderItem = orderItemRepository.findById(item.getId());
 
         if (orderItem.isEmpty()) {
-            throw new OrderItemNotFoundException("Item do pedido não encontrado!");
+            throw new OrderItemNotFoundException("Item do pedido não encontrado - ID " + item.getId());
         }
 
-        try {
-            checkAllValidates(item);
-            productService.checkQuantityStockAvailability(item.getProductName());
-            orderItemRepository.save(item);
-        } catch (Exception e) {
-            throw e;
-        }
+        checkAllValidates(item);
+        productService.adjustStockQuantity(item.getId(), item.getQuantity());
+        orderItemRepository.save(item);
 
         return orderItem.get();
     }
