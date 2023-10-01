@@ -63,6 +63,8 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Pedido não encontrado - ID " + orderDTO.getId());
         }
 
+        // returning the old value in product stock
+
         Order order = convertOrderDTOtoOrder(orderDTO);
         // check validations of the object
         checkValidations(orderDTO);

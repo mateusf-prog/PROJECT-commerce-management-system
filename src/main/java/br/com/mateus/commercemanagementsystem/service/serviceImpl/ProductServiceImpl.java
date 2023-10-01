@@ -5,6 +5,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataExcept
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.exceptions.product.*;
+import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
@@ -114,6 +115,18 @@ public class ProductServiceImpl implements ProductService {
         productQuery.get().setQuantity(quantity);
         updateProduct(productQuery.get());
         return "Quantidade em estoque atualizada!";
+    }
+
+    public void returningOldQuantityProductStock(List<OrderItem> list, int quantity) {
+
+        for(OrderItem item : list) {
+            Optional<Product> product = productRepository.findByName(item.getProductName());
+                if (product.isEmpty()) {
+                    throw new EntityNotFoundException("Produto não encontrado - " + item.getProductName());
+                }
+                product.get().setQuantity(product.get().getQuantity() + item.getQuantity());
+                productRepository.save(product.get());
+        }
     }
 
     @Override
