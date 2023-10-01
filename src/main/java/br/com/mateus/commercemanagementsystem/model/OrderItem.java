@@ -23,16 +23,11 @@ public class OrderItem {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "price_unit", nullable = false)
-    private BigDecimal priceUnit;
-
-
     public OrderItem() {
     }
 
     public OrderItem(String productName, int quantity, BigDecimal price) {
         this.productName = productName;
         this.quantity = quantity;
-        this.priceUnit = price;
     }
 }

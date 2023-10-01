@@ -82,20 +82,12 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     }
 
-    @Override
-    public BigDecimal calculateTotalPrice(OrderItem item) {
-        return item.getPriceUnit().multiply(new BigDecimal(item.getQuantity()));
-    }
 
     @Override
     public void checkAllValidates(OrderItem item) {
 
         if (item.getQuantity() <= 0) {
             throw new EntityInvalidDataException("Quantidade inválida!");
-        }
-
-        if (item.getPriceUnit().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new EntityInvalidDataException("Preço inválido!");
         }
 
         if (item.getProductName().isBlank() || item.getProductName().length() < 3) {

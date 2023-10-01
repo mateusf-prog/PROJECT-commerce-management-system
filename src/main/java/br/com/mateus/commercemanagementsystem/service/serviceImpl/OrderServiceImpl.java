@@ -3,14 +3,12 @@ package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.model.Client;
-import br.com.mateus.commercemanagementsystem.model.Order;
-import br.com.mateus.commercemanagementsystem.model.OrderItem;
-import br.com.mateus.commercemanagementsystem.model.Payment;
+import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,13 +22,17 @@ public class OrderServiceImpl implements OrderService {
     private final ClientServiceImpl clientService;
     private final OrderItemServiceImpl orderItemService;
     private final PaymentServiceImpl paymentService;
+    private final ProductServiceImpl productService;
 
+    @Autowired
     public OrderServiceImpl(OrderRepository orderRepository, ClientServiceImpl clientService,
-                            OrderItemServiceImpl orderItemService, PaymentServiceImpl paymentService) {
+                            OrderItemServiceImpl orderItemService, PaymentServiceImpl paymentService,
+                            ProductServiceImpl productService) {
         this.orderRepository = orderRepository;
         this.clientService = clientService;
         this.orderItemService = orderItemService;
         this.paymentService = paymentService;
+        this.productService = productService;
     }
 
 
@@ -89,10 +91,18 @@ public class OrderServiceImpl implements OrderService {
 
     public BigDecimal calculateTotalPrice(OrderDTO order) {
 
+        BigDecimal productPrice = BigDecimal.ZERO;
         BigDecimal total = BigDecimal.ZERO;
+
         for (OrderItem item : order.getOrderItems()) {
-            total = total.add(item.getPriceUnit().multiply(BigDecimal.valueOf(item.getQuantity())));
+            Optional<Product> product = productService.findByName(item.getProductName());
+            if (product.isEmpty()) {
+                throw new EntityNotFoundException("Produto não encontrado - " + item.getProductName());
+            }
+            productPrice = product.get().getPrice();
+            total = total.add(productPrice.multiply(BigDecimal.valueOf(item.getQuantity())));
         }
+
         return total;
     }
 

@@ -17,7 +17,6 @@ public interface OrderItemService {
     void setQuantity(OrderItem item, int quantity);
     void setPrice(OrderItem item, BigDecimal price);
 
-    BigDecimal calculateTotalPrice(OrderItem item);
 
     void checkAllValidates(OrderItem item);
 }
