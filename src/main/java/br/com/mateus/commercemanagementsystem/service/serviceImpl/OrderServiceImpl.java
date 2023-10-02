@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Pedido não encontrado - ID " + orderDTO.getId());
         }
 
-        // returning the old value in product stock
+        // productService.returningOldQuantityProductStock(orderDTO.getOrderItems());
 
         Order order = convertOrderDTOtoOrder(orderDTO);
         // check validations of the object
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
 
     public BigDecimal calculateTotalPrice(OrderDTO order) {
 
-        BigDecimal productPrice = BigDecimal.ZERO;
+        BigDecimal productPrice;
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItem item : order.getOrderItems()) {

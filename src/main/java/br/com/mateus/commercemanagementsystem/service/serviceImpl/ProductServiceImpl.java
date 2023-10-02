@@ -117,9 +117,9 @@ public class ProductServiceImpl implements ProductService {
         return "Quantidade em estoque atualizada!";
     }
 
-    public void returningOldQuantityProductStock(List<OrderItem> list, int quantity) {
+    public void returningOldQuantityProductStock(List<OrderItem> list) {
 
-        for(OrderItem item : list) {
+         for(OrderItem item : list) {
             Optional<Product> product = productRepository.findByName(item.getProductName());
                 if (product.isEmpty()) {
                     throw new EntityNotFoundException("Produto não encontrado - " + item.getProductName());

@@ -35,7 +35,7 @@ public class Order {
     @OneToOne(cascade = CascadeType.ALL)
     private Payment payment;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true)
     @Setter(AccessLevel.NONE)
     private List<OrderItem> orderItems = new ArrayList<>();
 
