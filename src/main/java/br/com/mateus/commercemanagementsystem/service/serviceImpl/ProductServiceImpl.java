@@ -102,12 +102,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String adjustStockQuantity(Long id, int quantity) {
+    public String adjustStockQuantity(String name, int quantity) {
 
-        Optional<Product> productQuery = productRepository.findById(id);
+        Optional<Product> productQuery = productRepository.findByName(name);
 
         if (productQuery.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado!");
+            throw new EntityNotFoundException("Produto não encontrado - " + name) ;
         } else if (quantity < 0) {
             throw new EntityInvalidDataException("Quantidade inválida!");
         }

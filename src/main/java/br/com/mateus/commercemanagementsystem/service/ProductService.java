@@ -17,7 +17,7 @@ public interface ProductService {
     List<Product> findAll();
 
     int checkQuantityStockAvailability(String name);
-    String adjustStockQuantity(Long id, int quantity);
+    String adjustStockQuantity(String name, int quantity);
     String setPrice(Long id, BigDecimal price);
 
     void checkValidations(Product product);

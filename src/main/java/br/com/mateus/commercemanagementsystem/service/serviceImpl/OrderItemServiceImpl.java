@@ -1,9 +1,6 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.orderItem.InvalidOrderItemNameException;
-import br.com.mateus.commercemanagementsystem.exceptions.orderItem.InvalidPriceOrderItemException;
-import br.com.mateus.commercemanagementsystem.exceptions.orderItem.InvalidQuantityOrderItemException;
 import br.com.mateus.commercemanagementsystem.exceptions.orderItem.OrderItemNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
@@ -20,11 +17,15 @@ import java.util.Optional;
 @Service
 public class OrderItemServiceImpl implements OrderItemService {
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final ProductServiceImpl productService;
 
     @Autowired
-    private ProductServiceImpl productService;
+    public OrderItemServiceImpl(OrderItemRepository orderItemRepository, ProductServiceImpl productService) {
+        this.orderItemRepository = orderItemRepository;
+        this.productService = productService;
+    }
+
 
     @Override
     @Transactional
@@ -36,7 +37,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 
         // subtracting item from stock on Products in database
         Optional<Product> product = productService.findByName(item.getProductName());
-        productService.adjustStockQuantity(product.get().getId(), product.get().getQuantity() - item.getQuantity());
+        productService.adjustStockQuantity(product.get().getName(), product.get().getQuantity() - item.getQuantity());
     }
 
     @Override
@@ -48,14 +49,15 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Transactional
     public OrderItem updateOrderItem(OrderItem item) {
 
-        Optional<OrderItem> orderItem = orderItemRepository.findById(item.getId());
+        Optional<OrderItem> orderItem = orderItemRepository.findByProductName(item.getProductName());
 
         if (orderItem.isEmpty()) {
-            throw new OrderItemNotFoundException("Item do pedido não encontrado - ID " + item.getId());
+            throw new OrderItemNotFoundException("Item do pedido não encontrado - ID "
+                    + item.getId() + " - " + item.getProductName());
         }
 
         checkAllValidates(item);
-        productService.adjustStockQuantity(item.getId(), item.getQuantity());
+        productService.adjustStockQuantity(item.getProductName(), item.getQuantity());
         orderItemRepository.save(item);
 
         return orderItem.get();
