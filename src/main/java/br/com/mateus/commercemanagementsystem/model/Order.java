@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -27,6 +28,10 @@ public class Order {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     // define relationships
 
     @ManyToOne
@@ -43,12 +48,13 @@ public class Order {
     }
 
     public Order(BigDecimal totalValue, Payment payment, Client client,
-                 List<OrderItem> orderItems, LocalDateTime date) {
+                 List<OrderItem> orderItems, LocalDateTime date, OrderStatus status) {
         this.totalValue = totalValue;
         this.payment = payment;
         this.client = client;
         this.orderItems = orderItems;
         this.date = date;
+        this.status = status;
     }
 
     public Order(List<OrderItem> orderItems) {

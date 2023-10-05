@@ -4,6 +4,7 @@ import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
+import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
@@ -42,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
         checkValidations(orderDTO);
         Order order = convertOrderDTOtoOrder(orderDTO);
+        order.setStatus(OrderStatus.CREATED);
 
         // persist Order, Payment and OrderItems
         paymentService.createPayment(order.getPayment());
@@ -50,6 +52,7 @@ public class OrderServiceImpl implements OrderService {
             orderItemService.createOrderItem(item);
         }
         orderDTO.setId(orderSaved.getId());
+        orderDTO.setStatus(OrderStatus.CREATED);
         return orderDTO;
     }
 
