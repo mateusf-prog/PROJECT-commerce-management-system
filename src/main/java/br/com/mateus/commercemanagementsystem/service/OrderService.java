@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface OrderService {
 
     OrderDTO createOrder(OrderDTO orderDTO);
-    String deleteById(Long id);
+    void deleteOrder(Long id);
     Optional<Order> findById(Long id);
 
     String setPayment(Order order, Payment payment);

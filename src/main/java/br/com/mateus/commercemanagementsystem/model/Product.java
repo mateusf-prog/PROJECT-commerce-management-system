@@ -18,16 +18,16 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "price", nullable = false)
+    @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(nullable = false)
     private int quantity;
 
-    @Column(name = "category", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Categories category;
     

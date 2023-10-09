@@ -21,4 +21,10 @@ public class OrderController {
         orderService.createOrder(order);
         return ResponseEntity.ok().body(order);
     }
+
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
+        return ResponseEntity.ok().body("Pedido deletado com sucesso - ID " + id);
+    }
 }

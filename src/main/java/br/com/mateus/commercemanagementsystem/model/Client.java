@@ -15,29 +15,28 @@ import lombok.Setter;
 @Data
 public class Client {
     
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
-    @Column(name = "birthdate", nullable = false)
+    @Column(nullable = false)
     private LocalDate birthdate;
 
     @Id
-    @Column(name = "cpf", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String cpf;
 
-    @Column(name = "phoneNumber", nullable = false)
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "address", nullable = false)
+    @Column(nullable = false)
     private String address;
 
     // define relationships
 
-    @OneToMany(mappedBy = "client",cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
 

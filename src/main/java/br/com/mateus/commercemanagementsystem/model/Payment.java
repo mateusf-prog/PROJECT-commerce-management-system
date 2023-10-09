@@ -19,7 +19,6 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    @Column(name = "id")
     private Long id;
 
     @Column(name = "type", nullable = false)

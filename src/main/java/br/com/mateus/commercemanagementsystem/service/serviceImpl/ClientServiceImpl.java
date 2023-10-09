@@ -67,7 +67,7 @@ public class ClientServiceImpl implements ClientService {
         Optional<Client> client = clientRepository.findByCpf(cpf);
 
         if (client.isEmpty()) {
-            throw new EntityNotFoundException("Cliente não encontrado!");
+            throw new EntityNotFoundException("Cliente não encontrado. CPF " + cpf);
         }
         clientRepository.delete(client.get());
     }
