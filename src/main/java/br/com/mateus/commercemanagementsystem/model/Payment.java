@@ -26,13 +26,12 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
-    @Column(name = "value", nullable = false)
+    @Column(nullable = false)
     private BigDecimal value;
 
-    @Column(name = "date")
     private LocalDateTime date;
 
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 

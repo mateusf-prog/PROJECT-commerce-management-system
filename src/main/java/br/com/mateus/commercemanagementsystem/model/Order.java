@@ -25,11 +25,10 @@ public class Order {
     @Column(name = "total_value", nullable = false)
     private BigDecimal totalValue;
 
-    @Column(name = "date", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime date;
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus status;
 
     // define relationships

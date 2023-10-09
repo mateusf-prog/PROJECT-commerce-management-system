@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface OrderService {
 
     OrderDTO createOrder(OrderDTO orderDTO);
-    OrderDTO updateOrder(OrderDTO orderDTO);
     String deleteById(Long id);
     Optional<Order> findById(Long id);
 

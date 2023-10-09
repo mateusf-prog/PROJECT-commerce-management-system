@@ -10,10 +10,12 @@ import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -43,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
 
         checkValidations(orderDTO);
         Order order = convertOrderDTOtoOrder(orderDTO);
-        order.setStatus(OrderStatus.CREATED);
 
         // persist Order, Payment and OrderItems
         paymentService.createPayment(order.getPayment());
@@ -52,15 +53,8 @@ public class OrderServiceImpl implements OrderService {
             orderItemService.createOrderItem(item);
         }
         orderDTO.setId(orderSaved.getId());
-        orderDTO.setStatus(OrderStatus.CREATED);
+        orderDTO.setStatus(order.getStatus());
         return orderDTO;
-    }
-
-    @Override
-    @Transactional
-    public OrderDTO updateOrder(OrderDTO orderDTO) {
-
-        return null;
     }
 
     @Override
@@ -108,6 +102,7 @@ public class OrderServiceImpl implements OrderService {
         order.setDate(LocalDateTime.now());
         order.setTotalValue(calculateTotalPrice(orderDTO));
         order.setClient(client);
+        order.setStatus(OrderStatus.WAITING_PAYMENT);
 
         Payment payment = new Payment();
         payment.setOrder(order);
