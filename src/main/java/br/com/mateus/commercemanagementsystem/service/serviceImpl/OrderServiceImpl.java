@@ -7,16 +7,13 @@ import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
-import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -59,8 +56,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
-    public void deleteOrder(Long id) {
+    public OrderDTO findById(Long id) {
 
         Optional<Order> orderQuery = orderRepository.findById(id);
 
@@ -68,19 +64,14 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Pedido não encontrado. ID " + id);
         }
 
-        orderRepository.deleteById(id);
-    }
+        OrderDTO orderDTO = new OrderDTO(orderQuery.get().getOrderItems());
+        orderDTO.setStatus(orderQuery.get().getStatus());
+        orderDTO.setId(orderQuery.get().getId());
+        orderDTO.setPaymentType(orderQuery.get().getPayment().getPaymentType());
+        orderDTO.setTotalValue(orderQuery.get().getTotalValue());
+        orderDTO.setClientCpf(orderQuery.get().getClient().getCpf());
 
-    @Override
-    public Optional<Order> findById(Long id) {
-
-        Optional<Order> orderQuery = orderRepository.findById(id);
-
-        if(orderQuery.isEmpty()) {
-            throw new EntityNotFoundException("Pedido não encontrado. ID " + id);
-        }
-
-        return orderQuery;
+        return orderDTO;
     }
 
     @Override

@@ -21,4 +21,8 @@ public class OrderDTO {
 
     @Setter(AccessLevel.NONE)
     private List<OrderItem> orderItems;
+
+    public OrderDTO(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 }

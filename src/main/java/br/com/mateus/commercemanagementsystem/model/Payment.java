@@ -36,7 +36,7 @@ public class Payment {
 
     // define relationships
 
-    @OneToOne(mappedBy = "payment")
+    @OneToOne(mappedBy = "payment", orphanRemoval = true)
     private Order order;
     
     public Payment() {

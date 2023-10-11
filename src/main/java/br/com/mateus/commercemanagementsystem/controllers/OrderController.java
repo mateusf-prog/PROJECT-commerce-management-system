@@ -6,6 +6,8 @@ import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderServiceIm
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api")
 public class OrderController {
@@ -22,9 +24,9 @@ public class OrderController {
         return ResponseEntity.ok().body(order);
     }
 
-    @DeleteMapping("/orders/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.ok().body("Pedido deletado com sucesso - ID " + id);
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        OrderDTO orderDTO = orderService.findById(id);
+        return ResponseEntity.ok().body(orderDTO);
     }
 }
