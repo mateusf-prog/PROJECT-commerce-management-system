@@ -7,7 +7,7 @@ O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoqu
 #### Requisitos:
 - O comerciante terá seu cadastro (login e senha).
 - Incluir, alterar, consultar cadastro de seus clientes.
-- Incluir, alterar, consultar histórico de vendas.
+- Incluir e consultar histórico de vendas.
 - Consultar o histórico de pagamentos.
 - Cadastrar, alterar, consultar, deletar itens do estoque.
 - Aplicar filtros para pesquisa de estoque (código ou nome).
