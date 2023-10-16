@@ -93,14 +93,29 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderDTO> listOrdersDTO = new ArrayList<>();
         for (Order order : orders) {
-            OrderDTO orderDTO = convertOrderToOrderDTO(order);
-            listOrdersDTO.add(orderDTO);
+            listOrdersDTO.add(convertOrderToOrderDTO(order));
         }
 
         return listOrdersDTO;
     }
 
+    public List<OrderDTO> findAll() {
 
+        List<Order> list = orderRepository.findAll();
+
+        if(list.isEmpty()) {
+            throw new EntityNotFoundException("Lista vazia!");
+        }
+
+        List<OrderDTO> listDTO = new ArrayList<OrderDTO>();
+        for (Order order : list) {
+            listDTO.add(convertOrderToOrderDTO(order));
+        }
+
+        return listDTO;
+    }
+
+    @Override
     public OrderDTO convertOrderToOrderDTO(Order order) {
 
         OrderDTO orderDTO = new OrderDTO(order.getOrderItems());
@@ -111,7 +126,6 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setTotalValue(order.getTotalValue());
 
         return orderDTO;
-
     }
     @Override
     public BigDecimal calculateTotalPrice(OrderDTO order) {

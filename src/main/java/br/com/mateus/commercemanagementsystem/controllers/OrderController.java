@@ -36,4 +36,10 @@ public class OrderController {
         List<OrderDTO> list = orderService.findAllOrdersByClientCpf(cpf);
         return ResponseEntity.ok().body(list);
     }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDTO>> findAll() {
+        List<OrderDTO> list = orderService.findAll();
+        return ResponseEntity.ok().body(list);
+    }
 }

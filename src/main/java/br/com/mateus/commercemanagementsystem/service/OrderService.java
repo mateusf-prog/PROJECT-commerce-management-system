@@ -14,4 +14,5 @@ public interface OrderService {
 
     BigDecimal calculateTotalPrice(OrderDTO order);
     Order convertOrderDTOtoOrderAndCreatePayment(OrderDTO orderDTO);
+    OrderDTO convertOrderToOrderDTO(Order order);
 }
