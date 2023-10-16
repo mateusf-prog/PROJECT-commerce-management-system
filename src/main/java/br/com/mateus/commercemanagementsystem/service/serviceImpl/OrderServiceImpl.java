@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO createOrder(OrderDTO orderDTO) {
 
         checkValidations(orderDTO);
-        Order order = convertOrderDTOtoOrder(orderDTO);
+        Order order = convertOrderDTOtoOrderAndCreatePayment(orderDTO);
 
         // persist Order, Payment and OrderItems
         paymentService.createPayment(order.getPayment());
@@ -75,10 +77,43 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String setPayment(Order order, Payment payment) {
-        return null;
+    public List<OrderDTO> findAllOrdersByClientCpf(String cpf) {
+
+        Client client = clientService.findByCpf(cpf);
+
+        if(client == null) {
+            throw new EntityNotFoundException("Cliente não encontrado. CPF " + cpf);
+        }
+
+        List<Order> orders = orderRepository.findByClientCpf(cpf);
+
+        if(orders.isEmpty()) {
+            throw new EntityNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
+        }
+
+        List<OrderDTO> listOrdersDTO = new ArrayList<>();
+        for (Order order : orders) {
+            OrderDTO orderDTO = convertOrderToOrderDTO(order);
+            listOrdersDTO.add(orderDTO);
+        }
+
+        return listOrdersDTO;
     }
 
+
+    public OrderDTO convertOrderToOrderDTO(Order order) {
+
+        OrderDTO orderDTO = new OrderDTO(order.getOrderItems());
+        orderDTO.setId(order.getId());
+        orderDTO.setClientCpf(order.getClient().getCpf());
+        orderDTO.setStatus(order.getStatus());
+        orderDTO.setPaymentType(order.getPayment().getPaymentType());
+        orderDTO.setTotalValue(order.getTotalValue());
+
+        return orderDTO;
+
+    }
+    @Override
     public BigDecimal calculateTotalPrice(OrderDTO order) {
 
         BigDecimal productPrice;
@@ -96,7 +131,8 @@ public class OrderServiceImpl implements OrderService {
         return total;
     }
 
-    public Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
+    @Override
+    public Order convertOrderDTOtoOrderAndCreatePayment(OrderDTO orderDTO) {
 
         // check if cpf exists in the database
         Client client = clientService.findByCpf(orderDTO.getClientCpf());

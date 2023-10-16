@@ -2,12 +2,16 @@ package br.com.mateus.commercemanagementsystem.service;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.model.Order;
-import br.com.mateus.commercemanagementsystem.model.Payment;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface OrderService {
 
     OrderDTO createOrder(OrderDTO orderDTO);
     OrderDTO findById(Long id);
+    List<OrderDTO> findAllOrdersByClientCpf(String cpf);
 
-    String setPayment(Order order, Payment payment);
+    BigDecimal calculateTotalPrice(OrderDTO order);
+    Order convertOrderDTOtoOrderAndCreatePayment(OrderDTO orderDTO);
 }

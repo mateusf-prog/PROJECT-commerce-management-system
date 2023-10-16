@@ -6,6 +6,7 @@ import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderServiceIm
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -28,5 +29,11 @@ public class OrderController {
     public ResponseEntity<?> findById(@PathVariable Long id) {
         OrderDTO orderDTO = orderService.findById(id);
         return ResponseEntity.ok().body(orderDTO);
+    }
+
+    @GetMapping("/orders/byCpf/{cpf}")
+    public ResponseEntity<List<OrderDTO>> findAllOrdersByClientCpf(@PathVariable String cpf) {
+        List<OrderDTO> list = orderService.findAllOrdersByClientCpf(cpf);
+        return ResponseEntity.ok().body(list);
     }
 }
