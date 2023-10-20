@@ -1,21 +1,17 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNoHasOrdersException;
-import br.com.mateus.commercemanagementsystem.exceptions.client.InvalidClientDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.client.ClientNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Client;
-import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;
 import br.com.mateus.commercemanagementsystem.service.ClientService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +19,11 @@ import java.util.Optional;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
+    private final OrderServiceImpl orderService;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, OrderServiceImpl orderService) {
         this.clientRepository = clientRepository;
+        this.orderService = orderService;
     }
 
     @Override
@@ -92,21 +90,6 @@ public class ClientServiceImpl implements ClientService {
             throw new EntityNotFoundException("Nenhum resultado encontrado!");
         }
         return results;
-    }
-
-
-    @Override
-    public List<Order> findOrdersByClientCpf(String cpf) {
-
-        Optional<Client> client = clientRepository.findByCpf(cpf);
-
-        if (client.isEmpty()) {
-            throw new EntityNotFoundException("Cliente não encontrado!");
-        } else if (client.get().getOrders().isEmpty()) {
-            throw new EntityMissingDependencyException("Cliente não possui nenhum pedido!");
-        }
-
-        return client.get().getOrders();
     }
 
     // validations methods

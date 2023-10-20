@@ -1,13 +1,12 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.orderItem.OrderItemNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderItemService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,7 +19,6 @@ public class OrderItemServiceImpl implements OrderItemService {
     private final OrderItemRepository orderItemRepository;
     private final ProductServiceImpl productService;
 
-    @Autowired
     public OrderItemServiceImpl(OrderItemRepository orderItemRepository, ProductServiceImpl productService) {
         this.orderItemRepository = orderItemRepository;
         this.productService = productService;
@@ -41,18 +39,13 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public OrderItem readOrderItem(OrderItem item) {
-        return null;
-    }
-
-    @Override
     @Transactional
     public OrderItem updateOrderItem(OrderItem item) {
 
         Optional<OrderItem> orderItem = orderItemRepository.findByProductName(item.getProductName());
 
         if (orderItem.isEmpty()) {
-            throw new OrderItemNotFoundException("Item do pedido não encontrado - ID "
+            throw new EntityNotFoundException("Item do pedido não encontrado - ID "
                     + item.getId() + " - " + item.getProductName());
         }
 
@@ -80,7 +73,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public void setPrice(OrderItem item, BigDecimal price) {
+    public void setTotalPrice(OrderItem item, BigDecimal price) {
 
     }
 

@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.service;
 
+import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
@@ -16,8 +17,6 @@ public interface ClientService {
     void deleteByCpf(String cpf);
     Client findByCpf(String cpf);
     List<Client> findByName(String name);
-
-    List<Order> findOrdersByClientCpf(String cpf);
 
     boolean validateClientName(Client client);
     boolean validateClientPhoneNumber(Client client);

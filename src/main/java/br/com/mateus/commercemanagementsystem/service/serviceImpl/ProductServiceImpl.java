@@ -4,8 +4,6 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsExce
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.exceptions.product.*;
-import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.model.enums.Categories;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
@@ -21,8 +19,11 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     @Transactional
@@ -117,6 +118,7 @@ public class ProductServiceImpl implements ProductService {
         return "Quantidade em estoque atualizada!";
     }
 
+    /*
     public void returningOldQuantityProductStock(List<OrderItem> list) {
 
          for(OrderItem item : list) {
@@ -128,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
                 productRepository.save(product.get());
         }
     }
+    */
 
     @Override
     public int checkQuantityStockAvailability(String name) {
