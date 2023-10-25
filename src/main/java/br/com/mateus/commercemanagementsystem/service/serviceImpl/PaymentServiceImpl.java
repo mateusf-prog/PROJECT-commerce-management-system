@@ -38,12 +38,21 @@ public class PaymentServiceImpl implements PaymentService {
             throw new EntityNotFoundException("Pagamento não encontrado - ID " + payment.getId());
         }
 
+        paymentRepository.save(payment);
+
         return payment;
     }
 
     @Override
-    public Payment readPayment(Payment payment) {
-        return null;
+    public Payment findById(Long id) {
+
+        Optional<Payment> paymentExists = paymentRepository.findById(id);
+
+        if(paymentExists.isEmpty()) {
+            throw new EntityNotFoundException("Pagamento não encontrado - ID " + id);
+        }
+
+        return paymentExists.get();
     }
 
     @Override

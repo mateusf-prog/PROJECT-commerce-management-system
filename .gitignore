@@ -18,6 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
+src/main/resources/keystore/key.p12
 
 ### NetBeans ###
 /nbproject/private/

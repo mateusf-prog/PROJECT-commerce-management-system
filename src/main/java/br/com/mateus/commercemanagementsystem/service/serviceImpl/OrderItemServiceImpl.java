@@ -63,8 +63,15 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public String deleteById(Long id) {
-        return null;
+    public void deleteByItemName(String name) {
+
+        Optional<OrderItem> orderItem = orderItemRepository.findByProductName(name);
+
+        if(orderItem.isEmpty()) {
+            throw new EntityNotFoundException("Item de pedido não encontrado. Nome: " + name);
+        }
+
+        orderItemRepository.deleteById(orderItem.get().getId());
     }
 
     @Override

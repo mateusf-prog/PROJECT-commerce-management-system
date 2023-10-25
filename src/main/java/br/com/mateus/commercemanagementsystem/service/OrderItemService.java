@@ -10,7 +10,7 @@ public interface OrderItemService {
     void createOrderItem(OrderItem item);
     OrderItem updateOrderItem(OrderItem item);
     List<OrderItem> findAll();
-    String deleteById(Long id);
+    void deleteByItemName(String name);
 
     void setQuantity(OrderItem item, int quantity);
     void setTotalPrice(OrderItem item, BigDecimal price);

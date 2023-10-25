@@ -3,7 +3,6 @@ package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;
@@ -19,11 +18,9 @@ import java.util.Optional;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    private final OrderServiceImpl orderService;
 
-    public ClientServiceImpl(ClientRepository clientRepository, OrderServiceImpl orderService) {
+    public ClientServiceImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
-        this.orderService = orderService;
     }
 
     @Override
