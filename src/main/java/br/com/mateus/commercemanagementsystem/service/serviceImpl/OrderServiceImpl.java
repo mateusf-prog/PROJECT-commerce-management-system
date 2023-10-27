@@ -43,16 +43,24 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO createOrder(OrderDTO orderDTO) {
 
         checkValidations(orderDTO);
-        Order order = convertOrderDTOtoOrderAndCreatePayment(orderDTO);
+        Order order = convertOrderDTOtoOrder(orderDTO);
 
         // persist Order, Payment and OrderItems
-        paymentService.createPayment(order.getPayment());
+        paymentService.createPayment(order);
         Order orderSaved = orderRepository.save(order);
         for (OrderItem item : order.getOrderItems()) {
             orderItemService.createOrderItem(item);
         }
         orderDTO.setId(orderSaved.getId());
         orderDTO.setStatus(order.getStatus());
+
+        // create payment object
+        Payment payment = paymentService.createPayment(order);
+        payment.setPaymentType(orderDTO.getPaymentType());
+
+        // set payment object to order
+        order.setPayment(payment);
+
         return orderDTO;
     }
 
@@ -145,7 +153,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order convertOrderDTOtoOrderAndCreatePayment(OrderDTO orderDTO) {
+    public Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
 
         // check if cpf exists in the database
         Client client = clientService.findByCpf(orderDTO.getClientCpf());
@@ -153,20 +161,13 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
-        // instantiating objects Order and Payment
+        // create order object
         Order order = new Order(orderDTO.getOrderItems());
         order.setDate(LocalDateTime.now());
         order.setTotalValue(calculateTotalPrice(orderDTO));
         order.setClient(client);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
-        Payment payment = new Payment();
-        payment.setOrder(order);
-        payment.setPaymentType(orderDTO.getPaymentType());
-        payment.setValue(order.getTotalValue());
-        payment.setStatus(PaymentStatus.PENDING);
-
-        order.setPayment(payment);
         return order;
     }
 

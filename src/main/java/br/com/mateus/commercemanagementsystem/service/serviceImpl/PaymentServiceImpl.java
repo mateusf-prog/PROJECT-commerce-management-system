@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
@@ -21,9 +22,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment createPayment(Payment payment) {
+    public Payment createPayment(Order order) {
 
-        paymentRepository.save(payment);
+        Payment payment = new Payment();
+        payment.setOrder(order);
+        payment.setValue(order.getTotalValue());
+        payment.setStatus(PaymentStatus.PENDING);
 
         return payment;
     }
