@@ -2,6 +2,8 @@ package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ClientServiceImpl;
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,13 +20,13 @@ public class ClientController {
     }
 
     @PostMapping("/clients")
-    public ResponseEntity<Client> createClient(@RequestBody Client client) {
+    public ResponseEntity<Client> createClient(@Valid @RequestBody Client client) {
         clientService.createClient(client);
         return ResponseEntity.ok().body(client);
     }
 
     @PutMapping("/clients")
-    public ResponseEntity<Client> updateClient(@RequestBody Client client) {
+    public ResponseEntity<Client> updateClient(@Valid @RequestBody Client client) {
         clientService.updateClient(client);
         return ResponseEntity.ok().body(client);
     }

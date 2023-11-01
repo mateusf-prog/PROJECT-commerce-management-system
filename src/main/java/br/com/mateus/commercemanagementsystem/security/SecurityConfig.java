@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+        
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
 
@@ -35,7 +36,7 @@ public class SecurityConfig {
 
     // filters to intercept requests
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
                 http.authorizeHttpRequests( configurer ->
                         configurer

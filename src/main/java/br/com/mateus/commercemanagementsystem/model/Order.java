@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import jakarta.persistence.*;

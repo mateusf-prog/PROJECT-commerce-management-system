@@ -1,6 +1,5 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
-import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
@@ -10,7 +9,6 @@ import br.com.mateus.commercemanagementsystem.service.ClientService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +29,6 @@ public class ClientServiceImpl implements ClientService {
 
          if (queryClient.isEmpty()) {
              throw new EntityNotFoundException("Cliente não encontrado!");
-         } else if (isClientDataValid(client)) {
-             throw new EntityInvalidDataException("Dados inválidos. Verifique os dados e tente novamente!");
          }
 
          clientRepository.save(client);
@@ -45,9 +41,7 @@ public class ClientServiceImpl implements ClientService {
 
         Optional<Client> queryClient = clientRepository.findByCpf(client.getCpf());
 
-        if (isClientDataValid(client)) {
-            throw new EntityInvalidDataException("Dados inválidos. Verifique os dados e tente novamente!");
-        } else if (queryClient.isPresent()) {
+        if (queryClient.isPresent()) {
             throw new EntityAlreadyExistsException("CPF já cadastrado!");
         }
 
@@ -88,37 +82,8 @@ public class ClientServiceImpl implements ClientService {
         }
         return results;
     }
-
-    // validations methods
-
-    public boolean isClientDataValid(Client client) {
-        return validateClientName(client) ||
-                validateClientCpfNumber(client) ||
-                validateClientPhoneNumber(client) ||
-                validateClientBirthdate(client);
-    }
-
-    @Override
-    public boolean validateClientName(Client client) {
-        return client.getName().length() < 3;
-    }
-
-    @Override
-    public boolean validateClientPhoneNumber(Client client) {
-        return client.getPhoneNumber().length() != 11;
-    }
-
-    @Override
-    public boolean validateClientCpfNumber(Client client) {
-        return client.getCpf().length() != 11;
-    }
-
-    @Override
-    public boolean validateClientBirthdate(Client client) {
-        LocalDate today = LocalDate.now();
-        LocalDate nineYearsBefore = today.minusYears(9);
-
-        return client.getBirthdate().isAfter(LocalDate.now()) ||
-                client.getBirthdate().isAfter(nineYearsBefore);
-    }
 }
+
+
+
+
