@@ -134,6 +134,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderDTO;
     }
+    
     @Override
     public BigDecimal calculateTotalPrice(OrderDTO order) {
 
@@ -155,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
 
-        // check if cpf exists in the database
+        // check if cpf exists in the database and get client object    
         Client client = clientService.findByCpf(orderDTO.getClientCpf());
         if(client == null) {
             throw new EntityNotFoundException("Cliente não encontrado.");

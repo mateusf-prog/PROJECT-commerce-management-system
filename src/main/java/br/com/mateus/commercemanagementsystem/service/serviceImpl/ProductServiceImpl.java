@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
             throw new EntityAlreadyExistsException("Produto já existe!");
         }
 
-        checkValidations(product);
+        //checkValidations(product);
         productRepository.save(product);
         return product;
     }

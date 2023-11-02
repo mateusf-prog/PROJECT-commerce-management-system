@@ -1,7 +1,6 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Client;
 import br.com.mateus.commercemanagementsystem.repository.ClientRepository;

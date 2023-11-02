@@ -7,7 +7,10 @@ import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderItemService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+
 import org.springframework.stereotype.Service;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,7 +30,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     @Transactional
-    public void createOrderItem(OrderItem item) {
+    public void createOrderItem(@Valid OrderItem item) {
 
         checkAllValidates(item);
         productService.checkQuantityStockAvailability(item.getProductName());
@@ -75,25 +78,14 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public void setQuantity(OrderItem item, int quantity) {
-
-    }
-
-    @Override
-    public void setTotalPrice(OrderItem item, BigDecimal price) {
-
-    }
-
-
-    @Override
     public void checkAllValidates(OrderItem item) {
 
         if (item.getQuantity() <= 0) {
-            throw new EntityInvalidDataException("Quantidade inválida!");
+            throw new EntityInvalidDataException("Quantidade de itens inválida!");
         }
 
         if (item.getProductName().isBlank() || item.getProductName().length() < 3) {
-            throw new EntityInvalidDataException("Nome inválido!");
+            throw new EntityInvalidDataException("Nome do item inválido!");
         }
     }
 }

@@ -2,6 +2,8 @@ package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.service.serviceImpl.ProductServiceImpl;
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +21,13 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         productService.createProduct(product);
         return ResponseEntity.ok().body(product);
     }
 
     @PutMapping("/products")
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product) {
         productService.updateProduct(product);
         return ResponseEntity.ok().body(product);
     }

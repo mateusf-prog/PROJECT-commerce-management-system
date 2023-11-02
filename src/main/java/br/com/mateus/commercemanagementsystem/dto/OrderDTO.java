@@ -3,6 +3,7 @@ package br.com.mateus.commercemanagementsystem.dto;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,20 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 @Data
 @NoArgsConstructor
 public class OrderDTO {
 
     private Long id;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Valor total deve ser maior que zero!")
     private BigDecimal totalValue;
+
+    @CPF(message = "CPF inválido!")
     private String clientCpf;
+    
     private PaymentType paymentType;
     private OrderStatus status;
 
