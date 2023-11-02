@@ -5,11 +5,9 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependency
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
-import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.service.OrderService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

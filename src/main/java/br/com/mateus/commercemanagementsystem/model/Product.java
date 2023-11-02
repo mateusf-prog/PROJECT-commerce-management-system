@@ -1,7 +1,7 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
-import br.com.mateus.commercemanagementsystem.model.enums.Categories;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -31,14 +31,13 @@ public class Product {
     @Min(value = 1, message = "A quantidade deve ser maior ou igual a zero!")
     private int quantity;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Categories category;
+    @OneToOne
+    private Categorie category;
     
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, int quantity, Categories category) {
+    public Product(String name, BigDecimal price, int quantity, Categorie category) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;

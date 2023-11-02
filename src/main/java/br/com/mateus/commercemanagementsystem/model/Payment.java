@@ -2,7 +2,6 @@ package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;

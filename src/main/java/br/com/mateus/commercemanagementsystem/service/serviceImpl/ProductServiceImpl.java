@@ -2,8 +2,8 @@ package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.model.Categorie;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.service.ProductService;
@@ -18,9 +18,11 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final CategorieServiceImpl categoryService;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategorieServiceImpl categoryService) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -60,7 +62,6 @@ public class ProductServiceImpl implements ProductService {
             throw new EntityNotFoundException("Produto não encontrado!");
         }
 
-        checkValidations(product);
         productRepository.save(product);
         return product;
     }
@@ -159,20 +160,15 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    public void checkValidations(Product product) {
+    public boolean checkCategory(Categorie category) {
 
-        if (product.getName().isBlank() || product.getName().length() < 4) {
-            throw new EntityInvalidDataException("Nome inválido!");
+        List<Categorie> categories = categoryService.findAll();
+
+        for (Categorie categorie : categories) {
+            if (categorie.getName().equals(category.getName())) {
+                return true;
+            }
         }
-        if (product.getCategory() == null) {
-            throw new EntityMissingDependencyException("A categoria do produto deve ser válida!");
-        }
-        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new EntityInvalidDataException("O preço do produto deve ser válido!");
-        }
-        if (product.getQuantity() < 0) {
-            throw new EntityInvalidDataException("A quantidade em estoque deve ser válida!");
-        }
+        return false;
     }
 }
