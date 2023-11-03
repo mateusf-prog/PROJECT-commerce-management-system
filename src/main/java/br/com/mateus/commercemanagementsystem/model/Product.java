@@ -32,12 +32,12 @@ public class Product {
     private int quantity;
 
     @OneToOne
-    private Categorie category;
+    private Category category;
     
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, int quantity, Categorie category) {
+    public Product(String name, BigDecimal price, int quantity, Category category) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;

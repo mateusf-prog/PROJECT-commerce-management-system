@@ -3,7 +3,7 @@ package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.model.Categorie;
+import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.service.ProductService;
@@ -18,9 +18,9 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final CategorieServiceImpl categoryService;
+    private final CategoryServiceImpl categoryService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategorieServiceImpl categoryService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryServiceImpl categoryService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
     }
@@ -160,11 +160,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public boolean checkCategory(Categorie category) {
+    public boolean checkCategory(Category category) {
 
-        List<Categorie> categories = categoryService.findAll();
+        List<Category> categories = categoryService.findAll();
 
-        for (Categorie categorie : categories) {
+        for (Category categorie : categories) {
             if (categorie.getName().equals(category.getName())) {
                 return true;
             }
