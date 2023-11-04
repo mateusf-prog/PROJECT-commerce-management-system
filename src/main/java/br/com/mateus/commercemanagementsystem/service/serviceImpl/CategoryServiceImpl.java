@@ -25,6 +25,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category createCategory(Category category) {
 
+        List<Category> queryCategory = categoryRepository.findByName(category.getName());
+
+        if (!queryCategory.isEmpty()) {
+            throw new EntityAlreadyExistsException("Categoria já existe!");
+        }
+
         categoryRepository.save(category);
         return category;
     }
@@ -33,39 +39,47 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category updateCategory(Category category) {
 
-        Optional<Category> queryCategorie = categoryRepository.findById(category.getId());
+        Optional<Category> queryCategory = categoryRepository.findById(category.getId());
 
-        if (queryCategorie.isEmpty()) {
+        if (queryCategory.isEmpty()) {
             throw new EntityNotFoundException("Categoria não encontrada!");
         }
         
         categoryRepository.save(category);
-        return category;
+        return queryCategory.get();
     }
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteByName(String name) {
         
-        Optional<Category> queryCategorie = categoryRepository.findById(id);
+        List<Category> categories = categoryRepository.findByName(name);
 
-        if (queryCategorie.isEmpty()) {
-            throw new EntityNotFoundException("Categoria não encontrada!");
+        if (categories.isEmpty()) {
+            throw new EntityNotFoundException("Categoria não encontrada. Nome: " + name);
         }
 
-        categoryRepository.deleteById(id);
+        if (categories.size() > 1) {
+            throw new EntityAlreadyExistsException("Mais de uma categoria encontrada!");
+        }
+
+        categoryRepository.delete(categories.get(0));
     }
 
     @Override
-    public Category findById(Long id) {
+    public Category findByName(String name) {
         
-        Optional<Category> queryCategorie = categoryRepository.findById(id);
+        List<Category> categories = categoryRepository.findByName(name);
 
-        if (queryCategorie.isEmpty()) {
+        if (categories.isEmpty()) {
             throw new EntityNotFoundException("Categoria não encontrada!");
         }
-
-        return queryCategorie.get();
+        
+        if (categories.size() > 1) {
+            throw new EntityAlreadyExistsException("Mais de uma categoria encontrada!");
+        }
+        
+        return categories.get(0);
     }
 
     @Override
