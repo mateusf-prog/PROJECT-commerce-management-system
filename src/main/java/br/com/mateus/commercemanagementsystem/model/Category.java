@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity(name = "categories")
 public class Category {
 
@@ -26,5 +24,12 @@ public class Category {
     @NotBlank(message = "Nome da categoria não pode ficar em branco!")
     @Size(min = 3, max = 30, message = "Nome deve conter entre 3 e 30 caracteres!")
     private String name;
+
+    public Category() {
+    }
+
+    public Category(String name) {
+        this.name = name;
+    }
 
 }

@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.exceptions.CategoryNotExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
@@ -28,6 +29,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Product createProduct(Product product) {
+
+        checkCategory(product.getCategory());
 
         Optional<Product> queryProduct = productRepository.findByName(product.getName());
 
@@ -160,15 +163,20 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public boolean checkCategory(Category category) {
+    public void checkCategory(String category) {
 
         List<Category> categories = categoryService.findAll();
+        boolean categoryExists = false;
 
-        for (Category categorie : categories) {
-            if (categorie.getName().equals(category.getName())) {
-                return true;
+        for (Category item : categories) {
+            if (item.getName().equals(category)) {
+                categoryExists = true;
+                break;
             }
         }
-        return false;
+
+        if (!categoryExists) {
+            throw new CategoryNotExistsException("Categoria inexistente.");
+        }
     }
 }

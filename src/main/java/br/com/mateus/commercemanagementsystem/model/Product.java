@@ -31,13 +31,12 @@ public class Product {
     @Min(value = 1, message = "A quantidade deve ser maior ou igual a zero!")
     private int quantity;
 
-    @OneToOne
-    private Category category;
+    private String category;
     
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, int quantity, Category category) {
+    public Product(String name, BigDecimal price, int quantity, String category) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
