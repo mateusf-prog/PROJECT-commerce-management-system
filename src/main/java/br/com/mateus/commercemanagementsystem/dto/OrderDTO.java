@@ -24,7 +24,7 @@ public class OrderDTO {
     private BigDecimal totalValue;
 
     @CPF(message = "CPF inválido!")
-    private String clientCpf;
+    private String customerCpf;
     
     private PaymentType paymentType;
     private OrderStatus status;

@@ -33,7 +33,7 @@ public class Order {
     // define relationships
 
     @ManyToOne
-    private Client client;
+    private Customer customer;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Payment payment;
@@ -45,11 +45,11 @@ public class Order {
     public Order() {
     }
 
-    public Order(BigDecimal totalValue, Payment payment, Client client,
+    public Order(BigDecimal totalValue, Payment payment, Customer customer,
                  List<OrderItem> orderItems, LocalDateTime date, OrderStatus status) {
         this.totalValue = totalValue;
         this.payment = payment;
-        this.client = client;
+        this.customer = customer;
         this.orderItems = orderItems;
         this.date = date;
         this.status = status;

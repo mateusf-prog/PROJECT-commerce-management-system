@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderServiceImpl orderService;
@@ -19,25 +19,25 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/orders")
+    @PostMapping()
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderDTO order) {
         orderService.createOrder(order);
         return ResponseEntity.ok().body(order);
     }
 
-    @GetMapping("/orders/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         OrderDTO orderDTO = orderService.findById(id);
         return ResponseEntity.ok().body(orderDTO);
     }
 
-    @GetMapping("/orders/byCpf/{cpf}")
+    @GetMapping("/byCpf/{cpf}")
     public ResponseEntity<List<OrderDTO>> findAllOrdersByClientCpf(@PathVariable String cpf) {
         List<OrderDTO> list = orderService.findAllOrdersByClientCpf(cpf);
         return ResponseEntity.ok().body(list);
     }
 
-    @GetMapping("/orders")
+    @GetMapping()
     public ResponseEntity<List<OrderDTO>> findAll() {
         List<OrderDTO> list = orderService.findAll();
         return ResponseEntity.ok().body(list);

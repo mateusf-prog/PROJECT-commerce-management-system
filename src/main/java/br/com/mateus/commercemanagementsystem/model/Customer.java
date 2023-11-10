@@ -16,9 +16,9 @@ import lombok.Data;
 import lombok.Setter;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "customers")
 @Data
-public class Client {
+public class Customer {
     
     @Column(nullable = false)
     @NotBlank(message = "Nome não pode ficar em branco!")
@@ -48,14 +48,14 @@ public class Client {
 
     // define relationships
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
 
-    public Client() {
+    public Customer() {
     }
 
-    public Client(String name, LocalDate birthdate, String cpf, String phoneNumber, String address, String email) {
+    public Customer(String name, LocalDate birthdate, String cpf, String phoneNumber, String address, String email) {
         this.name = name;
         this.birthdate = birthdate;
         this.cpf = cpf;

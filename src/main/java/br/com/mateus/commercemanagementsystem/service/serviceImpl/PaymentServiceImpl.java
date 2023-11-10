@@ -79,18 +79,4 @@ public class PaymentServiceImpl implements PaymentService {
         return null;
     }
 
-    @Override
-    public Payment processPayment(Payment payment) {
-        return null;
-    }
-
-    @Override
-    public PaymentStatus callPaymentApi(Payment payment) {
-        return null;
-    }
-
-    @Override
-    public boolean validateExistenceOrderInPayment(Payment payment) {
-        return false;
-    }
 }

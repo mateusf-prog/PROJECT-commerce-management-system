@@ -20,16 +20,16 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final ClientServiceImpl clientService;
+    private final CustomerServiceImpl customerService;
     private final OrderItemServiceImpl orderItemService;
     private final PaymentServiceImpl paymentService;
     private final ProductServiceImpl productService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ClientServiceImpl clientService,
+    public OrderServiceImpl(OrderRepository orderRepository, CustomerServiceImpl customerService,
                             OrderItemServiceImpl orderItemService, PaymentServiceImpl paymentService,
                             ProductServiceImpl productService) {
         this.orderRepository = orderRepository;
-        this.clientService = clientService;
+        this.customerService = customerService;
         this.orderItemService = orderItemService;
         this.paymentService = paymentService;
         this.productService = productService;
@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setId(orderQuery.get().getId());
         orderDTO.setPaymentType(orderQuery.get().getPayment().getPaymentType());
         orderDTO.setTotalValue(orderQuery.get().getTotalValue());
-        orderDTO.setClientCpf(orderQuery.get().getClient().getCpf());
+        orderDTO.setCustomerCpf(orderQuery.get().getCustomer().getCpf());
 
         return orderDTO;
     }
@@ -84,13 +84,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> findAllOrdersByClientCpf(String cpf) {
 
-        Client client = clientService.findByCpf(cpf);
+        Customer customer = customerService.findByCpf(cpf);
 
-        if(client == null) {
+        if(customer == null) {
             throw new EntityNotFoundException("Cliente não encontrado. CPF " + cpf);
         }
 
-        List<Order> orders = orderRepository.findByClientCpf(cpf);
+        List<Order> orders = orderRepository.findByCustomerCpf(cpf);
 
         if(orders.isEmpty()) {
             throw new EntityNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
 
         OrderDTO orderDTO = new OrderDTO(order.getOrderItems());
         orderDTO.setId(order.getId());
-        orderDTO.setClientCpf(order.getClient().getCpf());
+        orderDTO.setCustomerCpf(order.getCustomer().getCpf());
         orderDTO.setStatus(order.getStatus());
         orderDTO.setPaymentType(order.getPayment().getPaymentType());
         orderDTO.setTotalValue(order.getTotalValue());
@@ -155,8 +155,8 @@ public class OrderServiceImpl implements OrderService {
     public Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
 
         // check if cpf exists in the database and get client object    
-        Client client = clientService.findByCpf(orderDTO.getClientCpf());
-        if(client == null) {
+        Customer customer = customerService.findByCpf(orderDTO.getCustomerCpf());
+        if(customer == null) {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
@@ -164,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order(orderDTO.getOrderItems());
         order.setDate(LocalDateTime.now());
         order.setTotalValue(calculateTotalPrice(orderDTO));
-        order.setClient(client);
+        order.setCustomer(customer);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
         return order;
@@ -180,7 +180,7 @@ public class OrderServiceImpl implements OrderService {
         if (orderDTO.getPaymentType() == null) {
             throw new EntityMissingDependencyException("O pedido precisa ter um tipo de pagamento associado!");
         }
-        if (orderDTO.getClientCpf() == null) {
+        if (orderDTO.getCustomerCpf() == null) {
             throw new EntityMissingDependencyException("O pedido precisa ter um cliente!");
         }
     }

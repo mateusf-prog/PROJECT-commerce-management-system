@@ -71,4 +71,12 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CategoryNotExistsException.class)
+    public ResponseEntity<StandardError> categoryException(CategoryNotExistsException exc) {
+        
+        StandardError error = new StandardError(exc.getMessage(), 400);
+
+        return ResponseEntity.status(400).body(error);
+    }
 }
