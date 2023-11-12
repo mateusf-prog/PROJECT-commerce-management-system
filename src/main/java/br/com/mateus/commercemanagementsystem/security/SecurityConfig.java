@@ -3,11 +3,16 @@ package br.com.mateus.commercemanagementsystem.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -15,41 +20,33 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-        
-    @Bean
-    public InMemoryUserDetailsManager userDetailsManager() {
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password("{noop}admin")
-                .roles("ADMIN", "EMPLOYEE")
-                .build();
-
-        UserDetails employee = User.builder()
-                .username("employee")
-                .password("{noop}employee")
-                .roles("EMPLOYEE")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, employee);
-    }
-
     // filters to intercept requests
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-                http.authorizeHttpRequests( configurer ->
-                        configurer
-                                .requestMatchers(HttpMethod.DELETE, "/api/products", "/api/clients", "/api/orders")
-                                .hasRole("ADMIN")
-                                .anyRequest().hasRole("EMPLOYEE")
-                );
+        return http
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,
+                                "/api/products",
+                                "api/customers",
+                                "api/orders",
+                                "api/payments",
+                                "api/products").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .build();
+    }
 
-                http.httpBasic(Customizer.withDefaults());
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-                // disable csrf
-                http.csrf(csrf -> csrf.disable());
-
-                return http.build();
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

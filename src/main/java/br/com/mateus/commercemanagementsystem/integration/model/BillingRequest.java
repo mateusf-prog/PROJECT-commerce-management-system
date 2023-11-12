@@ -5,12 +5,15 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-public class BoletoRequest {
+public class BillingRequest {
     
     private String customer;
-    private String billingType = "BOLETO";
+    private String billingType;
     private Double value;
     private LocalDate dueDate;
+
+    // id order
     private String description;
+
 }
  
