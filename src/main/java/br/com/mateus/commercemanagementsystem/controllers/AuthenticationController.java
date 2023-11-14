@@ -4,27 +4,28 @@ import br.com.mateus.commercemanagementsystem.dto.AuthenticationDTO;
 import br.com.mateus.commercemanagementsystem.dto.RegisterDTO;
 import br.com.mateus.commercemanagementsystem.model.User;
 import br.com.mateus.commercemanagementsystem.repository.UserRepository;
+import br.com.mateus.commercemanagementsystem.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/users")
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    private final UserService userService;
+
+    public AuthenticationController(AuthenticationManager authenticationManager, UserRepository userRepository, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -45,5 +46,10 @@ public class AuthenticationController {
         this.userRepository.save(newUSer);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity listUsers() {
+        return ResponseEntity.ok().body(userService.findAll());
     }
 }

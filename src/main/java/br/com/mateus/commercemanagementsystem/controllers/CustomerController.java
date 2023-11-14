@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/customers")
 public class CustomerController {
 
     private final CustomerServiceImpl customerService;
@@ -19,31 +19,31 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @PostMapping("/customers")
+    @PostMapping()
     public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) {
         customerService.createCustomer(customer);
         return ResponseEntity.ok().body(customer);
     }
 
-    @PutMapping("/customers")
+    @PutMapping()
     public ResponseEntity<Customer> updateCustomer(@Valid @RequestBody Customer customer) {
         customerService.updateCustomer(customer);
         return ResponseEntity.ok().body(customer);
     }
 
-    @DeleteMapping("/customers/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCustomer(@PathVariable String id) {
         customerService.deleteByCpf(id);
         return ResponseEntity.ok().body("Cliente deletado com sucesso. \n - ID " + id);
     }
 
-    @GetMapping("/customers/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Customer> findByCpf(@PathVariable String id) {
         Customer customer = customerService.findByCpf(id);
         return ResponseEntity.ok().body(customer);
     }
 
-    @GetMapping("/customers/byName/{name}")
+    @GetMapping("/byName/{name}")
     public ResponseEntity<List<Customer>> findByName(@PathVariable String name) {
         List<Customer> list = customerService.findByName(name);
         return ResponseEntity.ok().body(list);

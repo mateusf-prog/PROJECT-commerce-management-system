@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductServiceImpl productService;
@@ -20,37 +20,37 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/products")
+    @PostMapping()
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         productService.createProduct(product);
         return ResponseEntity.ok().body(product);
     }
 
-    @PutMapping("/products")
+    @PutMapping()
     public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product) {
         productService.updateProduct(product);
         return ResponseEntity.ok().body(product);
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
         Optional<Product> product = productService.findById(id);
         return ResponseEntity.ok().body(product.get());
     }
 
-    @GetMapping("/products/name/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Product> findByName(@PathVariable String name) {
         Optional<Product> product = productService.findByName(name);
         return ResponseEntity.ok().body(product.get());
     }
 
-    @GetMapping("/products")
+    @GetMapping()
     public ResponseEntity<List<Product>> findAll() {
         List<Product> products = productService.findAll();
         return ResponseEntity.ok().body(products);
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok().body("Produto deletado com sucesso \n- ID " + id);
