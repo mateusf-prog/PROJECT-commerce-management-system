@@ -3,7 +3,7 @@ package br.com.mateus.commercemanagementsystem.integration.model;
 import lombok.Data;
 
 @Data
-public class Customer {
+public class CustomerPaymentApi {
 
     private String id;
     private String name;

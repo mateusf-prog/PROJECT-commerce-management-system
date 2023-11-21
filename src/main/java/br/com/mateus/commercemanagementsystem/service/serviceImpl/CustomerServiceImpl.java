@@ -2,6 +2,7 @@ package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.integration.IntegrationPaymentApiImpl;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.service.CustomerService;
@@ -16,8 +17,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    private final IntegrationPaymentApiImpl integrationService;
+
+    public CustomerServiceImpl(CustomerRepository customerRepository, IntegrationPaymentApiImpl integrationService) {
         this.customerRepository = customerRepository;
+        this.integrationService = integrationService;
     }
 
     @Override
@@ -44,6 +48,8 @@ public class CustomerServiceImpl implements CustomerService {
         if (queryCustomer.isPresent()) {
             throw new EntityAlreadyExistsException("CPF já cadastrado!");
         }
+
+        integrationService.createCustomer(customer);
 
         customerRepository.save(customer);
         return customer;
