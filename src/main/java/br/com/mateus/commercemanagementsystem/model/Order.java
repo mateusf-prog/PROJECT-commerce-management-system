@@ -21,7 +21,7 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @Column(name = "total_value", nullable = false)
+    @Column(name = "total_value", nullable = false, precision = 7, scale = 2)
     private BigDecimal totalValue;
 
     @Column(nullable = false)

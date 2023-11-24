@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         checkValidations(orderDTO);
         Order order = convertOrderDTOtoOrder(orderDTO);
 
-        // persist Order, Payment and OrderItems
+        // create Payment before persist Order and create OrderItems
         paymentService.createPayment(order);
         Order orderSaved = orderRepository.save(order);
         for (OrderItem item : order.getOrderItems()) {
@@ -51,8 +51,9 @@ public class OrderServiceImpl implements OrderService {
         }
         orderDTO.setId(orderSaved.getId());
         orderDTO.setStatus(order.getStatus());
+        orderDTO.setTotalValue(order.getTotalValue());
 
-        // create payment object
+        // create payment object with order object
         Payment payment = paymentService.createPayment(order);
         payment.setPaymentType(orderDTO.getPaymentType());
 
@@ -71,12 +72,7 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Pedido não encontrado. ID " + id);
         }
 
-        OrderDTO orderDTO = new OrderDTO(orderQuery.get().getOrderItems());
-        orderDTO.setStatus(orderQuery.get().getStatus());
-        orderDTO.setId(orderQuery.get().getId());
-        orderDTO.setPaymentType(orderQuery.get().getPayment().getPaymentType());
-        orderDTO.setTotalValue(orderQuery.get().getTotalValue());
-        orderDTO.setCustomerCpf(orderQuery.get().getCustomer().getCpf());
+        OrderDTO orderDTO = convertOrderToOrderDTO(orderQuery.get());
 
         return orderDTO;
     }
@@ -91,7 +87,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         List<Order> orders = orderRepository.findByCustomerCpf(cpf);
-
         if(orders.isEmpty()) {
             throw new EntityNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
         }
@@ -107,7 +102,6 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> findAll() {
 
         List<Order> list = orderRepository.findAll();
-
         if(list.isEmpty()) {
             throw new EntityNotFoundException("Lista vazia!");
         }
@@ -120,8 +114,7 @@ public class OrderServiceImpl implements OrderService {
         return listDTO;
     }
 
-    @Override
-    public OrderDTO convertOrderToOrderDTO(Order order) {
+    private OrderDTO convertOrderToOrderDTO(Order order) {
 
         OrderDTO orderDTO = new OrderDTO(order.getOrderItems());
         orderDTO.setId(order.getId());
@@ -132,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderDTO;
     }
-    
+
     @Override
     public BigDecimal calculateTotalPrice(OrderDTO order) {
 
@@ -151,16 +144,14 @@ public class OrderServiceImpl implements OrderService {
         return total;
     }
 
-    @Override
-    public Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
+    private Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
 
-        // check if cpf exists in the database and get client object    
+        // get customer from database
         Customer customer = customerService.findByCpf(orderDTO.getCustomerCpf());
         if(customer == null) {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
-        // create order object
         Order order = new Order(orderDTO.getOrderItems());
         order.setDate(LocalDateTime.now());
         order.setTotalValue(calculateTotalPrice(orderDTO));
@@ -170,9 +161,8 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    // validations
-
-    public void checkValidations(OrderDTO orderDTO) {
+    // checking if items is not empty, payment type is not null and customer exists
+    private void checkValidations(OrderDTO orderDTO) {
 
         if (orderDTO.getOrderItems().isEmpty()) {
             throw new EntityMissingDependencyException("O pedido precisa ter pelo menos um item!");
@@ -185,3 +175,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 }
+
+// TODO: implementar lógiac para criação do customer também na API de pagamento integrada
+// TODO: implementar lógiac para mudar o status de um pedido após o pagamento for concluído pela API DE PAGAMENTOS

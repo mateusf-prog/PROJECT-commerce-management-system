@@ -23,7 +23,7 @@ public class Product {
     @Size(min = 3, max = 50, message = "Nome deve conter entre 3 e 50 caracteres!")
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 7, scale = 2)
     @DecimalMin(value = "0.0", inclusive = false, message = "Preço deve ser maior que zero!")
     private BigDecimal price;
 

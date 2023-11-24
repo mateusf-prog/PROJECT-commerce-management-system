@@ -13,6 +13,4 @@ public interface OrderService {
     List<OrderDTO> findAllOrdersByClientCpf(String cpf);
 
     BigDecimal calculateTotalPrice(OrderDTO order);
-    Order convertOrderDTOtoOrder(OrderDTO orderDTO);
-    OrderDTO convertOrderToOrderDTO(Order order);
 }

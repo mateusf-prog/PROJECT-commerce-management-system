@@ -11,5 +11,5 @@ public interface OrderItemService {
     List<OrderItem> findAll();
     void deleteByItemName(String name);
 
-    void checkAllValidates(OrderItem item);
+    void validateNameAndQuantityOrderItem(OrderItem item);
 }

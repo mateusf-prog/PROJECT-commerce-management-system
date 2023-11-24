@@ -20,12 +20,11 @@ public class OrderDTO {
 
     private Long id;
 
-    @DecimalMin(value = "0.0", inclusive = true, message = "Valor total deve ser maior que zero!")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Valor total deve ser maior que zero!")
     private BigDecimal totalValue;
 
     @CPF(message = "CPF inválido!")
     private String customerCpf;
-    
     private PaymentType paymentType;
     private OrderStatus status;
 

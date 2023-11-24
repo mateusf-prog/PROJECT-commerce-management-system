@@ -5,6 +5,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsExce
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Category;
+import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.service.ProductService;
@@ -30,15 +31,13 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product createProduct(Product product) {
 
-        checkCategory(product.getCategory());
-
+        checkCategoryExists(product.getCategory());
         Optional<Product> queryProduct = productRepository.findByName(product.getName());
 
         if (queryProduct.isPresent()) {
             throw new EntityAlreadyExistsException("Produto já existe!");
         }
 
-        //checkValidations(product);
         productRepository.save(product);
         return product;
     }
@@ -50,9 +49,8 @@ public class ProductServiceImpl implements ProductService {
 
         if(product.isEmpty()) {
             throw new EntityNotFoundException("Produto não encontrado!");
-        } else {
-            return product;
         }
+        return product;
     }
 
     @Override
@@ -105,23 +103,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String adjustStockQuantity(String name, int quantity) {
+    public String adjustStockQuantity(String productName, int newQuantity) {
 
-        Optional<Product> productQuery = productRepository.findByName(name);
+        Optional<Product> productQuery = productRepository.findByName(productName);
 
         if (productQuery.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado - " + name) ;
-        } else if (quantity < 0) {
+            throw new EntityNotFoundException("Produto não encontrado - " + productName) ;
+        }
+        if (newQuantity < 0) {
             throw new EntityInvalidDataException("Quantidade inválida!");
         }
 
-        productQuery.get().setQuantity(quantity);
+        productQuery.get().setQuantity(newQuantity);
         updateProduct(productQuery.get());
         return "Quantidade em estoque atualizada!";
     }
-
-    /*
-    public void returningOldQuantityProductStock(List<OrderItem> list) {
+    
+    public void returnQuantityInStockAfterCanceledOrder(List<OrderItem> list) {
 
          for(OrderItem item : list) {
             Optional<Product> product = productRepository.findByName(item.getProductName());
@@ -132,38 +130,37 @@ public class ProductServiceImpl implements ProductService {
                 productRepository.save(product.get());
         }
     }
-    */
 
     @Override
     public int checkQuantityStockAvailability(String name) {
 
         Optional<Product> product = productRepository.findByName(name);
-
         if (product.isEmpty()) {
             throw new EntityNotFoundException("Nenhum produto no estoque com o nome: " + name);
-        } else {
-            return product.get().getQuantity();
         }
+
+        return product.get().getQuantity();
     }
 
     @Override
     @Transactional
-    public String setPrice(Long id, BigDecimal price) {
+    public String setPrice(Long id, BigDecimal newPrice) {
 
         Optional<Product> productQuery = productRepository.findById(id);
 
         if (productQuery.isEmpty()) {
             throw new EntityNotFoundException("Produto não encontrado!");
-        } else if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new EntityInvalidDataException("Preço inválido!");
-        } else {
-            productQuery.get().setPrice(price);
-            updateProduct(productQuery.get());
-            return "Preço atualizado!";
         }
+        if (newPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new EntityInvalidDataException("Novo preço inválido!");
+        }
+
+        productQuery.get().setPrice(newPrice);
+        updateProduct(productQuery.get());
+        return "Preço atualizado!";
     }
 
-    public void checkCategory(String category) {
+    private void checkCategoryExists(String category) {
 
         List<Category> categories = categoryService.findAll();
         boolean categoryExists = false;

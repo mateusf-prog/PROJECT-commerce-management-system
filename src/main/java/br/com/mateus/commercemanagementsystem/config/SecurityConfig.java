@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.config;
+/*package br.com.mateus.commercemanagementsystem.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +20,9 @@ public class SecurityConfig {
                         authorize.requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN");
                         authorize.anyRequest().authenticated();
                     })
+                .httpBasic(Customizer.withDefaults())
             .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
-}
+}*/
