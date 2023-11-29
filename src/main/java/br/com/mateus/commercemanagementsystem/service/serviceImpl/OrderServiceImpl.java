@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,8 +53,9 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setId(orderSaved.getId());
         orderDTO.setStatus(order.getStatus());
         orderDTO.setTotalValue(order.getTotalValue());
+        orderDTO.setDate(getLocalDateTimeFormatted());
 
-        // create payment object with order object
+        // create payment with order object
         Payment payment = paymentService.createPayment(order);
         payment.setPaymentType(orderDTO.getPaymentType());
 
@@ -153,12 +155,20 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order order = new Order(orderDTO.getOrderItems());
-        order.setDate(LocalDateTime.now());
+        order.setDate(getLocalDateTimeFormatted());
         order.setTotalValue(calculateTotalPrice(orderDTO));
         order.setCustomer(customer);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
         return order;
+    }
+
+    private static LocalDateTime getLocalDateTimeFormatted() {
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime date = LocalDateTime.now();
+        LocalDateTime dateFormatted = LocalDateTime.parse(date.format(fmt), fmt);
+        return dateFormatted;
     }
 
     // checking if items is not empty, payment type is not null and customer exists
@@ -176,5 +186,5 @@ public class OrderServiceImpl implements OrderService {
     }
 }
 
-// TODO: implementar lógiac para criação do customer também na API de pagamento integrada
-// TODO: implementar lógiac para mudar o status de um pedido após o pagamento for concluído pela API DE PAGAMENTOS
+// TODO: implementar lógica para criação do customer também na API de pagamento integrada
+// TODO: implementar logica para mudar o status de um pedido após o pagamento for concluído pela API DE PAGAMENTOS

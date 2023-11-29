@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
@@ -27,6 +28,7 @@ public class OrderDTO {
     private String customerCpf;
     private PaymentType paymentType;
     private OrderStatus status;
+    private LocalDateTime date;
 
     @Setter(AccessLevel.NONE)
     private List<OrderItem> orderItems;

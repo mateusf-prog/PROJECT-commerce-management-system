@@ -14,6 +14,5 @@ public class BillingRequest {
 
     // id order
     private String description;
-
 }
  
