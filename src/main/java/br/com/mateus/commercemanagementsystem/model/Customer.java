@@ -25,6 +25,9 @@ public class Customer {
     @Size(min = 3, max = 50, message = "Nome deve conter entre 3 e 50 caracteres!")
     private String name;
 
+    @Column(name = "id_api_external")
+    private String idApiExternal;
+
     @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(nullable = false)
     private LocalDate birthdate;

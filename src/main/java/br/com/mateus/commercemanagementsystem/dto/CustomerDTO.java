@@ -1,9 +1,11 @@
-package br.com.mateus.commercemanagementsystem.integration.model;
+package br.com.mateus.commercemanagementsystem.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class CustomerPaymentApi {
+@NoArgsConstructor
+public class CustomerDTO {
 
     private String id;
     private String name;

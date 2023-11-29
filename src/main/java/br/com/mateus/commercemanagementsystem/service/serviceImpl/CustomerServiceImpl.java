@@ -1,7 +1,9 @@
 package br.com.mateus.commercemanagementsystem.service.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.integration.IntegrationPaymentApiImpl;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.service.CustomerService;
@@ -15,13 +17,14 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final IntegrationPaymentApiImpl integrationPaymentApi;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, IntegrationPaymentApiImpl integrationPaymentApi) {
         this.customerRepository = customerRepository;
+        this.integrationPaymentApi = integrationPaymentApi;
     }
 
     @Override
-    @Transactional
     public Customer updateCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
@@ -35,20 +38,21 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Transactional
     public Customer createCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
 
         if (queryCustomer.isPresent()) {
-            throw new EntityAlreadyExistsException("CPF já cadastrado!");
+            throw new EntityAlreadyExistsException("CPF já cadastrado no banco de dados");
         }
+        // create customer on api and save on local database
+        CustomerDTO customerDTO = integrationPaymentApi.createCustomer(customer);
+        customer.setIdApiExternal(customerDTO.getId());
         customerRepository.save(customer);
         return customer;
     }
 
     @Override
-    @Transactional
     public void deleteByCpf(String cpf) {
 
         Optional<Customer> customer = customerRepository.findByCpf(cpf);
