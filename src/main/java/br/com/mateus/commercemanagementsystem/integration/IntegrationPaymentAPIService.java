@@ -7,8 +7,8 @@ import br.com.mateus.commercemanagementsystem.model.Customer;
 public interface IntegrationPaymentAPIService {
 
     CustomerDTO createCustomer(Customer customer);
-    void findCustomer(String id);
-    void updateCustomer(Customer customer);
+    CustomerDTO findCustomer(String id);
+    CustomerDTO updateCustomer(Customer customer);
     boolean deleteCustomer(String id);
 
 

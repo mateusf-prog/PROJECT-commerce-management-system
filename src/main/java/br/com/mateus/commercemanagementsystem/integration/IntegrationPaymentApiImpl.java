@@ -2,11 +2,13 @@ package br.com.mateus.commercemanagementsystem.integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.integration.model.BillingRequest;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -28,14 +30,8 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
         // create customerDTO
         CustomerDTO customerDTO = convertCustomerToCustomerDTO(customer);
 
-        // define headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("access_token", token);
-
-        // create entity
-        HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers);
-
-        // call API
+        // define headers, create entity and call API
+        HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
         ResponseEntity<CustomerDTO> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
@@ -52,18 +48,50 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
     }
 
     @Override
-    public void findCustomer(String id) {
-        // TODO implementar a busca de um cliente na api
+    public CustomerDTO findCustomer(String id) {
+
+        // create entity and call API
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(headers());
+            ResponseEntity<CustomerDTO> response = restTemplate.exchange(
+                    url + "/" + id,
+                    HttpMethod.GET,
+                    entity,
+                    CustomerDTO.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new EntityNotFoundException("Cliente atualizado na base de dados local e não encontrado na API integrada");
+        }
     }
 
     @Override
-    public void updateCustomer(Customer customer) {
-        // TODO implementar a atualização de um cliente na api quando o cliente é atualizado no banco local
+    public CustomerDTO updateCustomer(Customer customer) {
+
+        CustomerDTO customerDTO = null;
+
+        if (customer.getIdApiExternal() == null) {
+            customerDTO = createCustomer(customer);
+            return customerDTO;
+        } else {
+            customerDTO = convertCustomerToCustomerDTO(customer);
+
+            // create entity and call API
+            HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
+            ResponseEntity<CustomerDTO> response = restTemplate.exchange(
+                    url + "/" + customer.getIdApiExternal(),
+                    HttpMethod.PUT,
+                    entity,
+                    CustomerDTO.class
+            );
+            return response.getBody();
+        }
     }
 
     @Override
     public boolean deleteCustomer(String id) {
         // TODO implementar a exclusão de um cliente na api quando excluido no banco local
+        return false;
     }
 
     @Override
@@ -74,10 +102,17 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
     public CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
 
         CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(customer.getIdApiExternal());
         customerDTO.setName(customer.getName());
         customerDTO.setCpfCnpj(customer.getCpf());
         customerDTO.setEmail(customer.getEmail());
         customerDTO.setMobilePhone(customer.getPhoneNumber());
         return customerDTO;
+    }
+
+    private HttpHeaders headers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("access_token", token);
+        return headers;
     }
 }

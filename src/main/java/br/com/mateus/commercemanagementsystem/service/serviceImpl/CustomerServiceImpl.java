@@ -32,8 +32,12 @@ public class CustomerServiceImpl implements CustomerService {
          if (queryCustomer.isEmpty()) {
              throw new EntityNotFoundException("Cliente não encontrado!");
          }
-         customerRepository.save(customer);
 
+         customer.setIdApiExternal(queryCustomer.get().getIdApiExternal());
+
+         CustomerDTO customerDTO = integrationPaymentApi.updateCustomer(customer);
+         customer.setIdApiExternal(customerDTO.getId());
+         customerRepository.save(customer);
          return customer;
     }
 
@@ -46,8 +50,12 @@ public class CustomerServiceImpl implements CustomerService {
             throw new EntityAlreadyExistsException("CPF já cadastrado no banco de dados");
         }
         // create customer on api and save on local database
-        CustomerDTO customerDTO = integrationPaymentApi.createCustomer(customer);
-        customer.setIdApiExternal(customerDTO.getId());
+        try {
+            CustomerDTO customerDTO = integrationPaymentApi.createCustomer(customer);
+            customer.setIdApiExternal(customerDTO.getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         customerRepository.save(customer);
         return customer;
     }
