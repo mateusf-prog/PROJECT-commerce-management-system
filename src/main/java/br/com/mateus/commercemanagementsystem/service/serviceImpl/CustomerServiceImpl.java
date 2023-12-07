@@ -47,15 +47,12 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
 
         if (queryCustomer.isPresent()) {
-            throw new EntityAlreadyExistsException("CPF já cadastrado no banco de dados");
+            throw new EntityAlreadyExistsException("CPF já cadastrado.");
         }
         // create customer on api and save on local database
-        try {
-            CustomerDTO customerDTO = integrationPaymentApi.createCustomer(customer);
-            customer.setIdApiExternal(customerDTO.getId());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        CustomerDTO customerDTO = integrationPaymentApi.createCustomer(customer);
+        customer.setIdApiExternal(customerDTO.getId());
+
         customerRepository.save(customer);
         return customer;
     }

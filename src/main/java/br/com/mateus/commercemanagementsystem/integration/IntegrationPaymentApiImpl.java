@@ -38,13 +38,7 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
                 entity,
                 CustomerDTO.class
         );
-
-        if (response.getStatusCode() == HttpStatusCode.valueOf(200)) {
-            customerDTO.setId(response.getBody().getId());
-            return response.getBody();
-        } else {
-            throw new EntityInvalidDataException("Erro ao criar cliente na API externa");
-        }
+        return response.getBody();
     }
 
     @Override
