@@ -90,8 +90,19 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
 
     @Override
     public boolean deleteCustomer(String id) {
-        // TODO implementar a exclusão de um cliente na api quando excluido no banco local
-        return false;
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(id, headers());
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url + "/" + id,
+                    HttpMethod.DELETE,
+                    entity,
+                    String.class
+            );
+            return true;
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new EntityNotFoundException("Cliente não encontrado na API externar.");
+        }
     }
 
     @Override

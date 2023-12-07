@@ -69,6 +69,11 @@ public class CustomerServiceImpl implements CustomerService {
             throw new EntityNotFoundException("Cliente não encontrado. CPF " + cpf);
         }
         customerRepository.delete(customer.get());
+        if (customer.get().getIdApiExternal() == null) {
+            throw new EntityNotFoundException("Cliente deletato com sucesso do banco de dados local. " +
+                    "Cliente não possui ID para api externa.");
+        }
+        integrationPaymentApi.deleteCustomer(customer.get().getIdApiExternal());
     }
 
     @Override

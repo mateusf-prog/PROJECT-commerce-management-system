@@ -167,8 +167,7 @@ public class OrderServiceImpl implements OrderService {
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         LocalDateTime date = LocalDateTime.now();
-        LocalDateTime dateFormatted = LocalDateTime.parse(date.format(fmt), fmt);
-        return dateFormatted;
+        return LocalDateTime.parse(date.format(fmt), fmt);
     }
 
     // checking if items is not empty, payment type is not null and customer exists
