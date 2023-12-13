@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class OrderDTO {
     private String customerCpf;
     private PaymentType paymentType;
     private OrderStatus status;
-    private LocalDateTime date;
+    private Instant date;
 
     @Setter(AccessLevel.NONE)
     private List<OrderItem> orderItems;

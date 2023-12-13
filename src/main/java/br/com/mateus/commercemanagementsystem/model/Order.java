@@ -1,9 +1,12 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import jakarta.persistence.*;
@@ -12,7 +15,7 @@ import lombok.Data;
 import lombok.Setter;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "tb_order")
 @Data
 public class Order {
 
@@ -25,7 +28,7 @@ public class Order {
     private BigDecimal totalValue;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private Instant date;
 
     @Column(nullable = false)
     private OrderStatus status;
@@ -33,29 +36,24 @@ public class Order {
     // define relationships
 
     @ManyToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Payment payment;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Setter(AccessLevel.NONE)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private Set<OrderItem> orderItems = new HashSet<>();
 
     public Order() {
     }
 
-    public Order(BigDecimal totalValue, Payment payment, Customer customer,
-                 List<OrderItem> orderItems, LocalDateTime date, OrderStatus status) {
+    public Order(BigDecimal totalValue, Payment payment, Customer customer, Instant date, OrderStatus status) {
         this.totalValue = totalValue;
         this.payment = payment;
         this.customer = customer;
-        this.orderItems = orderItems;
         this.date = date;
         this.status = status;
-    }
-
-    public Order(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
     }
 }

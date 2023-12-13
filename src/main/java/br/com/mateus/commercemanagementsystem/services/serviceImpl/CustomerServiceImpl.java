@@ -1,13 +1,12 @@
-package br.com.mateus.commercemanagementsystem.service.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.integration.IntegrationPaymentApiImpl;
+import br.com.mateus.commercemanagementsystem.integration.CustomerApiServiceImpl;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
-import br.com.mateus.commercemanagementsystem.service.CustomerService;
-import jakarta.transaction.Transactional;
+import br.com.mateus.commercemanagementsystem.services.CustomerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +16,9 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final IntegrationPaymentApiImpl integrationPaymentApi;
+    private final CustomerApiServiceImpl integrationPaymentApi;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, IntegrationPaymentApiImpl integrationPaymentApi) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, CustomerApiServiceImpl integrationPaymentApi) {
         this.customerRepository = customerRepository;
         this.integrationPaymentApi = integrationPaymentApi;
     }

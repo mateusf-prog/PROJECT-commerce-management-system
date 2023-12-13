@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.service.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.CategoryNotExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
@@ -8,7 +8,7 @@ import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
-import br.com.mateus.commercemanagementsystem.service.ProductService;
+import br.com.mateus.commercemanagementsystem.services.ProductService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product createProduct(Product product) {
 
-        checkCategoryExists(product.getCategory());
+        //checkCategoryExists(product.getCategory());
         Optional<Product> queryProduct = productRepository.findByName(product.getName());
 
         if (queryProduct.isPresent()) {

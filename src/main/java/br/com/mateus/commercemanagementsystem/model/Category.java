@@ -1,18 +1,16 @@
 package br.com.mateus.commercemanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@Entity(name = "categories")
+@Entity(name = "tb_category")
 public class Category {
 
     @Id
@@ -24,11 +22,14 @@ public class Category {
     @Size(min = 3, max = 30, message = "Nome deve conter entre 3 e 30 caracteres!")
     private String name;
 
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> products = new HashSet<>();
+
     public Category() {
     }
 
-    public Category(String name) {
+    public Category(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
-
 }

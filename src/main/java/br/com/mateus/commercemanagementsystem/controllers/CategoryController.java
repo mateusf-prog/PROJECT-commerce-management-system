@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.mateus.commercemanagementsystem.model.Category;
-import br.com.mateus.commercemanagementsystem.service.serviceImpl.CategoryServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.serviceImpl.CategoryServiceImpl;
 import jakarta.validation.Valid;
 
 @RestController

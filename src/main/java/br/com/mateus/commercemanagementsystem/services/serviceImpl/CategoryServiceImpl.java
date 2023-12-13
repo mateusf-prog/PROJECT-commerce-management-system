@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.service.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsExce
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
-import br.com.mateus.commercemanagementsystem.service.CategoryService;
+import br.com.mateus.commercemanagementsystem.services.CategoryService;
 import jakarta.transaction.Transactional;
 
 @Service

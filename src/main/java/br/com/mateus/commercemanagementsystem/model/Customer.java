@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.Setter;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "tb_customer")
 @Data
 public class Customer {
     

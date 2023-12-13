@@ -1,7 +1,8 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
+import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
-import br.com.mateus.commercemanagementsystem.service.serviceImpl.OrderServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.serviceImpl.OrderServiceImpl;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class OrderController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderDTO order) {
-        orderService.createOrder(order);
-        return ResponseEntity.ok().body(order);
+    public ResponseEntity<OrderCreatedDTO> createOrder(@Valid @RequestBody OrderDTO order) {
+        OrderCreatedDTO orderCreated = orderService.createOrder(order);
+        return ResponseEntity.ok().body(orderCreated);
     }
 
     @GetMapping("/{id}")

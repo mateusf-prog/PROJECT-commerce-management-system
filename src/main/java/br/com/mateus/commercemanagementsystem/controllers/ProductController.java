@@ -1,7 +1,7 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.model.Product;
-import br.com.mateus.commercemanagementsystem.service.serviceImpl.ProductServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.serviceImpl.ProductServiceImpl;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;

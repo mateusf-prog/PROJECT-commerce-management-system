@@ -1,9 +1,7 @@
 package br.com.mateus.commercemanagementsystem.integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.integration.model.BillingRequest;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -12,7 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
+public class CustomerApiServiceImpl implements CustomerApiService {
 
     @Value("https://sandbox.asaas.com/api/v3/customers")
     private String url;
@@ -21,7 +19,7 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public IntegrationPaymentApiImpl() {
+    public CustomerApiServiceImpl() {
     }
 
     @Override
@@ -55,7 +53,7 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
             );
             return response.getBody();
         } catch (HttpClientErrorException.NotFound e) {
-            throw new EntityNotFoundException("Cliente atualizado na base de dados local e não encontrado na API integrada");
+            throw new EntityNotFoundException("Cliente atualizado na base de dados. Cliente  não encontrado na API integrada");
         }
     }
 
@@ -83,7 +81,7 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
     }
 
     @Override
-    public boolean deleteCustomer(String id) {
+    public void deleteCustomer(String id) {
 
         try {
             HttpEntity<String> entity = new HttpEntity<>(id, headers());
@@ -93,15 +91,9 @@ public class IntegrationPaymentApiImpl implements IntegrationPaymentAPIService {
                     entity,
                     String.class
             );
-            return true;
         } catch (HttpClientErrorException.NotFound e) {
-            throw new EntityNotFoundException("Cliente não encontrado na API externar.");
+            throw new EntityNotFoundException("Cliente não encontrado na API externa.");
         }
-    }
-
-    @Override
-    public BillingRequest createBilling() {
-        return null;
     }
 
     public CustomerDTO convertCustomerToCustomerDTO(Customer customer) {

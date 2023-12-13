@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.service;
+package br.com.mateus.commercemanagementsystem.services;
 
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;

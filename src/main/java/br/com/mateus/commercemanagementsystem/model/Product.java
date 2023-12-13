@@ -1,16 +1,20 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 @Entity
-@Table(name = "products")
+@Table(name = "tb_product")
 @Data
 public class Product {
 
@@ -31,15 +35,23 @@ public class Product {
     @Min(value = 1, message = "A quantidade deve ser maior ou igual a zero!")
     private int quantity;
 
-    private String category;
+    @OneToMany(mappedBy = "id.product")
+    @Setter(AccessLevel.NONE)
+    private Set<OrderItem> items = new HashSet<>();
+
+    @Setter(AccessLevel.NONE)
+    @ManyToMany
+    @JoinTable(name = "tb_product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();
     
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, int quantity, String category) {
+    public Product(String name, BigDecimal price, int quantity) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-        this.category = category;
     }
 }

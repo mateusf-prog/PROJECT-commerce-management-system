@@ -1,16 +1,17 @@
-package br.com.mateus.commercemanagementsystem.service.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
-import br.com.mateus.commercemanagementsystem.service.OrderService;
-import jakarta.transaction.Transactional;
+import br.com.mateus.commercemanagementsystem.services.OrderService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,8 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    @Transactional
-    public OrderDTO createOrder(OrderDTO orderDTO) {
+    public OrderCreatedDTO createOrder(OrderDTO orderDTO) {
 
         checkValidations(orderDTO);
         Order order = convertOrderDTOtoOrder(orderDTO);
@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setId(orderSaved.getId());
         orderDTO.setStatus(order.getStatus());
         orderDTO.setTotalValue(order.getTotalValue());
-        orderDTO.setDate(getLocalDateTimeFormatted());
+        orderDTO.setDate(Instant.now());
 
         // create payment with order object
         Payment payment = paymentService.createPayment(order);
@@ -62,7 +62,29 @@ public class OrderServiceImpl implements OrderService {
         // set payment object to order
         order.setPayment(payment);
 
-        return orderDTO;
+         return getOrderCreatedDTO(orderDTO, order, payment);
+    }
+    /**
+     * This function creates an OrderCreatedDTO object from given OrderDTO,
+     * Order, and Payment objects.
+     *
+     * @param orderDTO   The OrderDTO object to get details from.
+     * @param order      The Order object to get the customer name from.
+     * @param payment    The Payment object to get the external API payment ID from.
+     */
+    private static OrderCreatedDTO getOrderCreatedDTO(OrderDTO orderDTO, Order order, Payment payment) {
+        OrderCreatedDTO orderCreatedDTO = new OrderCreatedDTO();
+        orderCreatedDTO.setOrderId(orderDTO.getId());
+        orderCreatedDTO.setDate(orderDTO.getDate());
+        orderCreatedDTO.setCustomer(order.getCustomer().getName());
+        orderCreatedDTO.setStatus(orderDTO.getStatus());
+        orderCreatedDTO.setCpf(orderDTO.getCustomerCpf());
+        orderCreatedDTO.setPaymentType(orderDTO.getPaymentType());
+        orderCreatedDTO.setValue(orderDTO.getTotalValue());
+        orderCreatedDTO.setListItems(orderDTO.getOrderItems());
+        orderCreatedDTO.setPaymentId(payment.getIdApiExternal());
+
+        return orderCreatedDTO;
     }
 
     @Override
@@ -75,7 +97,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderDTO orderDTO = convertOrderToOrderDTO(orderQuery.get());
-
         return orderDTO;
     }
 
@@ -118,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderDTO convertOrderToOrderDTO(Order order) {
 
-        OrderDTO orderDTO = new OrderDTO(order.getOrderItems());
+        OrderDTO orderDTO = new OrderDTO();
         orderDTO.setId(order.getId());
         orderDTO.setCustomerCpf(order.getCustomer().getCpf());
         orderDTO.setStatus(order.getStatus());
@@ -154,20 +175,13 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
-        Order order = new Order(orderDTO.getOrderItems());
-        order.setDate(getLocalDateTimeFormatted());
+        Order order = new Order();
+        order.setDate(Instant.now());
         order.setTotalValue(calculateTotalPrice(orderDTO));
         order.setCustomer(customer);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
         return order;
-    }
-
-    private static LocalDateTime getLocalDateTimeFormatted() {
-
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime date = LocalDateTime.now();
-        return LocalDateTime.parse(date.format(fmt), fmt);
     }
 
     // checking if items is not empty, payment type is not null and customer exists
@@ -185,5 +199,4 @@ public class OrderServiceImpl implements OrderService {
     }
 }
 
-// TODO: implementar lógica para criação do customer também na API de pagamento integrada
 // TODO: implementar logica para mudar o status de um pedido após o pagamento for concluído pela API DE PAGAMENTOS

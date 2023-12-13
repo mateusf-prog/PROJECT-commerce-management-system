@@ -1,12 +1,13 @@
-package br.com.mateus.commercemanagementsystem.service.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.integration.PaymentApiServiceImpl;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
-import br.com.mateus.commercemanagementsystem.service.PaymentService;
+import br.com.mateus.commercemanagementsystem.services.PaymentService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,11 @@ import java.util.Optional;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final PaymentApiServiceImpl paymentApiService;
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, PaymentApiServiceImpl paymentApiService) {
         this.paymentRepository = paymentRepository;
+        this.paymentApiService = paymentApiService;
     }
 
     @Override
@@ -28,6 +31,11 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setOrder(order);
         payment.setValue(order.getTotalValue());
         payment.setStatus(PaymentStatus.PENDING);
+        payment.setPaymentType(order.getPayment().getPaymentType());
+        // TODO: paymentype retorna null porque há um loop, como saber o tipo de pagamento se o pagamento é criado aqui ?
+
+        String id = paymentApiService.createPayment(payment).getId();
+        payment.setIdApiExternal(id);
 
         return payment;
     }
@@ -61,22 +69,25 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String deleteById(Long id) {
+        // todo: implementar
         return null;
     }
 
     @Override
     public String changePaymentType(Payment payment, PaymentType type) {
+        // todo: implementar
         return null;
     }
 
     @Override
     public String changePaymentStatus(Payment payment, PaymentStatus status) {
+        // todo: implementar
         return null;
     }
 
     @Override
     public String sendToEmail(Payment payment, String email) {
+        // todo: implementar
         return null;
     }
-
 }

@@ -1,11 +1,11 @@
-package br.com.mateus.commercemanagementsystem.service.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
-import br.com.mateus.commercemanagementsystem.service.OrderItemService;
+import br.com.mateus.commercemanagementsystem.services.OrderItemService;
 import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -76,8 +76,6 @@ public class OrderItemServiceImpl implements OrderItemService {
         if(orderItem.isEmpty()) {
             throw new EntityNotFoundException("Item de pedido não encontrado. Nome: " + name);
         }
-
-        orderItemRepository.deleteById(orderItem.get().getId());
     }
 
     @Override

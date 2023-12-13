@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.Setter;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "tb_payment")
 @Data
 public class Payment {
 
@@ -20,7 +20,7 @@ public class Payment {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "payment_type" , nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
@@ -33,9 +33,13 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
+    @Column(name = "id_api_external")
+    private String idApiExternal;
+
     // define relationships
 
-    @OneToOne(mappedBy = "payment", orphanRemoval = true)
+    @OneToOne
+    @MapsId
     private Order order;
     
     public Payment() {

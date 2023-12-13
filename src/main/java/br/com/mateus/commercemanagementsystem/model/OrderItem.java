@@ -9,13 +9,11 @@ import lombok.Setter;
 
 @Data
 @Entity
-@Table(name = "order_items")
+@Table(name = "tb_order_item")
 public class OrderItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    private Long id;
+    @EmbeddedId
+    private OrderItemPK id = new OrderItemPK();
 
     @Column(name = "product_name", nullable = false)
     private String productName;
@@ -26,7 +24,9 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(String productName, int quantity, BigDecimal price) {
+    public OrderItem(Order order, Product product, String productName, int quantity, BigDecimal price) {
+        id.setOrder(order);
+        id.setProduct(product);
         this.productName = productName;
         this.quantity = quantity;
     }
