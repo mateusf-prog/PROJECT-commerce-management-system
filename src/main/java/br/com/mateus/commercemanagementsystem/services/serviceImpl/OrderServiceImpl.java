@@ -156,11 +156,8 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItem item : order.getOrderItems()) {
-            Optional<Product> product = productService.findByName(item.getProductName());
-            if (product.isEmpty()) {
-                throw new EntityNotFoundException("Produto não encontrado - " + item.getProductName());
-            }
-            productPrice = product.get().getPrice();
+            Product product = productService.findByName(item.getProductName());
+            productPrice = product.getPrice();
             total = total.add(productPrice.multiply(BigDecimal.valueOf(item.getQuantity())));
         }
 

@@ -22,14 +22,13 @@ public class Category {
     @Size(min = 3, max = 30, message = "Nome deve conter entre 3 e 30 caracteres!")
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
+    @OneToMany(mappedBy = "category")
     private Set<Product> products = new HashSet<>();
 
     public Category() {
     }
 
-    public Category(Long id, String name) {
-        this.id = id;
+    public Category(String name) {
         this.name = name;
     }
 }

@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
+import br.com.mateus.commercemanagementsystem.dto.ProductDTO;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.services.serviceImpl.ProductServiceImpl;
 import jakarta.validation.Valid;
@@ -21,9 +22,9 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
-        productService.createProduct(product);
-        return ResponseEntity.ok().body(product);
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody Product product) {
+        ProductDTO productDTO = productService.createProduct(product);
+        return ResponseEntity.ok().body(productDTO);
     }
 
     @PutMapping()
@@ -33,20 +34,20 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id) {
-        Optional<Product> product = productService.findById(id);
-        return ResponseEntity.ok().body(product.get());
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+        ProductDTO product = productService.findById(id);
+        return ResponseEntity.ok().body(product);
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<Product> findByName(@PathVariable String name) {
-        Optional<Product> product = productService.findByName(name);
-        return ResponseEntity.ok().body(product.get());
+        Product product = productService.findByName(name);
+        return ResponseEntity.ok().body(product);
     }
 
     @GetMapping()
-    public ResponseEntity<List<Product>> findAll() {
-        List<Product> products = productService.findAll();
+    public ResponseEntity<List<ProductDTO>> findAll() {
+        List<ProductDTO> products = productService.findAll();
         return ResponseEntity.ok().body(products);
     }
 

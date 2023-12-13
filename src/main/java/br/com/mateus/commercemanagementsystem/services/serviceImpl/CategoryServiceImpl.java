@@ -25,8 +25,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category createCategory(Category category) {
 
-        List<Category> queryCategory = categoryRepository.findByName(category.getName());
-        if (!queryCategory.isEmpty()) {
+        Optional<Category> queryCategory = categoryRepository.findByName(category.getName());
+        if (queryCategory.isPresent()) {
             throw new EntityAlreadyExistsException("Categoria já existe!");
         }
         categoryRepository.save(category);
@@ -49,27 +49,21 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteByName(String name) {
         
-        List<Category> categories = categoryRepository.findByName(name);
-        if (categories.isEmpty()) {
+        Optional<Category> category = categoryRepository.findByName(name);
+        if (category.isEmpty()) {
             throw new EntityNotFoundException("Categoria não encontrada. Nome: " + name);
         }
-        if (categories.size() > 1) {
-            throw new EntityAlreadyExistsException("Mais de uma categoria encontrada!");
-        }
-        categoryRepository.delete(categories.get(0));
+        categoryRepository.delete(category.get());
     }
 
     @Override
     public Category findByName(String name) {
         
-        List<Category> categories = categoryRepository.findByName(name);
-        if (categories.isEmpty()) {
+        Optional<Category> category = categoryRepository.findByName(name);
+        if (category.isEmpty()) {
             throw new EntityNotFoundException("Categoria não encontrada!");
         }
-        if (categories.size() > 1) {
-            throw new EntityAlreadyExistsException("Mais de uma categoria encontrada!");
-        }
-        return categories.get(0);
+        return category.get();
     }
 
     @Override

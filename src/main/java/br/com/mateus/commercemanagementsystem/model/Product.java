@@ -39,19 +39,16 @@ public class Product {
     @Setter(AccessLevel.NONE)
     private Set<OrderItem> items = new HashSet<>();
 
-    @Setter(AccessLevel.NONE)
-    @ManyToMany
-    @JoinTable(name = "tb_product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    @ManyToOne()
+    private Category category;
     
     public Product() {
     }
 
-    public Product(String name, BigDecimal price, int quantity) {
+    public Product(String name, BigDecimal price, int quantity, Category category) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.category = category;
     }
 }

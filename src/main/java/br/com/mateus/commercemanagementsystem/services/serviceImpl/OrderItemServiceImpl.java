@@ -40,8 +40,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     private void subtractingItemFromStockOnProductsDatabase(OrderItem item) {
-        Optional<Product> product = productService.findByName(item.getProductName());
-        productService.adjustStockQuantity(product.get().getName(), product.get().getQuantity() - item.getQuantity());
+        Product product = productService.findByName(item.getProductName());
+        productService.adjustStockQuantity(product.getName(), product.getQuantity() - item.getQuantity());
     }
 
     @Override

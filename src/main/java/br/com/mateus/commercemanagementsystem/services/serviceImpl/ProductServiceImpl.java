@@ -1,6 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
-import br.com.mateus.commercemanagementsystem.exceptions.CategoryNotExistsException;
+import br.com.mateus.commercemanagementsystem.dto.ProductDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,28 +30,34 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product createProduct(Product product) {
+    public ProductDTO createProduct(Product product) {
 
-        //checkCategoryExists(product.getCategory());
+        Category category = categoryService.findByName(product.getCategory().getName());
         Optional<Product> queryProduct = productRepository.findByName(product.getName());
 
         if (queryProduct.isPresent()) {
             throw new EntityAlreadyExistsException("Produto já existe!");
         }
 
-        productRepository.save(product);
-        return product;
+        product.setCategory(category);
+        Product productSaved = productRepository.save(product);
+        ProductDTO productDTO = convertProductToProductDTO(product);
+        productDTO.setId(productSaved.getId());
+        return productDTO;
     }
 
     @Override
-    public Optional<Product> findById(Long id) {
+    public ProductDTO findById(Long id) {
 
         Optional<Product> product = productRepository.findById(id);
 
         if(product.isEmpty()) {
             throw new EntityNotFoundException("Produto não encontrado!");
         }
-        return product;
+
+        ProductDTO productDTO = convertProductToProductDTO(product.get());
+        productDTO.setId(product.get().getId());
+        return productDTO;
     }
 
     @Override
@@ -81,24 +88,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> findByName(String name) {
+    public Product findByName(String name) {
 
         Optional<Product> product = productRepository.findByName(name);
         if (product.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado!");
+            throw new EntityNotFoundException("Produto não encontrado. Nome: " + name);
         }
-        return product;
+
+        return product.get();
     }
 
     @Override
-    public List<Product> findAll() {
+    public List<ProductDTO> findAll() {
 
         List<Product> products = productRepository.findAll();
 
         if(products.isEmpty()) {
             throw new EntityNotFoundException("Lista vazia!");
         }
-        return products;
+
+        List<ProductDTO> listDTO = new ArrayList<>();
+        for (Product product : products) {
+            ProductDTO productDTO = convertProductToProductDTO(product);
+            productDTO.setId(product.getId());
+            listDTO.add(productDTO);
+        }
+        return listDTO;
     }
 
     @Override
@@ -160,20 +175,13 @@ public class ProductServiceImpl implements ProductService {
         return "Preço atualizado!";
     }
 
-    private void checkCategoryExists(String category) {
+    public ProductDTO convertProductToProductDTO(Product product) {
 
-        List<Category> categories = categoryService.findAll();
-        boolean categoryExists = false;
-
-        for (Category item : categories) {
-            if (item.getName().equals(category)) {
-                categoryExists = true;
-                break;
-            }
-        }
-
-        if (!categoryExists) {
-            throw new CategoryNotExistsException("Categoria inexistente.");
-        }
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setName(product.getName());
+        productDTO.setQuantity(product.getQuantity());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setCategoryName(product.getCategory().getName());
+        return productDTO;
     }
 }
