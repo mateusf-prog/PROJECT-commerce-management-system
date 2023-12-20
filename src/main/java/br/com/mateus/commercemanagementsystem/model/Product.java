@@ -35,10 +35,6 @@ public class Product {
     @Min(value = 1, message = "A quantidade deve ser maior ou igual a zero!")
     private int quantity;
 
-    @OneToMany(mappedBy = "id.product")
-    @Setter(AccessLevel.NONE)
-    private Set<OrderItem> items = new HashSet<>();
-
     @ManyToOne()
     private Category category;
     

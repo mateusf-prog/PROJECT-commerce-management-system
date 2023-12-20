@@ -12,8 +12,10 @@ import lombok.Setter;
 @Table(name = "tb_order_item")
 public class OrderItem {
 
-    @EmbeddedId
-    private OrderItemPK id = new OrderItemPK();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
+    private Long id;
 
     @Column(name = "product_name", nullable = false)
     private String productName;
@@ -24,9 +26,7 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Order order, Product product, String productName, int quantity, BigDecimal price) {
-        id.setOrder(order);
-        id.setProduct(product);
+    public OrderItem(String productName, int quantity, BigDecimal price) {
         this.productName = productName;
         this.quantity = quantity;
     }

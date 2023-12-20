@@ -27,7 +27,6 @@ public class OrderDTO {
 
     @CPF(message = "CPF inválido!")
     private String customerCpf;
-    private PaymentType paymentType;
     private OrderStatus status;
     private Instant date;
 

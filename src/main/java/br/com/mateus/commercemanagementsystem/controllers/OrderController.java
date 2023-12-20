@@ -2,6 +2,7 @@ package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
+import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.services.serviceImpl.OrderServiceImpl;
 import jakarta.validation.Valid;
 
@@ -42,5 +43,11 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> findAll() {
         List<OrderDTO> list = orderService.findAll();
         return ResponseEntity.ok().body(list);
+    }
+
+    @PatchMapping("/cancel/{id}")
+    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable Long id) {
+        OrderDTO orderDTO = orderService.cancelOrder(id);
+        return ResponseEntity.ok().body(orderDTO);
     }
 }

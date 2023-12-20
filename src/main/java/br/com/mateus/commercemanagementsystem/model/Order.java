@@ -42,10 +42,6 @@ public class Order {
     @OneToOne
     private Payment payment;
 
-    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @Setter(AccessLevel.NONE)
-    private Set<OrderItem> orderItems = new HashSet<>();
-
     public Order() {
     }
 

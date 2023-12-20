@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,9 +43,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = convertOrderDTOtoOrder(orderDTO);
 
         // create Payment before persist Order and create OrderItems
-        paymentService.createPayment(order);
         Order orderSaved = orderRepository.save(order);
-        for (OrderItem item : order.getOrderItems()) {
+        for (OrderItem item : orderDTO.getOrderItems()) {
             orderItemService.createOrderItem(item);
         }
         orderDTO.setId(orderSaved.getId());
@@ -55,14 +52,7 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setTotalValue(order.getTotalValue());
         orderDTO.setDate(Instant.now());
 
-        // create payment with order object
-        Payment payment = paymentService.createPayment(order);
-        payment.setPaymentType(orderDTO.getPaymentType());
-
-        // set payment object to order
-        order.setPayment(payment);
-
-         return getOrderCreatedDTO(orderDTO, order, payment);
+         return getOrderCreatedDTO(orderDTO, order);
     }
     /**
      * This function creates an OrderCreatedDTO object from given OrderDTO,
@@ -70,19 +60,16 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param orderDTO   The OrderDTO object to get details from.
      * @param order      The Order object to get the customer name from.
-     * @param payment    The Payment object to get the external API payment ID from.
      */
-    private static OrderCreatedDTO getOrderCreatedDTO(OrderDTO orderDTO, Order order, Payment payment) {
+    private static OrderCreatedDTO getOrderCreatedDTO(OrderDTO orderDTO, Order order) {
         OrderCreatedDTO orderCreatedDTO = new OrderCreatedDTO();
         orderCreatedDTO.setOrderId(orderDTO.getId());
         orderCreatedDTO.setDate(orderDTO.getDate());
         orderCreatedDTO.setCustomer(order.getCustomer().getName());
         orderCreatedDTO.setStatus(orderDTO.getStatus());
         orderCreatedDTO.setCpf(orderDTO.getCustomerCpf());
-        orderCreatedDTO.setPaymentType(orderDTO.getPaymentType());
-        orderCreatedDTO.setValue(orderDTO.getTotalValue());
+        orderCreatedDTO.setTotalValue(orderDTO.getTotalValue());
         orderCreatedDTO.setListItems(orderDTO.getOrderItems());
-        orderCreatedDTO.setPaymentId(payment.getIdApiExternal());
 
         return orderCreatedDTO;
     }
@@ -137,13 +124,25 @@ public class OrderServiceImpl implements OrderService {
         return listDTO;
     }
 
+    public OrderDTO cancelOrder(Long id) {
+
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isEmpty()) {
+            throw new EntityNotFoundException("Pedido não encontrado!");
+        }
+        order.get().setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order.get());
+        // todo: implementar logica para retornar a quantidade de produtos no estoque após o pedido ser cancelado
+
+        return convertOrderToOrderDTO(order.get());
+    }
+
     private OrderDTO convertOrderToOrderDTO(Order order) {
 
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setId(order.getId());
         orderDTO.setCustomerCpf(order.getCustomer().getCpf());
         orderDTO.setStatus(order.getStatus());
-        orderDTO.setPaymentType(order.getPayment().getPaymentType());
         orderDTO.setTotalValue(order.getTotalValue());
 
         return orderDTO;
@@ -186,9 +185,6 @@ public class OrderServiceImpl implements OrderService {
 
         if (orderDTO.getOrderItems().isEmpty()) {
             throw new EntityMissingDependencyException("O pedido precisa ter pelo menos um item!");
-        }
-        if (orderDTO.getPaymentType() == null) {
-            throw new EntityMissingDependencyException("O pedido precisa ter um tipo de pagamento associado!");
         }
         if (orderDTO.getCustomerCpf() == null) {
             throw new EntityMissingDependencyException("O pedido precisa ter um cliente!");
