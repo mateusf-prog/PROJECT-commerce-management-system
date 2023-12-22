@@ -25,6 +25,7 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.MERGE)
     @Setter(AccessLevel.NONE)
     private Set<Product> products = new HashSet<>();
+    // todo: verificar a lógica de adição da lista de  produtos na categoria
 
     public Category() {
     }

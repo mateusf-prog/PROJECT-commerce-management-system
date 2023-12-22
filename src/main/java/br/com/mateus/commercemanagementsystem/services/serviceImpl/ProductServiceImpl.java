@@ -162,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product checkProductExistsByName(String name) {
+    protected Product checkProductExistsByName(String name) {
         Optional<Product> query = productRepository.findByName(name);
         if (query.isEmpty()) {
             throw new EntityNotFoundException("Produto não encontrado. Nome: " + name);
@@ -171,7 +171,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product checkProductExistsById(Long id) {
+    protected Product checkProductExistsById(Long id) {
         Optional<Product> query = productRepository.findById(id);
         if (query.isEmpty()) {
             throw new EntityNotFoundException("Produto não encontrado. ID: " + id);
