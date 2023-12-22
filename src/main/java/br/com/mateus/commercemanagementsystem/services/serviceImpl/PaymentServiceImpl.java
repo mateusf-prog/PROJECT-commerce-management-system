@@ -8,8 +8,8 @@ import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
 import br.com.mateus.commercemanagementsystem.services.PaymentService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,6 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public Payment createPayment(Order order) {
 
         Payment payment = new Payment();
@@ -56,6 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Payment findById(Long id) {
 
         Optional<Payment> paymentExists = paymentRepository.findById(id);
@@ -68,6 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public String deleteById(Long id) {
         // todo: implementar
         return null;

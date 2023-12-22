@@ -9,6 +9,7 @@ import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.services.OrderService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -37,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @Transactional
     public OrderCreatedDTO createOrder(OrderDTO orderDTO) {
 
         checkValidations(orderDTO);
@@ -54,27 +56,9 @@ public class OrderServiceImpl implements OrderService {
 
          return getOrderCreatedDTO(orderDTO, order);
     }
-    /**
-     * This function creates an OrderCreatedDTO object from given OrderDTO,
-     * Order, and Payment objects.
-     *
-     * @param orderDTO   The OrderDTO object to get details from.
-     * @param order      The Order object to get the customer name from.
-     */
-    private static OrderCreatedDTO getOrderCreatedDTO(OrderDTO orderDTO, Order order) {
-        OrderCreatedDTO orderCreatedDTO = new OrderCreatedDTO();
-        orderCreatedDTO.setOrderId(orderDTO.getId());
-        orderCreatedDTO.setDate(orderDTO.getDate());
-        orderCreatedDTO.setCustomer(order.getCustomer().getName());
-        orderCreatedDTO.setStatus(orderDTO.getStatus());
-        orderCreatedDTO.setCpf(orderDTO.getCustomerCpf());
-        orderCreatedDTO.setTotalValue(orderDTO.getTotalValue());
-        orderCreatedDTO.setListItems(orderDTO.getOrderItems());
-
-        return orderCreatedDTO;
-    }
 
     @Override
+    @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
 
         Optional<Order> orderQuery = orderRepository.findById(id);
@@ -88,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderDTO> findAllOrdersByClientCpf(String cpf) {
 
         Customer customer = customerService.findByCpf(cpf);
@@ -109,6 +94,7 @@ public class OrderServiceImpl implements OrderService {
         return listOrdersDTO;
     }
 
+    @Transactional(readOnly = true)
     public List<OrderDTO> findAll() {
 
         List<Order> list = orderRepository.findAll();
@@ -124,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
         return listDTO;
     }
 
+    @Transactional
     public OrderDTO cancelOrder(Long id) {
 
         Optional<Order> order = orderRepository.findById(id);
@@ -135,6 +122,19 @@ public class OrderServiceImpl implements OrderService {
         // todo: implementar logica para retornar a quantidade de produtos no estoque após o pedido ser cancelado
 
         return convertOrderToOrderDTO(order.get());
+    }
+
+    private static OrderCreatedDTO getOrderCreatedDTO(OrderDTO orderDTO, Order order) {
+        OrderCreatedDTO orderCreatedDTO = new OrderCreatedDTO();
+        orderCreatedDTO.setOrderId(orderDTO.getId());
+        orderCreatedDTO.setDate(orderDTO.getDate());
+        orderCreatedDTO.setCustomer(order.getCustomer().getName());
+        orderCreatedDTO.setStatus(orderDTO.getStatus());
+        orderCreatedDTO.setCpf(orderDTO.getCustomerCpf());
+        orderCreatedDTO.setTotalValue(orderDTO.getTotalValue());
+        orderCreatedDTO.setListItems(orderDTO.getOrderItems());
+
+        return orderCreatedDTO;
     }
 
     private OrderDTO convertOrderToOrderDTO(Order order) {
@@ -155,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItem item : order.getOrderItems()) {
-            Product product = productService.findByName(item.getProductName());
+            Product product = productService.checkProductExistsByName(item.getProduct().getName());
             productPrice = product.getPrice();
             total = total.add(productPrice.multiply(BigDecimal.valueOf(item.getQuantity())));
         }

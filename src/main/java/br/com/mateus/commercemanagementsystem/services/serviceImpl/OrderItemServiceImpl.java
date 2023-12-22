@@ -6,9 +6,10 @@ import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
 import br.com.mateus.commercemanagementsystem.services.OrderItemService;
-import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 
         validateNameAndQuantityOrderItem(item);
 
-        int quantity = productService.checkQuantityStockAvailability(item.getProductName());
+        int quantity = productService.checkQuantityStockAvailability(item.getProduct().getName());
         if (quantity < item.getQuantity()) {
             throw new EntityInvalidDataException("Quantidade indisponível no estoque!");
         }
@@ -39,43 +40,35 @@ public class OrderItemServiceImpl implements OrderItemService {
         subtractingItemFromStockOnProductsDatabase(item);
     }
 
-    private void subtractingItemFromStockOnProductsDatabase(OrderItem item) {
-        Product product = productService.findByName(item.getProductName());
-        productService.adjustStockQuantity(product.getName(), product.getQuantity() - item.getQuantity());
-    }
-
     @Override
     @Transactional
     public OrderItem updateOrderItem(OrderItem item) {
 
-        Optional<OrderItem> orderItem = orderItemRepository.findByProductName(item.getProductName());
+        Optional<OrderItem> orderItem = orderItemRepository.findById(item.getId());
 
         if (orderItem.isEmpty()) {
             throw new EntityNotFoundException("Item do pedido não encontrado - ID "
-                    + item.getId() + " - " + item.getProductName());
+                    + item.getId() + " - " + item.getProduct().getName());
         }
 
         validateNameAndQuantityOrderItem(item);
-        productService.adjustStockQuantity(item.getProductName(), item.getQuantity());
+        productService.adjustStockQuantity(item.getProduct().getName(), item.getQuantity());
         orderItemRepository.save(item);
 
         return orderItem.get();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderItem> findAll() {
 
         return orderItemRepository.findAll();
     }
 
-    @Override
-    public void deleteByItemName(String name) {
 
-        Optional<OrderItem> orderItem = orderItemRepository.findByProductName(name);
-
-        if(orderItem.isEmpty()) {
-            throw new EntityNotFoundException("Item de pedido não encontrado. Nome: " + name);
-        }
+    private void subtractingItemFromStockOnProductsDatabase(OrderItem item) {
+        Product product = productService.checkProductExistsByName(item.getProduct().getName());
+        productService.adjustStockQuantity(product.getName(), product.getQuantity() - item.getQuantity());
     }
 
     @Override
@@ -85,7 +78,7 @@ public class OrderItemServiceImpl implements OrderItemService {
             throw new EntityInvalidDataException("Quantidade de itens inválida!");
         }
 
-        if (item.getProductName().isBlank() || item.getProductName().length() < 3) {
+        if (item.getProduct().getName().isBlank() || item.getProduct().getName().length() < 3) {
             throw new EntityInvalidDataException("Nome do item inválido!");
         }
     }

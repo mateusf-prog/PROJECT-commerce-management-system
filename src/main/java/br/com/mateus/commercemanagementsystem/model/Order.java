@@ -12,6 +12,7 @@ import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
@@ -35,6 +36,10 @@ public class Order {
 
     // define relationships
 
+    @OneToMany(mappedBy = "id.order" )
+    @Setter(AccessLevel.NONE)
+    private Set<OrderItem> items = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -51,5 +56,9 @@ public class Order {
         this.customer = customer;
         this.date = date;
         this.status = status;
+    }
+
+    public List<Product> getProducts() {
+        return items.stream().map(x -> x.getProduct()).toList();
     }
 }

@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.dto;
 
+import br.com.mateus.commercemanagementsystem.model.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,5 +12,5 @@ public class ProductDTO {
     private String name;
     private BigDecimal price;
     private int quantity;
-    private String categoryName;
+    private String category;
 }

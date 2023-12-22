@@ -10,7 +10,6 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
 import br.com.mateus.commercemanagementsystem.services.CategoryService;
-import jakarta.transaction.Transactional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -22,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional
     public Category createCategory(Category category) {
 
         Optional<Category> queryCategory = categoryRepository.findByName(category.getName());
@@ -34,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional
     public Category updateCategory(Category category) {
 
         Optional<Category> queryCategory = categoryRepository.findById(category.getId());
@@ -46,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
+    @org.springframework.transaction.annotation.Transactional
     public void deleteByName(String name) {
         
         Optional<Category> category = categoryRepository.findByName(name);
@@ -57,6 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Category findByName(String name) {
         
         Optional<Category> category = categoryRepository.findByName(name);
@@ -67,6 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<Category> findAll() {
 
         if (categoryRepository.findAll().isEmpty()) {

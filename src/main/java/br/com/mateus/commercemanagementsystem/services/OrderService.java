@@ -11,6 +11,8 @@ public interface OrderService {
     OrderCreatedDTO createOrder(OrderDTO orderDTO);
     OrderDTO findById(Long id);
     List<OrderDTO> findAllOrdersByClientCpf(String cpf);
+    List<OrderDTO> findAll();
+    OrderDTO cancelOrder(Long id);
 
     BigDecimal calculateTotalPrice(OrderDTO order);
 }

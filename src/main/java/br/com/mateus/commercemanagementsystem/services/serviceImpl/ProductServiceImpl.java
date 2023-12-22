@@ -9,8 +9,8 @@ import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.services.ProductService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -62,43 +62,38 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product updateProduct(Product product) {
+    public ProductDTO updateProduct(Product product) {
 
-        Optional<Product> productQuery = productRepository.findById(product.getId());
+        checkProductExistsById(product.getId());
 
-        if (productQuery.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado!");
+        Category category = categoryService.findByName(product.getCategory().getName());
+        if (category == null) {
+            throw new EntityNotFoundException("Categoria não existe!");
         }
+        product.setCategory(category);
 
-        productRepository.save(product);
-        return product;
+        product = productRepository.save(product);
+        return convertProductToProductDTO(product);
     }
 
     @Override
     @Transactional
     public void deleteProduct(Long id) {
 
-        Optional<Product> productQuery = productRepository.findById(id);
-
-        if (productQuery.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado!");
-        }
-
+        checkProductExistsById(id);
         productRepository.deleteById(id);
     }
 
     @Override
-    public Product findByName(String name) {
+    @Transactional(readOnly = true)
+    public ProductDTO findByName(String name) {
 
-        Optional<Product> product = productRepository.findByName(name);
-        if (product.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado. Nome: " + name);
-        }
-
-        return product.get();
+        ProductDTO dto = convertProductToProductDTO(checkProductExistsByName(name));
+        return dto;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDTO> findAll() {
 
         List<Product> products = productRepository.findAll();
@@ -118,35 +113,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String adjustStockQuantity(String productName, int newQuantity) {
+    public String adjustStockQuantity(String name, int newQuantity) {
 
-        Optional<Product> productQuery = productRepository.findByName(productName);
-
-        if (productQuery.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado - " + productName) ;
-        }
+        Product product = checkProductExistsByName(name);
         if (newQuantity < 0) {
             throw new EntityInvalidDataException("Quantidade inválida!");
         }
 
-        productQuery.get().setQuantity(newQuantity);
-        updateProduct(productQuery.get());
+        product.setQuantity(newQuantity);
+        updateProduct(product);
         return "Quantidade em estoque atualizada!";
     }
-    
+
+    @Transactional
     public void returnQuantityInStockAfterCanceledOrder(List<OrderItem> list) {
 
          for(OrderItem item : list) {
-            Optional<Product> product = productRepository.findByName(item.getProductName());
-                if (product.isEmpty()) {
-                    throw new EntityNotFoundException("Produto não encontrado - " + item.getProductName());
-                }
-                product.get().setQuantity(product.get().getQuantity() + item.getQuantity());
-                productRepository.save(product.get());
+                Product product = checkProductExistsByName(item.getProduct().getName());
+                product.setQuantity(product.getQuantity() + item.getQuantity());
+                updateProduct(product);
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int checkQuantityStockAvailability(String name) {
 
         Optional<Product> product = productRepository.findByName(name);
@@ -161,27 +151,42 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public String setPrice(Long id, BigDecimal newPrice) {
 
-        Optional<Product> productQuery = productRepository.findById(id);
-
-        if (productQuery.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado!");
-        }
+        Product product = checkProductExistsById(id);
         if (newPrice.compareTo(BigDecimal.ZERO) <= 0) {
             throw new EntityInvalidDataException("Novo preço inválido!");
         }
 
-        productQuery.get().setPrice(newPrice);
-        updateProduct(productQuery.get());
+        product.setPrice(newPrice);
+        updateProduct(product);
         return "Preço atualizado!";
+    }
+
+    @Transactional(readOnly = true)
+    public Product checkProductExistsByName(String name) {
+        Optional<Product> query = productRepository.findByName(name);
+        if (query.isEmpty()) {
+            throw new EntityNotFoundException("Produto não encontrado. Nome: " + name);
+        }
+        return query.get();
+    }
+
+    @Transactional(readOnly = true)
+    public Product checkProductExistsById(Long id) {
+        Optional<Product> query = productRepository.findById(id);
+        if (query.isEmpty()) {
+            throw new EntityNotFoundException("Produto não encontrado. ID: " + id);
+        }
+        return query.get();
     }
 
     public ProductDTO convertProductToProductDTO(Product product) {
 
         ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
         productDTO.setName(product.getName());
         productDTO.setQuantity(product.getQuantity());
         productDTO.setPrice(product.getPrice());
-        productDTO.setCategoryName(product.getCategory().getName());
+        productDTO.setCategory(product.getCategory().getName());
         return productDTO;
     }
 }

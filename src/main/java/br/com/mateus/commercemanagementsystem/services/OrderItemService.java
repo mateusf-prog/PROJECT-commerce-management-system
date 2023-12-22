@@ -9,7 +9,6 @@ public interface OrderItemService {
     void createOrderItem(OrderItem item);
     OrderItem updateOrderItem(OrderItem item);
     List<OrderItem> findAll();
-    void deleteByItemName(String name);
 
     void validateNameAndQuantityOrderItem(OrderItem item);
 }

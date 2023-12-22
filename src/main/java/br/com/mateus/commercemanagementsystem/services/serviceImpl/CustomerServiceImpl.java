@@ -8,6 +8,7 @@ import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.services.CustomerService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional
     public Customer updateCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
@@ -41,6 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional
     public Customer createCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
@@ -57,6 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional
     public void deleteByCpf(String cpf) {
 
         Optional<Customer> customer = customerRepository.findByCpf(cpf);
@@ -73,6 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Customer findByCpf(String cpf) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(cpf);
@@ -83,6 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Customer> findByName(String name) {
 
         List<Customer> results = customerRepository.findByName(name);

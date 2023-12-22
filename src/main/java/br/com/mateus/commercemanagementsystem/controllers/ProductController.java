@@ -28,9 +28,9 @@ public class ProductController {
     }
 
     @PutMapping()
-    public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product) {
-        productService.updateProduct(product);
-        return ResponseEntity.ok().body(product);
+    public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody Product product) {
+        ProductDTO dto = productService.updateProduct(product);
+        return ResponseEntity.ok().body(dto);
     }
 
     @GetMapping("/{id}")
@@ -40,8 +40,8 @@ public class ProductController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<Product> findByName(@PathVariable String name) {
-        Product product = productService.findByName(name);
+    public ResponseEntity<ProductDTO> findByName(@PathVariable String name) {
+        ProductDTO product = productService.findByName(name);
         return ResponseEntity.ok().body(product);
     }
 

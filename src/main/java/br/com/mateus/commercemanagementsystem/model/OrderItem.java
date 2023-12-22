@@ -5,29 +5,36 @@ import java.math.BigDecimal;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
-@Data
 @Entity
 @Table(name = "tb_order_item")
 public class OrderItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    private Long id;
+    @EmbeddedId
+    @Getter
+    private OrderItemPK id = new OrderItemPK();
 
-    @Column(name = "product_name", nullable = false)
-    private String productName;
-
+    @Getter
+    @Setter
     @Column(nullable = false)
     private int quantity;
 
     public OrderItem() {
     }
 
-    public OrderItem(String productName, int quantity, BigDecimal price) {
-        this.productName = productName;
+    public OrderItem(Order order, Product product, int quantity, BigDecimal price) {
+        id.setProduct(product);
+        id.setOrder(order);
         this.quantity = quantity;
+    }
+
+    public Product getProduct() {
+        return id.getProduct();
+    }
+
+    public void setProduct(Product product) {
+        id.setProduct(product);
     }
 }
