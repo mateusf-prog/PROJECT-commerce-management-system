@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
+import br.com.mateus.commercemanagementsystem.dto.CategoryDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.services.serviceImpl.CategoryServiceImpl;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
@@ -25,12 +28,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCategory(@Valid @RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
         return ResponseEntity.ok().body(categoryService.createCategory(category));
     }
 
     @GetMapping
-    public ResponseEntity<?> listCategories() {
+    public ResponseEntity<List<CategoryDTO>> listAll() {
         return ResponseEntity.ok().body(categoryService.findAll());
     }
 

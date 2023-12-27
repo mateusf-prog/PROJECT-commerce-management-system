@@ -1,20 +1,18 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
-import java.util.List;
-import java.util.Optional;
-
-import br.com.mateus.commercemanagementsystem.dto.ProductDTO;
+import br.com.mateus.commercemanagementsystem.dto.CategoryDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.model.Product;
-import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Category;
+import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
+import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.services.CategoryService;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -68,12 +66,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Category> findAll() {
+    public List<CategoryDTO> findAll() {
 
-        if (categoryRepository.findAll().isEmpty()) {
-            throw new EntityNotFoundException("Nenhuma categoria encontrada!");
-        }
-        return categoryRepository.findAll();
+        List<Category> categoryList = categoryRepository.findAll();
+        return categoryList.stream().map(x -> new CategoryDTO(x.getId(), x.getName())).toList();
+
     }
 
     @Transactional(readOnly = true)

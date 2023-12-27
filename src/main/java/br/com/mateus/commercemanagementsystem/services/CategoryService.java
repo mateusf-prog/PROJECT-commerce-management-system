@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services;
 
+import br.com.mateus.commercemanagementsystem.dto.CategoryDTO;
 import br.com.mateus.commercemanagementsystem.model.Category;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public interface CategoryService {
     void deleteByName(String name);
     Category findByName(String name);
 
-    List<Category> findAll();
+    List<CategoryDTO> findAll();
 }

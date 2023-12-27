@@ -7,6 +7,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
+import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.services.ProductService;
 import org.springframework.stereotype.Service;
@@ -33,17 +34,17 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO createProduct(Product product) {
 
         Category category = categoryService.findByName(product.getCategory().getName());
-        Optional<Product> queryProduct = productRepository.findByName(product.getName());
+        Optional<Product> entity = productRepository.findByName(product.getName());
 
-        if (queryProduct.isPresent()) {
+        if (entity.isPresent()) {
             throw new EntityAlreadyExistsException("Produto já existe!");
         }
 
         product.setCategory(category);
-        Product productSaved = productRepository.save(product);
-        ProductDTO productDTO = convertProductToProductDTO(product);
-        productDTO.setId(productSaved.getId());
-        return productDTO;
+        product = productRepository.save(product);
+        ProductDTO dto = convertProductToProductDTO(product);
+        dto.setId(product.getId());
+        return dto;
     }
 
     @Override
