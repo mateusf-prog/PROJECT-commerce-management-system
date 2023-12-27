@@ -41,10 +41,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderCreatedDTO createOrder(OrderDTO orderDTO) {
 
-        checkValidations(orderDTO);
         Order order = convertOrderDTOtoOrder(orderDTO);
 
-        // create Payment before persist Order and create OrderItems
         Order orderSaved = orderRepository.save(order);
         for (OrderItem item : orderDTO.getOrderItems()) {
             orderItemService.createOrderItem(item);
@@ -54,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setTotalValue(order.getTotalValue());
         orderDTO.setDate(Instant.now());
 
-         return getOrderCreatedDTO(orderDTO, order);
+        return getOrderCreatedDTO(orderDTO, order);
     }
 
     @Override
@@ -67,8 +65,7 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Pedido não encontrado. ID " + id);
         }
 
-        OrderDTO orderDTO = convertOrderToOrderDTO(orderQuery.get());
-        return orderDTO;
+        return convertOrderToOrderDTO(orderQuery.get());
     }
 
     @Override
@@ -77,12 +74,12 @@ public class OrderServiceImpl implements OrderService {
 
         Customer customer = customerService.findByCpf(cpf);
 
-        if(customer == null) {
+        if (customer == null) {
             throw new EntityNotFoundException("Cliente não encontrado. CPF " + cpf);
         }
 
         List<Order> orders = orderRepository.findByCustomerCpf(cpf);
-        if(orders.isEmpty()) {
+        if (orders.isEmpty()) {
             throw new EntityNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
         }
 
@@ -98,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> findAll() {
 
         List<Order> list = orderRepository.findAll();
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             throw new EntityNotFoundException("Lista vazia!");
         }
 
@@ -167,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
 
         // get customer from database
         Customer customer = customerService.findByCpf(orderDTO.getCustomerCpf());
-        if(customer == null) {
+        if (customer == null) {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
@@ -178,17 +175,6 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
         return order;
-    }
-
-    // checking if items is not empty, payment type is not null and customer exists
-    private void checkValidations(OrderDTO orderDTO) {
-
-        if (orderDTO.getOrderItems().isEmpty()) {
-            throw new EntityMissingDependencyException("O pedido precisa ter pelo menos um item!");
-        }
-        if (orderDTO.getCustomerCpf() == null) {
-            throw new EntityMissingDependencyException("O pedido precisa ter um cliente!");
-        }
     }
 }
 

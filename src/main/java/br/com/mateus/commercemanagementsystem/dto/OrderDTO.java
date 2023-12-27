@@ -4,6 +4,7 @@ import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class OrderDTO {
     private Instant date;
 
     @Setter(AccessLevel.NONE)
+    @NotEmpty(message = "Lista de items não pode ser vazia!")
     private List<OrderItem> orderItems;
 
     public OrderDTO(List<OrderItem> orderItems) {
