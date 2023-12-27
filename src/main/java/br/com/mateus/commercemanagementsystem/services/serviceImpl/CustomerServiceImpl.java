@@ -4,6 +4,7 @@ import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.integration.CustomerApiServiceImpl;
+import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.services.CustomerService;
@@ -47,14 +48,14 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer createCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
+        Optional<Customer> queryCustomerByEmail = customerRepository.findByEmail(customer.getEmail());
 
-        if (queryCustomer.isPresent()) {
-            throw new EntityAlreadyExistsException("CPF já cadastrado.");
+        if (queryCustomer.isPresent() || queryCustomerByEmail.isPresent()) {
+            throw new EntityAlreadyExistsException("Cliente já cadastrado.");
         }
-        // create customer on api and save on local database
+
         CustomerDTO customerDTO = integrationPaymentApi.createCustomer(customer);
         customer.setIdApiExternal(customerDTO.getId());
-
         customerRepository.save(customer);
         return customer;
     }
@@ -96,6 +97,25 @@ public class CustomerServiceImpl implements CustomerService {
             throw new EntityNotFoundException("Nenhum resultado encontrado!");
         }
         return results;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CustomerDTO> findAll() {
+
+        List<Customer> list = customerRepository.findAll();
+        if (list.isEmpty()) {
+            throw new EntityNotFoundException("Lista vazia.");
+        }
+
+        List<CustomerDTO> listDTO = null;
+        for (Customer customer : list) {
+            CustomerDTO dto = new CustomerDTO();
+            dto.setName(customer.getName());
+            dto.setCpfCnpj(customer.getCpf());
+            dto.setEmail(customer.getEmail());
+            listDTO.add(dto);
+        }
+        return listDTO;
     }
 }
 

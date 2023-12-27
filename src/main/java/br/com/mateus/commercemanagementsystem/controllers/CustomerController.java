@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
+import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.services.serviceImpl.CustomerServiceImpl;
 import jakarta.validation.Valid;
@@ -49,5 +50,8 @@ public class CustomerController {
         return ResponseEntity.ok().body(list);
     }
 
-
+    @GetMapping
+    public ResponseEntity<List<CustomerDTO>> listAll() {
+        return ResponseEntity.ok().body(customerService.findAll());
+    }
 }

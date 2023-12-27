@@ -7,7 +7,6 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
-import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
 import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.services.ProductService;
 import org.springframework.stereotype.Service;
