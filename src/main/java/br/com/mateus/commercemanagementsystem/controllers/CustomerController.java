@@ -35,7 +35,7 @@ public class CustomerController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCustomer(@PathVariable String id) {
         customerService.deleteByCpf(id);
-        return ResponseEntity.ok().body("Cliente deletado com sucesso. \n - ID CPF " + id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")

@@ -45,7 +45,7 @@ public class CategoryController {
     @DeleteMapping("/{name}")
     public ResponseEntity<String> deleteCategory(@PathVariable String name) {
         categoryService.deleteByName(name);
-        return ResponseEntity.ok().body("Categoria deletada com sucesso \n- Nome: " + name);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{name}")

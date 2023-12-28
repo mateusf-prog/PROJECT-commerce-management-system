@@ -178,4 +178,5 @@ public class OrderServiceImpl implements OrderService {
     }
 }
 
+// todo: verificar logica da lista de items do json para criação do order
 // TODO: implementar logica para mudar o status de um pedido após o pagamento for concluído pela API DE PAGAMENTOS
