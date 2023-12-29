@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.dto;
 
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
+import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import jakarta.validation.constraints.DecimalMin;
@@ -13,6 +14,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
@@ -33,9 +35,5 @@ public class OrderDTO {
 
     @Setter(AccessLevel.NONE)
     @NotEmpty(message = "Lista de items não pode ser vazia!")
-    private List<OrderItem> orderItems;
-
-    public OrderDTO(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

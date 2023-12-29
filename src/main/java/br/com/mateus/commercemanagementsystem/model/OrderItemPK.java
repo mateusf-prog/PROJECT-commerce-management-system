@@ -3,11 +3,13 @@ package br.com.mateus.commercemanagementsystem.model;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
+@Data
 public class OrderItemPK implements Serializable {
 
     @ManyToOne

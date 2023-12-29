@@ -17,8 +17,8 @@ public interface ProductService {
     List<ProductDTO> findAll();
 
     void returnQuantityInStockAfterCanceledOrder(List<OrderItem> list);
-    int checkQuantityStockAvailability(String name);
-    String adjustStockQuantity(String name, int quantity);
+    int checkQuantityStockAvailability(Long id);
+    String adjustStockQuantity(Long id, int newQuantity);
     String setPrice(Long id, BigDecimal price);
 
 }

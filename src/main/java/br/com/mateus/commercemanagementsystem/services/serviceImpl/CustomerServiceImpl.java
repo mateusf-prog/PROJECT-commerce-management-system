@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
+import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
@@ -11,6 +12,7 @@ import br.com.mateus.commercemanagementsystem.services.CustomerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,19 +102,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Transactional(readOnly = true)
-    public List<CustomerDTO> findAll() {
+    public List<CustomerCreatedDTO> findAll() {
 
         List<Customer> list = customerRepository.findAll();
         if (list.isEmpty()) {
             throw new EntityNotFoundException("Lista vazia.");
         }
 
-        List<CustomerDTO> listDTO = null;
+        List<CustomerCreatedDTO> listDTO = new ArrayList<>();
         for (Customer customer : list) {
-            CustomerDTO dto = new CustomerDTO();
+            CustomerCreatedDTO dto = new CustomerCreatedDTO();
             dto.setName(customer.getName());
             dto.setCpfCnpj(customer.getCpf());
             dto.setEmail(customer.getEmail());
+            dto.setMobilePhone(customer.getPhoneNumber());
             listDTO.add(dto);
         }
         return listDTO;

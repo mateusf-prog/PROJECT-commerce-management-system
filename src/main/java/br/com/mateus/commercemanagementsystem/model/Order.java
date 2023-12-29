@@ -38,7 +38,7 @@ public class Order {
 
     @OneToMany(mappedBy = "id.order" )
     @Setter(AccessLevel.NONE)
-    private Set<OrderItem> items = new HashSet<>();
+    private List<OrderItem> items = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -59,6 +59,6 @@ public class Order {
     }
 
     public List<Product> getProducts() {
-        return items.stream().map(x -> x.getProduct()).toList();
+        return items.stream().map(OrderItem::getProduct).toList();
     }
 }

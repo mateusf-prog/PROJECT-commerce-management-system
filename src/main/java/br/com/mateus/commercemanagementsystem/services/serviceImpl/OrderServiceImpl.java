@@ -2,7 +2,9 @@ package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityMissingDependencyException;
+import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
+import br.com.mateus.commercemanagementsystem.dto.OrderPostDTO;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
@@ -36,23 +38,22 @@ public class OrderServiceImpl implements OrderService {
         this.productService = productService;
     }
 
-
     @Override
     @Transactional
-    public OrderCreatedDTO createOrder(OrderDTO orderDTO) {
+    public OrderCreatedDTO createOrder(OrderPostDTO dto) {
 
-        Order order = convertOrderDTOtoOrder(orderDTO);
+        Customer customer = customerService.findByCpf(dto.getCustomerCpf());
+        Order order = convertOrderPostDTOtoOrder(dto);
+        order = orderRepository.save(order);
+        // todo: transferir lista de items do dto para o order, para quando retornar, ele ir com a lista
+        for (OrderItemDTO item : dto.getItems()) {
+            Product product = productService.checkProductExistsById(item.getProductId());
+            OrderItem orderItem = new OrderItem(order, product, item.getQuantity(), product.getPrice());
 
-        Order orderSaved = orderRepository.save(order);
-        for (OrderItem item : orderDTO.getOrderItems()) {
-            orderItemService.createOrderItem(item);
+            orderItemService.createOrderItem(orderItem);
         }
-        orderDTO.setId(orderSaved.getId());
-        orderDTO.setStatus(order.getStatus());
-        orderDTO.setTotalValue(order.getTotalValue());
-        orderDTO.setDate(Instant.now());
 
-        return getOrderCreatedDTO(orderDTO, order);
+        return getOrderCreatedDTO(order, dto.getItems());
     }
 
     @Override
@@ -109,27 +110,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public OrderDTO cancelOrder(Long id) {
-
-        Optional<Order> order = orderRepository.findById(id);
-        if (order.isEmpty()) {
-            throw new EntityNotFoundException("Pedido não encontrado!");
+        // todo: retornar a lista de items deste pedido também
+        Order order = orderRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Pedido não encontrado!"));
+        if (order.getStatus().equals(OrderStatus.CANCELLED)) {
+            throw new EntityInvalidDataException("Pedido já se encontra cancelado");
         }
-        order.get().setStatus(OrderStatus.CANCELLED);
-        orderRepository.save(order.get());
-        // todo: implementar logica para retornar a quantidade de produtos no estoque após o pedido ser cancelado
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
 
-        return convertOrderToOrderDTO(order.get());
+        productService.returnQuantityInStockAfterCanceledOrder(order.getItems());
+
+        return convertOrderToOrderDTO(order);
     }
 
-    private static OrderCreatedDTO getOrderCreatedDTO(OrderDTO orderDTO, Order order) {
-        OrderCreatedDTO orderCreatedDTO = new OrderCreatedDTO();
-        orderCreatedDTO.setOrderId(orderDTO.getId());
-        orderCreatedDTO.setDate(orderDTO.getDate());
+    private static OrderCreatedDTO getOrderCreatedDTO(Order order, List<OrderItemDTO> list) {
+        OrderCreatedDTO orderCreatedDTO = new OrderCreatedDTO(list);
+        orderCreatedDTO.setOrderId(order.getId());
+        orderCreatedDTO.setDate(order.getDate());
         orderCreatedDTO.setCustomer(order.getCustomer().getName());
-        orderCreatedDTO.setStatus(orderDTO.getStatus());
-        orderCreatedDTO.setCpf(orderDTO.getCustomerCpf());
-        orderCreatedDTO.setTotalValue(orderDTO.getTotalValue());
-        orderCreatedDTO.setListItems(orderDTO.getOrderItems());
+        orderCreatedDTO.setStatus(order.getStatus());
+        orderCreatedDTO.setCpf(order.getCustomer().getCpf());
+        orderCreatedDTO.setTotalValue(order.getTotalValue());
 
         return orderCreatedDTO;
     }
@@ -141,18 +143,19 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setCustomerCpf(order.getCustomer().getCpf());
         orderDTO.setStatus(order.getStatus());
         orderDTO.setTotalValue(order.getTotalValue());
+        orderDTO.setDate(order.getDate());
 
         return orderDTO;
     }
 
     @Override
-    public BigDecimal calculateTotalPrice(OrderDTO order) {
+    public BigDecimal calculateTotalPrice(List<OrderItemDTO> items) {
 
         BigDecimal productPrice;
         BigDecimal total = BigDecimal.ZERO;
 
-        for (OrderItem item : order.getOrderItems()) {
-            Product product = productService.checkProductExistsByName(item.getProduct().getName());
+        for (OrderItemDTO item : items) {
+            Product product = productService.checkProductExistsById(item.getProductId());
             productPrice = product.getPrice();
             total = total.add(productPrice.multiply(BigDecimal.valueOf(item.getQuantity())));
         }
@@ -160,17 +163,17 @@ public class OrderServiceImpl implements OrderService {
         return total;
     }
 
-    private Order convertOrderDTOtoOrder(OrderDTO orderDTO) {
+    private Order convertOrderPostDTOtoOrder(OrderPostDTO dto) {
 
         // get customer from database
-        Customer customer = customerService.findByCpf(orderDTO.getCustomerCpf());
+        Customer customer = customerService.findByCpf(dto.getCustomerCpf());
         if (customer == null) {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
         Order order = new Order();
         order.setDate(Instant.now());
-        order.setTotalValue(calculateTotalPrice(orderDTO));
+        order.setTotalValue(calculateTotalPrice(dto.getItems()));
         order.setCustomer(customer);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
@@ -178,5 +181,4 @@ public class OrderServiceImpl implements OrderService {
     }
 }
 
-// todo: verificar logica da lista de items do json para criação do order
 // TODO: implementar logica para mudar o status de um pedido após o pagamento for concluído pela API DE PAGAMENTOS

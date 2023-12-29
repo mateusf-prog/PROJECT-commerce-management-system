@@ -8,15 +8,14 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 @Entity
 @Table(name = "tb_order_item")
 public class OrderItem {
 
     @EmbeddedId
-    @Getter
     private OrderItemPK id = new OrderItemPK();
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private int quantity;

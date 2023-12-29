@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
+import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.services.serviceImpl.CustomerServiceImpl;
@@ -51,7 +52,7 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerDTO>> listAll() {
+    public ResponseEntity<List<CustomerCreatedDTO>> listAll() {
         return ResponseEntity.ok().body(customerService.findAll());
     }
 }

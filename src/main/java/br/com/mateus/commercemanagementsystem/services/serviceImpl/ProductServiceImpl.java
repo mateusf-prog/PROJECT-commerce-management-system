@@ -88,8 +88,11 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductDTO findByName(String name) {
 
-        ProductDTO dto = convertProductToProductDTO(checkProductExistsByName(name));
-        return dto;
+        Optional<Product> product = productRepository.findByName(name);
+        if (product.isEmpty()) {
+            throw new EntityNotFoundException("Produto não encontrado. Nome: " + name);
+        }
+        return convertProductToProductDTO(product.get());
     }
 
     @Override
@@ -113,9 +116,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String adjustStockQuantity(String name, int newQuantity) {
+    public String adjustStockQuantity(Long id, int newQuantity) {
 
-        Product product = checkProductExistsByName(name);
+        Product product = checkProductExistsById(id);
         if (newQuantity < 0) {
             throw new EntityInvalidDataException("Quantidade inválida!");
         }
@@ -129,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
     public void returnQuantityInStockAfterCanceledOrder(List<OrderItem> list) {
 
          for(OrderItem item : list) {
-                Product product = checkProductExistsByName(item.getProduct().getName());
+                Product product = checkProductExistsById(item.getProduct().getId());
                 product.setQuantity(product.getQuantity() + item.getQuantity());
                 updateProduct(product);
         }
@@ -137,11 +140,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public int checkQuantityStockAvailability(String name) {
+    public int checkQuantityStockAvailability(Long id) {
 
-        Optional<Product> product = productRepository.findByName(name);
+        Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
-            throw new EntityNotFoundException("Nenhum produto no estoque com o nome: " + name);
+            throw new EntityNotFoundException("Nenhum produto no estoque com o ID: " + id);
         }
 
         return product.get().getQuantity();
@@ -161,14 +164,6 @@ public class ProductServiceImpl implements ProductService {
         return "Preço atualizado!";
     }
 
-    @Transactional(readOnly = true)
-    protected Product checkProductExistsByName(String name) {
-        Optional<Product> query = productRepository.findByName(name);
-        if (query.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado. Nome: " + name);
-        }
-        return query.get();
-    }
 
     @Transactional(readOnly = true)
     protected Product checkProductExistsById(Long id) {

@@ -2,6 +2,7 @@ package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
@@ -29,9 +30,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Transactional
     public void createOrderItem(OrderItem item) {
 
-        validateNameAndQuantityOrderItem(item);
-
-        int quantity = productService.checkQuantityStockAvailability(item.getProduct().getName());
+        int quantity = productService.checkQuantityStockAvailability(item.getProduct().getId());
         if (quantity < item.getQuantity()) {
             throw new EntityInvalidDataException("Quantidade indisponível no estoque!");
         }
@@ -52,7 +51,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
 
         validateNameAndQuantityOrderItem(item);
-        productService.adjustStockQuantity(item.getProduct().getName(), item.getQuantity());
+        productService.adjustStockQuantity(item.getProduct().getId(), item.getQuantity());
         orderItemRepository.save(item);
 
         return orderItem.get();
@@ -67,19 +66,16 @@ public class OrderItemServiceImpl implements OrderItemService {
 
 
     private void subtractingItemFromStockOnProductsDatabase(OrderItem item) {
-        Product product = productService.checkProductExistsByName(item.getProduct().getName());
-        productService.adjustStockQuantity(product.getName(), product.getQuantity() - item.getQuantity());
+        Product product = productService.checkProductExistsById(item.getProduct().getId());
+        productService.adjustStockQuantity(product.getId(), product.getQuantity() - item.getQuantity());
     }
 
     @Override
     public void validateNameAndQuantityOrderItem(OrderItem item) {
-
+        // todo: arrumar essas validações
         if (item.getQuantity() <= 0) {
             throw new EntityInvalidDataException("Quantidade de itens inválida!");
         }
 
-        if (item.getProduct().getName().isBlank() || item.getProduct().getName().length() < 3) {
-            throw new EntityInvalidDataException("Nome do item inválido!");
-        }
     }
 }
