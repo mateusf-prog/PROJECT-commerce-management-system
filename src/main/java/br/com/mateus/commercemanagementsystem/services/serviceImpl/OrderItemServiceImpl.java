@@ -29,6 +29,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Transactional
     public void createOrderItem(OrderItem item) {
 
+        validateQuantity(item);
         int quantity = productService.checkQuantityStockAvailability(item.getProduct().getId());
         if (quantity < item.getQuantity()) {
             throw new EntityInvalidDataException("Quantidade indisponível no estoque!");
@@ -49,7 +50,7 @@ public class OrderItemServiceImpl implements OrderItemService {
                     + item.getId() + " - " + item.getProduct().getName());
         }
 
-        validateNameAndQuantityOrderItem(item);
+        validateQuantity(item);
         productService.adjustStockQuantity(item.getProduct().getId(), item.getQuantity());
         orderItemRepository.save(item);
 
@@ -68,15 +69,13 @@ public class OrderItemServiceImpl implements OrderItemService {
         return list;
     }
 
-
     private void subtractingItemFromStockOnProductsDatabase(OrderItem item) {
         Product product = productService.checkProductExistsById(item.getProduct().getId());
         productService.adjustStockQuantity(product.getId(), product.getQuantity() - item.getQuantity());
     }
 
     @Override
-    public void validateNameAndQuantityOrderItem(OrderItem item) {
-        // todo: arrumar essas validações
+    public void validateQuantity(OrderItem item) {
         if (item.getQuantity() <= 0) {
             throw new EntityInvalidDataException("Quantidade de itens inválida!");
         }

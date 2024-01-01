@@ -10,5 +10,5 @@ public interface OrderItemService {
     OrderItem updateOrderItem(OrderItem item);
     List<OrderItem> findAll();
 
-    void validateNameAndQuantityOrderItem(OrderItem item);
+    void validateQuantity(OrderItem item);
 }

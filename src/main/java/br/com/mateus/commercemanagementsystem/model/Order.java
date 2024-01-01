@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 @Entity
 @Table(name = "tb_order")
@@ -36,7 +37,7 @@ public class Order {
 
     // define relationships
 
-    @OneToMany(mappedBy = "id.order" )
+    @OneToMany(mappedBy = "id.order", fetch = FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<OrderItem> items = new ArrayList<>();
 

@@ -36,4 +36,8 @@ public class OrderDTO {
     @Setter(AccessLevel.NONE)
     @NotEmpty(message = "Lista de items não pode ser vazia!")
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    public OrderDTO(List<OrderItem> items) {
+        this.orderItems = items;
+    }
 }

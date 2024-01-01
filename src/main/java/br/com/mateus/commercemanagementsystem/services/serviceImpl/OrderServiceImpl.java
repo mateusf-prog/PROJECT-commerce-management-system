@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         Customer customer = customerService.findByCpf(dto.getCustomerCpf());
         Order order = convertOrderPostDTOtoOrder(dto);
         order = orderRepository.save(order);
-        // todo: transferir lista de items do dto para o order, para quando retornar, ele ir com a lista
+
         for (OrderItemDTO item : dto.getItems()) {
             Product product = productService.checkProductExistsById(item.getProductId());
             OrderItem orderItem = new OrderItem(order, product, item.getQuantity(), product.getPrice());
@@ -116,9 +116,9 @@ public class OrderServiceImpl implements OrderService {
         if (order.getStatus().equals(OrderStatus.CANCELLED)) {
             throw new EntityInvalidDataException("Pedido já se encontra cancelado");
         }
+
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
-
         productService.returnQuantityInStockAfterCanceledOrder(order.getItems());
 
         return convertOrderToOrderDTO(order);
