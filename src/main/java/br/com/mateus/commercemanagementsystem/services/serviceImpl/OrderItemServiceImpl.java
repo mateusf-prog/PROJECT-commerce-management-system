@@ -1,8 +1,7 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
-import br.com.mateus.commercemanagementsystem.model.Order;
+import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
@@ -46,7 +45,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         Optional<OrderItem> orderItem = orderItemRepository.findById(item.getId());
 
         if (orderItem.isEmpty()) {
-            throw new EntityNotFoundException("Item do pedido não encontrado - ID "
+            throw new ResourceNotFoundException("Item do pedido não encontrado - ID "
                     + item.getId() + " - " + item.getProduct().getName());
         }
 
@@ -61,7 +60,12 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Transactional(readOnly = true)
     public List<OrderItem> findAll() {
 
-        return orderItemRepository.findAll();
+        List<OrderItem> list = orderItemRepository.findAll();
+
+        if (list.isEmpty()) {
+            throw new ResourceNotFoundException("Lista vazia");
+        }
+        return list;
     }
 
 
@@ -76,6 +80,5 @@ public class OrderItemServiceImpl implements OrderItemService {
         if (item.getQuantity() <= 0) {
             throw new EntityInvalidDataException("Quantidade de itens inválida!");
         }
-
     }
 }

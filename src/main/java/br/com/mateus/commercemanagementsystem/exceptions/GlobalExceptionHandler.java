@@ -23,32 +23,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(error);
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<StandardError> notFoundException(EntityNotFoundException exc) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<StandardError> notFoundException(ResourceNotFoundException exc) {
 
         StandardError error = new StandardError(exc.getMessage(), 404);
 
         return ResponseEntity.status(404).body(error);
     }
 
-    @ExceptionHandler(EntityMissingDependencyException.class)
-    public ResponseEntity<StandardError> notContainException(EntityMissingDependencyException exc) {
-
-        StandardError error = new StandardError(exc.getMessage(), 400);
-
-        return ResponseEntity.status(400).body(error);
-    }
-
     @ExceptionHandler(EntityInvalidDataException.class)
     public ResponseEntity<StandardError> invalidDataException(EntityInvalidDataException exc) {
-
-        StandardError error = new StandardError(exc.getMessage(), 400);
-
-        return ResponseEntity.status(400).body(error);
-    }
-
-    @ExceptionHandler(EntityInvalidCategoryException.class)
-    public ResponseEntity<StandardError> invalidCategoryException(EntityInvalidCategoryException exc) {
 
         StandardError error = new StandardError(exc.getMessage(), 400);
 
@@ -70,13 +54,5 @@ public class GlobalExceptionHandler {
         body.put("errors", errors);
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(CategoryNotExistsException.class)
-    public ResponseEntity<StandardError> categoryException(CategoryNotExistsException exc) {
-        
-        StandardError error = new StandardError(exc.getMessage(), 400);
-
-        return ResponseEntity.status(400).body(error);
     }
 }

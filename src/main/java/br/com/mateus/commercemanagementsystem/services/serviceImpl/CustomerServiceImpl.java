@@ -3,9 +3,8 @@ package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.integration.CustomerApiServiceImpl;
-import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.services.CustomerService;
@@ -34,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
 
          if (queryCustomer.isEmpty()) {
-             throw new EntityNotFoundException("Cliente não encontrado!");
+             throw new ResourceNotFoundException("Cliente não encontrado!");
          }
 
          customer.setIdApiExternal(queryCustomer.get().getIdApiExternal());
@@ -69,11 +68,11 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Customer> customer = customerRepository.findByCpf(cpf);
 
         if (customer.isEmpty()) {
-            throw new EntityNotFoundException("Cliente não encontrado. CPF " + cpf);
+            throw new ResourceNotFoundException("Cliente não encontrado. CPF " + cpf);
         }
         customerRepository.delete(customer.get());
         if (customer.get().getIdApiExternal() == null) {
-            throw new EntityNotFoundException("Cliente deletato com sucesso do banco de dados local. " +
+            throw new ResourceNotFoundException("Cliente deletato com sucesso do banco de dados local. " +
                     "Cliente não possui ID para api externa.");
         }
         integrationPaymentApi.deleteCustomer(customer.get().getIdApiExternal());
@@ -85,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(cpf);
         if (queryCustomer.isEmpty()) {
-            throw new EntityNotFoundException("Cliente não encontrado!");
+            throw new ResourceNotFoundException("Cliente não encontrado!");
         }
         return queryCustomer.get();
     }
@@ -96,7 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<Customer> results = customerRepository.findByName(name);
         if (results.isEmpty()) {
-            throw new EntityNotFoundException("Nenhum resultado encontrado!");
+            throw new ResourceNotFoundException("Nenhum resultado encontrado!");
         }
         return results;
     }
@@ -106,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<Customer> list = customerRepository.findAll();
         if (list.isEmpty()) {
-            throw new EntityNotFoundException("Lista vazia.");
+            throw new ResourceNotFoundException("Lista vazia.");
         }
 
         List<CustomerCreatedDTO> listDTO = new ArrayList<>();

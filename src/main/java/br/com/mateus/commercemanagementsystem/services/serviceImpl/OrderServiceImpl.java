@@ -5,7 +5,7 @@ import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderPostDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> orderQuery = orderRepository.findById(id);
 
         if (orderQuery.isEmpty()) {
-            throw new EntityNotFoundException("Pedido não encontrado. ID " + id);
+            throw new ResourceNotFoundException("Pedido não encontrado. ID " + id);
         }
 
         return convertOrderToOrderDTO(orderQuery.get());
@@ -76,12 +76,12 @@ public class OrderServiceImpl implements OrderService {
         Customer customer = customerService.findByCpf(cpf);
 
         if (customer == null) {
-            throw new EntityNotFoundException("Cliente não encontrado. CPF " + cpf);
+            throw new ResourceNotFoundException("Cliente não encontrado. CPF " + cpf);
         }
 
         List<Order> orders = orderRepository.findByCustomerCpf(cpf);
         if (orders.isEmpty()) {
-            throw new EntityNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
+            throw new ResourceNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
         }
 
         List<OrderDTO> listOrdersDTO = new ArrayList<>();
@@ -97,7 +97,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<Order> list = orderRepository.findAll();
         if (list.isEmpty()) {
-            throw new EntityNotFoundException("Lista vazia!");
+            throw new ResourceNotFoundException("Lista vazia!");
         }
 
         List<OrderDTO> listDTO = new ArrayList<OrderDTO>();
@@ -112,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO cancelOrder(Long id) {
         // todo: retornar a lista de items deste pedido também
         Order order = orderRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Pedido não encontrado!"));
+                new ResourceNotFoundException("Pedido não encontrado!"));
         if (order.getStatus().equals(OrderStatus.CANCELLED)) {
             throw new EntityInvalidDataException("Pedido já se encontra cancelado");
         }
@@ -168,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
         // get customer from database
         Customer customer = customerService.findByCpf(dto.getCustomerCpf());
         if (customer == null) {
-            throw new EntityNotFoundException("Cliente não encontrado.");
+            throw new ResourceNotFoundException("Cliente não encontrado.");
         }
 
         Order order = new Order();

@@ -3,7 +3,7 @@ package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 import br.com.mateus.commercemanagementsystem.dto.ProductDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> product = productRepository.findById(id);
 
         if(product.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado!");
+            throw new ResourceNotFoundException("Produto não encontrado!");
         }
 
         ProductDTO productDTO = convertProductToProductDTO(product.get());
@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
 
         Category category = categoryService.findByName(product.getCategory().getName());
         if (category == null) {
-            throw new EntityNotFoundException("Categoria não existe!");
+            throw new ResourceNotFoundException("Categoria não existe!");
         }
         product.setCategory(category);
 
@@ -90,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
 
         Optional<Product> product = productRepository.findByName(name);
         if (product.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado. Nome: " + name);
+            throw new ResourceNotFoundException("Produto não encontrado. Nome: " + name);
         }
         return convertProductToProductDTO(product.get());
     }
@@ -102,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findAll();
 
         if(products.isEmpty()) {
-            throw new EntityNotFoundException("Lista vazia!");
+            throw new ResourceNotFoundException("Lista vazia!");
         }
 
         List<ProductDTO> listDTO = new ArrayList<>();
@@ -144,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
-            throw new EntityNotFoundException("Nenhum produto no estoque com o ID: " + id);
+            throw new ResourceNotFoundException("Nenhum produto no estoque com o ID: " + id);
         }
 
         return product.get().getQuantity();
@@ -169,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
     protected Product checkProductExistsById(Long id) {
         Optional<Product> query = productRepository.findById(id);
         if (query.isEmpty()) {
-            throw new EntityNotFoundException("Produto não encontrado. ID: " + id);
+            throw new ResourceNotFoundException("Produto não encontrado. ID: " + id);
         }
         return query.get();
     }

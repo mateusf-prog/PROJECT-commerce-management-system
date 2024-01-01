@@ -1,7 +1,7 @@
 package br.com.mateus.commercemanagementsystem.integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -53,7 +53,7 @@ public class CustomerApiServiceImpl implements CustomerApiService {
             );
             return response.getBody();
         } catch (HttpClientErrorException.NotFound e) {
-            throw new EntityNotFoundException("Cliente atualizado na base de dados. Cliente  não encontrado na API integrada");
+            throw new ResourceNotFoundException("Cliente atualizado na base de dados. Cliente  não encontrado na API integrada");
         }
     }
 
@@ -92,7 +92,7 @@ public class CustomerApiServiceImpl implements CustomerApiService {
                     String.class
             );
         } catch (HttpClientErrorException.NotFound e) {
-            throw new EntityNotFoundException("Cliente não encontrado na API externa.");
+            throw new ResourceNotFoundException("Cliente não encontrado na API externa.");
         }
     }
 

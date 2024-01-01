@@ -2,7 +2,7 @@ package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.dto.CategoryDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
@@ -77,7 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
     protected Category checkCategoryExistsById(Long id) {
         Optional<Category> queryCategory = categoryRepository.findById(id);
         if (queryCategory.isEmpty()) {
-            throw new EntityNotFoundException("Categoria não encontrada. ID: " + id);
+            throw new ResourceNotFoundException("Categoria não encontrada. ID: " + id);
         }
         return queryCategory.get();
     }
@@ -86,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
     protected Category checkCategoryExistsByName(String name) {
         Optional<Category> queryCategory = categoryRepository.findByName(name);
         if (queryCategory.isEmpty()) {
-            throw new EntityNotFoundException("Categoria não encontrada. Nome: " + name);
+            throw new ResourceNotFoundException("Categoria não encontrada. Nome: " + name);
         }
         return queryCategory.get();
     }

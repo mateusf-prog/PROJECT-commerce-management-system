@@ -1,6 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
-import br.com.mateus.commercemanagementsystem.exceptions.EntityNotFoundException;
+import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.integration.PaymentApiServiceImpl;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
@@ -48,7 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
         Optional<Payment> paymentExists = paymentRepository.findById(payment.getId());
 
         if(paymentExists.isEmpty()) {
-            throw new EntityNotFoundException("Pagamento não encontrado - ID " + payment.getId());
+            throw new ResourceNotFoundException("Pagamento não encontrado - ID " + payment.getId());
         }
 
         paymentRepository.save(payment);
@@ -63,7 +63,7 @@ public class PaymentServiceImpl implements PaymentService {
         Optional<Payment> paymentExists = paymentRepository.findById(id);
 
         if(paymentExists.isEmpty()) {
-            throw new EntityNotFoundException("Pagamento não encontrado - ID " + id);
+            throw new ResourceNotFoundException("Pagamento não encontrado - ID " + id);
         }
 
         return paymentExists.get();
