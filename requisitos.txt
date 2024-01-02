@@ -26,3 +26,6 @@ O sistema deverá:
 Regras:
 - Pagamento via boleto (vencimento de 3 dias), desconto de 5%.
 - Pagamento via Pix, desconto de 10%.
+
+// teste
+
