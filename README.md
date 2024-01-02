@@ -17,3 +17,5 @@ O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoqu
 
   OBS:Este projeto tem como objetivo principal a prática e o estudo, sendo passível de conter eventuais erros. Comprometo-me a corrigi-los e a aprimorar o código, buscando mantê-lo o mais limpo possível.
 
+
+O token Asaas salvo no application.properties é um token referente a uma conta somente de testes, em caso de produção o token não pode ficar explícito desta forma. Fiz somente por quesstão didática e teste.
