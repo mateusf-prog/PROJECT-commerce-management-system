@@ -75,10 +75,6 @@ public class OrderServiceImpl implements OrderService {
 
         Customer customer = customerService.findByCpf(cpf);
 
-        if (customer == null) {
-            throw new ResourceNotFoundException("Cliente não encontrado. CPF " + cpf);
-        }
-
         List<Order> orders = orderRepository.findByCustomerCpf(cpf);
         if (orders.isEmpty()) {
             throw new ResourceNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
