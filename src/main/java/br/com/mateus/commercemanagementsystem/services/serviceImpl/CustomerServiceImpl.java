@@ -65,17 +65,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public void deleteByCpf(String cpf) {
 
-        Optional<Customer> customer = customerRepository.findByCpf(cpf);
+        Customer customer = customerRepository.findByCpf(cpf).orElseThrow(() ->
+                new ResourceNotFoundException("Cliente não encontrado. CPF: " + cpf));
+        customerRepository.delete(customer);
 
-        if (customer.isEmpty()) {
-            throw new ResourceNotFoundException("Cliente não encontrado. CPF " + cpf);
-        }
-        customerRepository.delete(customer.get());
-        if (customer.get().getIdApiExternal() == null) {
-            throw new ResourceNotFoundException("Cliente deletato com sucesso do banco de dados local. " +
+        if (customer.getIdApiExternal() == null) {
+            throw new ResourceNotFoundException("Cliente deletado do banco de dados local. " +
                     "Cliente não possui ID para api externa.");
         }
-        integrationPaymentApi.deleteCustomer(customer.get().getIdApiExternal());
+        integrationPaymentApi.deleteCustomer(customer.getIdApiExternal());
     }
 
     @Override
@@ -112,9 +110,9 @@ public class CustomerServiceImpl implements CustomerService {
         for (Customer customer : list) {
             CustomerCreatedDTO dto = new CustomerCreatedDTO();
             dto.setName(customer.getName());
-            dto.setCpfCnpj(customer.getCpf());
+            dto.setCpf(customer.getCpf());
             dto.setEmail(customer.getEmail());
-            dto.setMobilePhone(customer.getPhoneNumber());
+            dto.setPhoneNumber(customer.getPhoneNumber());
             listDTO.add(dto);
         }
         return listDTO;

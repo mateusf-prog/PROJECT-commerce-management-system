@@ -77,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<Order> orders = orderRepository.findByCustomerCpf(cpf);
         if (orders.isEmpty()) {
-            throw new ResourceNotFoundException("Cliente não possui nenhum pedido. CPF + " + cpf);
+            throw new ResourceNotFoundException("Cliente não possui nenhum pedido. CPF: " + cpf);
         }
 
         List<OrderDTO> listOrdersDTO = new ArrayList<>();

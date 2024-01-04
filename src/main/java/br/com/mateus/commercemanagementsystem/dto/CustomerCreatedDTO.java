@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class CustomerCreatedDTO {
 
     private String name;
-    private String cpfCnpj;
+    private String cpf;
     private String email;
-    private String mobilePhone;
+    private String phoneNumber;
 }
