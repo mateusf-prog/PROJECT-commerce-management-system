@@ -2,18 +2,17 @@
 ## Projeto - Gerenciador de comércios
 #### *ainda em desenvolvimento...*
 
-O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoques e pagamentos e clientes. Integração com uma API (mock) para simular um pagamento via boleto ou PIX e enviar esse pagamento para o email do cliente.
+O sistema web deverá permitir que os comerciantes gerenciem suas vendas, estoques e pagamentos e clientes. Integração com uma API de pagamentos via boleto ou PIX e após a compra o cliente recebe os dados da compra via email.
 
 #### Requisitos:
-- O comerciante terá seu cadastro (login e senha).
-- Incluir, alterar, consultar cadastro de seus clientes. 
 - Incluir e consultar histórico de pedidos.
 - Consultar o histórico e status de pagamentos.
-- CRUD produtos do estoque.
+- CRUD produtos, categorias e clientes.
 - Aplicar filtros para pesquisa de estoque (código ou nome).
-- Gerar e processar pagamentos dos clientes (boleto e pix).
+- Gerar e processar pagamentos dos clientes (boleto ou pix).
 - Aplicar filtros para pesquisa de clientes, pagamentos (filtrar por nome, CPF).
-- Integrar uma API de pagamentos, para gerar um boleto ou código PIX e enviar para o cliente via email.
+- Integrar uma API de pagamentos, para gerar um boleto ou código PIX.
+- Após a compra, enviar os dados para o cliente via email.
 
 #### Observações:
 - Este projeto tem como objetivo principal a prática e o estudo, sendo passível de conter eventuais erros. Comprometo-me a corrigi-los e a aprimorar o código, buscando mantê-lo o mais limpo possível.
