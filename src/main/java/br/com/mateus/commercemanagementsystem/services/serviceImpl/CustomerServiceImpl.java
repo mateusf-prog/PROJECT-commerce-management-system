@@ -1,6 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
-import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedDTO;
+import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
@@ -11,7 +11,6 @@ import br.com.mateus.commercemanagementsystem.services.CustomerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public Customer createCustomer(Customer customer) {
+    public CustomerCreatedOrUpdatedDTO createCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
         if (queryCustomer.isPresent()) {
@@ -36,12 +35,12 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customerRepository.save(customer);
-        return customer;
+        return new CustomerCreatedOrUpdatedDTO(customer);
     }
 
     @Override
     @Transactional
-    public Customer updateCustomer(Customer customer) {
+    public CustomerCreatedOrUpdatedDTO updateCustomer(Customer customer) {
 
         Customer queryCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente não encontrado"));
@@ -51,38 +50,26 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         customerRepository.save(customer);
-        return customer;
+        return new CustomerCreatedOrUpdatedDTO(queryCustomer);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Customer findByCpf(String cpf) {
 
-        Optional<Customer> queryCustomer = customerRepository.findByCpf(cpf);
-        if (queryCustomer.isEmpty()) {
-            throw new ResourceNotFoundException("Cliente não encontrado!");
-        }
-        return queryCustomer.get();
+        return customerRepository.findByCpf(cpf).orElseThrow(
+                () -> new ResourceNotFoundException("Cliente não encontrado"));
     }
 
     @Transactional(readOnly = true)
-    public List<CustomerCreatedDTO> findAll() {
+    public List<CustomerCreatedOrUpdatedDTO> findAll() {
 
         List<Customer> list = customerRepository.findAll();
         if (list.isEmpty()) {
             throw new ResourceNotFoundException("Lista vazia.");
         }
 
-        List<CustomerCreatedDTO> listDTO = new ArrayList<>();
-        for (Customer customer : list) {
-            CustomerCreatedDTO dto = new CustomerCreatedDTO();
-            dto.setName(customer.getName());
-            dto.setCpf(customer.getCpf());
-            dto.setEmail(customer.getEmail());
-            dto.setPhoneNumber(customer.getPhoneNumber());
-            listDTO.add(dto);
-        }
-        return listDTO;
+        return list.stream().map(CustomerCreatedOrUpdatedDTO::new).toList();
     }
 }
 

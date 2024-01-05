@@ -8,20 +8,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerDTO {
+public class CustomerCreatedOrUpdatedDTO {
 
-    private String idApiExternal;
     private String name;
-    private String cpfCnpj;
+    private String cpf;
     private String email;
     private String phoneNumber;
 
-    public CustomerDTO(Customer entity) {
-        idApiExternal = entity.getIdApiExternal();
+    public CustomerCreatedOrUpdatedDTO(Customer entity) {
         name = entity.getName();
-        cpfCnpj = entity.getCpf();
+        cpf = entity.getCpf();
         email = entity.getEmail();
         phoneNumber = entity.getPhoneNumber();
-
     }
 }
