@@ -9,7 +9,6 @@ public interface CustomerService {
     Customer updateCustomer(Customer customer);
     Customer createCustomer(Customer customer);
     Customer findByCpf(String cpf);
-    List<Customer> findByName(String name);
 }
 
 

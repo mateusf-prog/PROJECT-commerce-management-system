@@ -39,12 +39,6 @@ public class CustomerController {
         return ResponseEntity.ok().body(customer);
     }
 
-    @GetMapping("/byName/{name}")
-    public ResponseEntity<List<Customer>> findByName(@PathVariable String name) {
-        List<Customer> list = customerService.findByName(name);
-        return ResponseEntity.ok().body(list);
-    }
-
     @GetMapping
     public ResponseEntity<List<CustomerCreatedDTO>> listAll() {
         return ResponseEntity.ok().body(customerService.findAll());

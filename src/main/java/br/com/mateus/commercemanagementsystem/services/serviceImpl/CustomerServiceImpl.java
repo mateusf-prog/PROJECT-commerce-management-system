@@ -65,17 +65,6 @@ public class CustomerServiceImpl implements CustomerService {
         return queryCustomer.get();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Customer> findByName(String name) {
-
-        List<Customer> results = customerRepository.findByName(name);
-        if (results.isEmpty()) {
-            throw new ResourceNotFoundException("Nenhum resultado encontrado!");
-        }
-        return results;
-    }
-
     @Transactional(readOnly = true)
     public List<CustomerCreatedDTO> findAll() {
 
