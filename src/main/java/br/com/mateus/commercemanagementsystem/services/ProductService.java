@@ -19,6 +19,4 @@ public interface ProductService {
     void returnQuantityInStockAfterCanceledOrder(List<OrderItem> list);
     int checkQuantityStockAvailability(Long id);
     String adjustStockQuantity(Long id, int newQuantity);
-    String setPrice(Long id, BigDecimal price);
-
 }

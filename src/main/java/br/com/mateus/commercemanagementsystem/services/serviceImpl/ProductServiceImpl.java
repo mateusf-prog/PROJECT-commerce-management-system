@@ -88,11 +88,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductDTO findByName(String name) {
 
-        Optional<Product> product = productRepository.findByName(name);
-        if (product.isEmpty()) {
-            throw new ResourceNotFoundException("Produto não encontrado. Nome: " + name);
-        }
-        return convertProductToProductDTO(product.get());
+        Product product = productRepository.findByName(name).orElseThrow(
+                () -> new ResourceNotFoundException("Produto não encontrado. Verifique o nome digitado. NOME: " + name));
+
+        return convertProductToProductDTO(product);
     }
 
     @Override
@@ -142,36 +141,19 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public int checkQuantityStockAvailability(Long id) {
 
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty()) {
-            throw new ResourceNotFoundException("Nenhum produto no estoque com o ID: " + id);
-        }
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Nenhum produto no estoque com o ID: " + id));
 
-        return product.get().getQuantity();
+        return product.getQuantity();
     }
 
-    @Override
-    @Transactional
-    public String setPrice(Long id, BigDecimal newPrice) {
-
-        Product product = checkProductExistsById(id);
-        if (newPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new EntityInvalidDataException("Novo preço inválido!");
-        }
-
-        product.setPrice(newPrice);
-        updateProduct(product);
-        return "Preço atualizado!";
-    }
 
 
     @Transactional(readOnly = true)
     protected Product checkProductExistsById(Long id) {
-        Optional<Product> query = productRepository.findById(id);
-        if (query.isEmpty()) {
-            throw new ResourceNotFoundException("Produto não encontrado. ID: " + id);
-        }
-        return query.get();
+
+        return productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Produto não encontrado. ID: " + id));
     }
 
     public ProductDTO convertProductToProductDTO(Product product) {
