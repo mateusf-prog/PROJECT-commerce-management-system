@@ -4,7 +4,7 @@ import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
-import br.com.mateus.commercemanagementsystem.integration.CustomerApiServiceImpl;
+import br.com.mateus.commercemanagementsystem.integration.integrationImpl.CustomerApiServiceImpl;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.services.CustomerService;
@@ -28,52 +28,30 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public Customer updateCustomer(Customer customer) {
-
-        Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
-
-         if (queryCustomer.isEmpty()) {
-             throw new ResourceNotFoundException("Cliente não encontrado!");
-         }
-
-         customer.setIdApiExternal(queryCustomer.get().getIdApiExternal());
-
-         CustomerDTO customerDTO = integrationPaymentApi.updateCustomer(customer);
-         customer.setIdApiExternal(customerDTO.getId());
-         customerRepository.save(customer);
-         return customer;
-    }
-
-    @Override
-    @Transactional
     public Customer createCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());
-        Optional<Customer> queryCustomerByEmail = customerRepository.findByEmail(customer.getEmail());
-
-        if (queryCustomer.isPresent() || queryCustomerByEmail.isPresent()) {
+        if (queryCustomer.isPresent()) {
             throw new EntityAlreadyExistsException("Cliente já cadastrado.");
         }
 
-        CustomerDTO customerDTO = integrationPaymentApi.createCustomer(customer);
-        customer.setIdApiExternal(customerDTO.getId());
         customerRepository.save(customer);
         return customer;
     }
 
     @Override
     @Transactional
-    public void deleteByCpf(String cpf) {
+    public Customer updateCustomer(Customer customer) {
 
-        Customer customer = customerRepository.findByCpf(cpf).orElseThrow(() ->
-                new ResourceNotFoundException("Cliente não encontrado. CPF: " + cpf));
-        customerRepository.delete(customer);
+        Customer queryCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
+                () -> new ResourceNotFoundException("Cliente não encontrado"));
 
-        if (customer.getIdApiExternal() == null) {
-            throw new ResourceNotFoundException("Cliente deletado do banco de dados local. " +
-                    "Cliente não possui ID para api externa.");
+        if (queryCustomer.getIdApiExternal() != null) {
+            integrationPaymentApi.updateCustomer(customer);
         }
-        integrationPaymentApi.deleteCustomer(customer.getIdApiExternal());
+
+        customerRepository.save(customer);
+        return customer;
     }
 
     @Override

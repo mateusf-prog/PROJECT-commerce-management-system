@@ -51,7 +51,7 @@ public class Customer {
 
     // define relationships
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", fetch=FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
 

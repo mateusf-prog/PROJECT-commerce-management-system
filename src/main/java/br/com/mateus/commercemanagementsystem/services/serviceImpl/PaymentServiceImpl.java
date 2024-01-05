@@ -1,7 +1,7 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
-import br.com.mateus.commercemanagementsystem.integration.PaymentApiServiceImpl;
+import br.com.mateus.commercemanagementsystem.integration.integrationImpl.PaymentApiServiceImpl;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;

@@ -33,12 +33,6 @@ public class CustomerController {
         return ResponseEntity.ok().body(customer);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable String id) {
-        customerService.deleteByCpf(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Customer> findByCpf(@PathVariable String id) {
         Customer customer = customerService.findByCpf(id);
