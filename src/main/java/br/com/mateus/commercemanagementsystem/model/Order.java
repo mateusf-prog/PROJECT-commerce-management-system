@@ -51,6 +51,10 @@ public class Order {
     public Order() {
     }
 
+    public Order(List<OrderItem> items) {
+        this.items = items;
+    }
+
     public Order(BigDecimal totalValue, Payment payment, Customer customer, Instant date, OrderStatus status) {
         this.totalValue = totalValue;
         this.payment = payment;

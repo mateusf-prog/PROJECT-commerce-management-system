@@ -8,6 +8,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataExcept
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
+import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.services.OrderService;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -27,15 +27,17 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemServiceImpl orderItemService;
     private final PaymentServiceImpl paymentService;
     private final ProductServiceImpl productService;
+    private final OrderItemRepository repository;
 
     public OrderServiceImpl(OrderRepository orderRepository, CustomerServiceImpl customerService,
                             OrderItemServiceImpl orderItemService, PaymentServiceImpl paymentService,
-                            ProductServiceImpl productService) {
+                            ProductServiceImpl productService, OrderItemRepository repository) {
         this.orderRepository = orderRepository;
         this.customerService = customerService;
         this.orderItemService = orderItemService;
         this.paymentService = paymentService;
         this.productService = productService;
+        this.repository = repository;
     }
 
     @Override
@@ -53,20 +55,17 @@ public class OrderServiceImpl implements OrderService {
             orderItemService.createOrderItem(orderItem);
         }
 
-        return getOrderCreatedDTO(order, dto.getItems());
+        return new OrderCreatedDTO(order, dto.getItems());
     }
 
     @Override
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
 
-        Optional<Order> orderQuery = orderRepository.findById(id);
+        Order entity = orderRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Pedido não encontrado. ID " + id));
 
-        if (orderQuery.isEmpty()) {
-            throw new ResourceNotFoundException("Pedido não encontrado. ID " + id);
-        }
-
-        return convertOrderToOrderDTO(orderQuery.get());
+        return new OrderDTO(entity);
     }
 
     @Override
@@ -82,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderDTO> listOrdersDTO = new ArrayList<>();
         for (Order order : orders) {
-            listOrdersDTO.add(convertOrderToOrderDTO(order));
+            listOrdersDTO.add(new OrderDTO(order));
         }
 
         return listOrdersDTO;
@@ -96,9 +95,10 @@ public class OrderServiceImpl implements OrderService {
             throw new ResourceNotFoundException("Lista vazia!");
         }
 
-        List<OrderDTO> listDTO = new ArrayList<OrderDTO>();
+        List<OrderDTO> listDTO = new ArrayList<>();
         for (Order order : list) {
-            listDTO.add(convertOrderToOrderDTO(order));
+            OrderDTO dto = new OrderDTO(order);
+            listDTO.add(dto);
         }
 
         return listDTO;
@@ -106,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public OrderDTO cancelOrder(Long id) {
-        // todo: retornar a lista de items deste pedido também
+
         Order order = orderRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("Pedido não encontrado!"));
         if (order.getStatus().equals(OrderStatus.CANCELLED)) {
@@ -117,43 +117,18 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
         productService.returnQuantityInStockAfterCanceledOrder(order.getItems());
 
-        return convertOrderToOrderDTO(order);
-    }
-
-    private static OrderCreatedDTO getOrderCreatedDTO(Order order, List<OrderItemDTO> list) {
-        OrderCreatedDTO orderCreatedDTO = new OrderCreatedDTO(list);
-        orderCreatedDTO.setOrderId(order.getId());
-        orderCreatedDTO.setDate(order.getDate());
-        orderCreatedDTO.setCustomer(order.getCustomer().getName());
-        orderCreatedDTO.setStatus(order.getStatus());
-        orderCreatedDTO.setCpf(order.getCustomer().getCpf());
-        orderCreatedDTO.setTotalValue(order.getTotalValue());
-
-        return orderCreatedDTO;
-    }
-
-    private OrderDTO convertOrderToOrderDTO(Order order) {
-
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setId(order.getId());
-        orderDTO.setCustomerCpf(order.getCustomer().getCpf());
-        orderDTO.setStatus(order.getStatus());
-        orderDTO.setTotalValue(order.getTotalValue());
-        orderDTO.setDate(order.getDate());
-
-        return orderDTO;
+        return new OrderDTO(order);
     }
 
     @Override
     public BigDecimal calculateTotalPrice(List<OrderItemDTO> items) {
 
-        BigDecimal productPrice;
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItemDTO item : items) {
             Product product = productService.checkProductExistsById(item.getProductId());
-            productPrice = product.getPrice();
-            total = total.add(productPrice.multiply(BigDecimal.valueOf(item.getQuantity())));
+            BigDecimal itemTotal = new BigDecimal(item.getQuantity()).multiply(product.getPrice());
+            total = total.add(itemTotal);
         }
 
         return total;
@@ -163,16 +138,12 @@ public class OrderServiceImpl implements OrderService {
 
         // get customer from database
         Customer customer = customerService.findByCpf(dto.getCustomerCpf());
-        if (customer == null) {
-            throw new ResourceNotFoundException("Cliente não encontrado.");
-        }
 
         Order order = new Order();
         order.setDate(Instant.now());
         order.setTotalValue(calculateTotalPrice(dto.getItems()));
         order.setCustomer(customer);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
-
         return order;
     }
 }

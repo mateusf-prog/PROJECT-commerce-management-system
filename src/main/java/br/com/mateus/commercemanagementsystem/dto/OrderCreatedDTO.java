@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.dto;
 
+import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,14 +19,20 @@ public class OrderCreatedDTO {
 
     private Long orderId;
     private OrderStatus status;
-    private String customer;
+    private String customerName;
     private String cpf;
     private BigDecimal totalValue;
     private Instant date;
     @Setter(AccessLevel.NONE)
     private List<OrderItemDTO> listItems = new ArrayList<>();
 
-    public OrderCreatedDTO(List<OrderItemDTO> list) {
-        this.listItems = list;
+    public OrderCreatedDTO(Order entity, List<OrderItemDTO> items) {
+        orderId = entity.getId();
+        status = entity.getStatus();
+        customerName = entity.getCustomer().getName();
+        cpf = entity.getCustomer().getCpf();
+        totalValue = entity.getTotalValue();
+        date = entity.getDate();
+        listItems = items;
     }
 }

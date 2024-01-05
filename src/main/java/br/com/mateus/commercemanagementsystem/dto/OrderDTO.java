@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.dto;
 
+import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
@@ -37,7 +38,11 @@ public class OrderDTO {
     @NotEmpty(message = "Lista de items não pode ser vazia!")
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public OrderDTO(List<OrderItem> items) {
-        this.orderItems = items;
+    public OrderDTO(Order entity) {
+        id = entity.getId();
+        totalValue = entity.getTotalValue();
+        customerCpf = entity.getCustomer().getCpf();
+        status = entity.getStatus();
+        date = entity.getDate();
     }
 }

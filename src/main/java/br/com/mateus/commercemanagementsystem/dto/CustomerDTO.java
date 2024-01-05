@@ -22,6 +22,5 @@ public class CustomerDTO {
         cpfCnpj = entity.getCpf();
         email = entity.getEmail();
         phoneNumber = entity.getPhoneNumber();
-
     }
 }
