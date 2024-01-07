@@ -28,7 +28,7 @@ public class OrderController {
     }
 
     @PostMapping()
-    public ResponseEntity<OrderCreatedDTO> createOrder(@Valid @RequestBody OrderPostDTO order) {
+    public ResponseEntity<OrderCreatedDTO> create(@Valid @RequestBody OrderPostDTO order) {
         return ResponseEntity.ok(orderService.createOrder(order));
     }
 
@@ -51,7 +51,7 @@ public class OrderController {
     }
 
     @PatchMapping("/cancel/{id}")
-    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable Long id) {
+    public ResponseEntity<OrderDTO> cancel(@PathVariable Long id) {
         OrderDTO orderDTO = orderService.cancelOrder(id);
         return ResponseEntity.ok().body(orderDTO);
     }

@@ -28,7 +28,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
+    public ResponseEntity<Category> create(@Valid @RequestBody Category category) {
         return ResponseEntity.ok().body(categoryService.createCategory(category));
     }
 
@@ -38,12 +38,12 @@ public class CategoryController {
     }
 
     @PutMapping
-    public ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category) {
+    public ResponseEntity<Category> update(@Valid @RequestBody Category category) {
         return ResponseEntity.ok().body(categoryService.updateCategory(category));
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<String> deleteCategory(@PathVariable String name) {
+    public ResponseEntity<String> delete(@PathVariable String name) {
         categoryService.deleteByName(name);
         return ResponseEntity.noContent().build();
     }
