@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.dto.CategoryDTO;
+import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Category;
@@ -18,27 +19,29 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.productRepository = productRepository;
     }
 
     @Override
     @Transactional
     public Category createCategory(Category category) {
 
-        Category checkCategory = checkCategoryExistsByName(category.getName());
-        categoryRepository.save(checkCategory);
-        return checkCategory;
+        Optional<Category> entity = categoryRepository.findByName(category.getName());
+
+        if(entity.isPresent()) {
+            throw new EntityAlreadyExistsException("Categoria já existe.");
+        }
+        return categoryRepository.save(category);
     }
 
     @Override
     @Transactional
     public Category updateCategory(Category category) {
 
-        Category checkCategory = checkCategoryExistsById(category.getId());
+        Category entity = categoryRepository.findById(category.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Categoria não encontrada. ID: " + category.getId()));
         categoryRepository.save(category);
         return category;
     }
@@ -47,21 +50,18 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteByName(String name) {
 
-        Category category = checkCategoryExistsByName(name);
-        Optional<List<Product>> product = productRepository.findByCategoryName(name);
+        Category category = categoryRepository.findByName(name).orElseThrow(
+                () -> new ResourceNotFoundException("Categoria não encontrada. Nome: " + name));
 
-        if (product.isPresent()) {
-            throw new EntityInvalidDataException("Não foi possível apagar a categoria, pois ela está associada a um produto, " +
-                    "mude a categoria do produto antes de apagá-la");
-        }
         categoryRepository.delete(category);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Category findByName(String name) {
-        
-        return checkCategoryExistsByName(name);
+
+        return categoryRepository.findByName(name).orElseThrow(
+                () -> new ResourceNotFoundException("Categoria não encontrada. ID: " + name));
     }
 
     @Override
@@ -70,24 +70,5 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<Category> categoryList = categoryRepository.findAll();
         return categoryList.stream().map(x -> new CategoryDTO(x.getId(), x.getName())).toList();
-
-    }
-
-    @Transactional(readOnly = true)
-    protected Category checkCategoryExistsById(Long id) {
-        Optional<Category> queryCategory = categoryRepository.findById(id);
-        if (queryCategory.isEmpty()) {
-            throw new ResourceNotFoundException("Categoria não encontrada. ID: " + id);
-        }
-        return queryCategory.get();
-    }
-
-    @Transactional(readOnly = true)
-    protected Category checkCategoryExistsByName(String name) {
-        Optional<Category> queryCategory = categoryRepository.findByName(name);
-        if (queryCategory.isEmpty()) {
-            throw new ResourceNotFoundException("Categoria não encontrada. Nome: " + name);
-        }
-        return queryCategory.get();
     }
 }
