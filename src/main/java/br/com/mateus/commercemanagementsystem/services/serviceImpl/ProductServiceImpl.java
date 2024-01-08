@@ -77,14 +77,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
-    public void deleteProduct(Long id) {
-
-        checkProductExistsById(id);
-        productRepository.deleteById(id);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public ProductDTO findByName(String name) {
 

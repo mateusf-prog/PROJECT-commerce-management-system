@@ -50,10 +50,4 @@ public class ProductController {
         List<ProductDTO> products = productService.findAll();
         return ResponseEntity.ok().body(products);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
-    }
 }

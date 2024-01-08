@@ -33,7 +33,7 @@ public class Product {
     private BigDecimal price;
 
     @Column(nullable = false)
-    @Min(value = 1, message = "A quantidade deve ser maior ou igual a zero!")
+    @Min(value = 0, message = "A quantidade deve ser maior ou igual a zero!")
     private int quantity;
 
     @ManyToOne()
