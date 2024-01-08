@@ -27,17 +27,15 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemServiceImpl orderItemService;
     private final PaymentServiceImpl paymentService;
     private final ProductServiceImpl productService;
-    private final OrderItemRepository repository;
 
     public OrderServiceImpl(OrderRepository orderRepository, CustomerServiceImpl customerService,
                             OrderItemServiceImpl orderItemService, PaymentServiceImpl paymentService,
-                            ProductServiceImpl productService, OrderItemRepository repository) {
+                            ProductServiceImpl productService) {
         this.orderRepository = orderRepository;
         this.customerService = customerService;
         this.orderItemService = orderItemService;
         this.paymentService = paymentService;
         this.productService = productService;
-        this.repository = repository;
     }
 
     @Override
@@ -60,19 +58,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public OrderDTO findById(Long id) {
-
-        Order entity = orderRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Pedido não encontrado. ID " + id));
-
-        return new OrderDTO(entity);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<OrderDTO> findAllOrdersByClientCpf(String cpf) {
-
-        Customer customer = customerService.findByCpf(cpf);
+    public List<OrderDTO> findByCustomerCpf(String cpf) {
 
         List<Order> orders = orderRepository.findByCustomerCpf(cpf);
         if (orders.isEmpty()) {
@@ -108,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO cancelOrder(Long id) {
 
         Order order = orderRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Pedido não encontrado!"));
+                new ResourceNotFoundException("Pedido não encontrado"));
         if (order.getStatus().equals(OrderStatus.CANCELLED)) {
             throw new EntityInvalidDataException("Pedido já se encontra cancelado");
         }
