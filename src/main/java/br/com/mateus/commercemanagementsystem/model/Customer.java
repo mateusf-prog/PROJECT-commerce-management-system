@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.Past;
 import org.hibernate.validator.constraints.br.CPF;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,6 +30,7 @@ public class Customer {
     private String idApiExternal;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
+    @Past(message = "Data de nascimento inválida")
     @Column(nullable = false)
     private LocalDate birthdate;
 
