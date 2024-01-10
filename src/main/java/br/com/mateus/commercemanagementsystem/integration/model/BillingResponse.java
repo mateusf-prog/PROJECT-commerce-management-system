@@ -3,7 +3,9 @@ package br.com.mateus.commercemanagementsystem.integration.model;
 import java.time.LocalDate;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BillingResponse extends BillingRequest{
     
