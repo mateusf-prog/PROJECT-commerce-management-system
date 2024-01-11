@@ -1,6 +1,5 @@
 package br.com.mateus.commercemanagementsystem.dto;
 
-import br.com.mateus.commercemanagementsystem.model.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
