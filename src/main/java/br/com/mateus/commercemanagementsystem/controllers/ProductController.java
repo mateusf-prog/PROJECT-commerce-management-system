@@ -2,7 +2,7 @@ package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.ProductDTO;
 import br.com.mateus.commercemanagementsystem.model.Product;
-import br.com.mateus.commercemanagementsystem.services.services_impl.ProductServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.ProductService;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,9 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
 
-    public ProductController(ProductServiceImpl productService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 

@@ -2,7 +2,7 @@ package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
 import br.com.mateus.commercemanagementsystem.model.Customer;
-import br.com.mateus.commercemanagementsystem.services.services_impl.CustomerServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.CustomerService;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,9 @@ import java.util.List;
 @RequestMapping("/api/customers")
 public class CustomerController {
 
-    private final CustomerServiceImpl customerService;
+    private final CustomerService customerService;
 
-    public CustomerController(CustomerServiceImpl customerService) {
+    public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 

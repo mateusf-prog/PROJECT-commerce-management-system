@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.services.services_asaas_integration;
+package br.com.mateus.commercemanagementsystem.services.asaas_integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Payment;
@@ -18,17 +18,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @Service
-public class PaymentApiServiceImpl {
+public class PaymentApiService {
 
     @Value("https://sandbox.asaas.com/api/v3/payments")
     private String url;
     @Value("${asaas.token}")
     private String token;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final CustomerApiServiceImpl customerApiService;
+    private final CustomerApiService customerApiService;
 
 
-    public PaymentApiServiceImpl(CustomerApiServiceImpl customerApiService) {
+    public PaymentApiService(CustomerApiService customerApiService) {
         this.customerApiService = customerApiService;
     }
 

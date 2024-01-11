@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.mateus.commercemanagementsystem.model.Category;
-import br.com.mateus.commercemanagementsystem.services.services_impl.CategoryServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.CategoryService;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -21,9 +21,9 @@ import java.util.List;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
-    private final CategoryServiceImpl categoryService;
+    private final CategoryService categoryService;
     
-    public CategoryController(CategoryServiceImpl categoryService) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 

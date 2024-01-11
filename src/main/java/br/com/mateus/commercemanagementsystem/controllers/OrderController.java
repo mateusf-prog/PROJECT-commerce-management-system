@@ -3,7 +3,7 @@ package br.com.mateus.commercemanagementsystem.controllers;
 import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderPostDTO;
-import br.com.mateus.commercemanagementsystem.services.services_impl.OrderServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.OrderService;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,9 @@ import java.util.List;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final OrderServiceImpl orderService;
+    private final OrderService orderService;
 
-    public OrderController(OrderServiceImpl orderService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
