@@ -10,6 +10,7 @@ import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.services.OrderService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +25,13 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CustomerServiceImpl customerService;
     private final OrderItemServiceImpl orderItemService;
-    private final PaymentServiceImpl paymentService;
     private final ProductServiceImpl productService;
 
     public OrderServiceImpl(OrderRepository orderRepository, CustomerServiceImpl customerService,
-                            OrderItemServiceImpl orderItemService, PaymentServiceImpl paymentService,
-                            ProductServiceImpl productService) {
+                            OrderItemServiceImpl orderItemService, ProductServiceImpl productService) {
         this.orderRepository = orderRepository;
         this.customerService = customerService;
         this.orderItemService = orderItemService;
-        this.paymentService = paymentService;
         this.productService = productService;
     }
 
@@ -130,6 +128,15 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomer(customer);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
         return order;
+    }
+
+    @Override
+    public OrderDTO findById(Long id) {
+        
+        Order entity = orderRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("Pedido não encontrado"));
+
+        return new OrderDTO(entity);
     }
 }
 

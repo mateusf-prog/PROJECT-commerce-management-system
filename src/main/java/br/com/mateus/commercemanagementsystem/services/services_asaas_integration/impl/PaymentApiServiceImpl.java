@@ -61,4 +61,16 @@ public class PaymentApiServiceImpl implements PaymentApiService {
         headers.set("access_token", token);
         return headers;
     }
+
+    @Override
+    public BillingResponse cancelPayment(Payment payment) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cancelPayment'");
+    }
+
+    @Override
+    public BillingResponse setStatus(Payment payment) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    }
 }

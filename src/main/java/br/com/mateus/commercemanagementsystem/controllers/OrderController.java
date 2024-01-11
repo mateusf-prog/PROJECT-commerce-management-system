@@ -32,6 +32,12 @@ public class OrderController {
         return ResponseEntity.ok().body(list);
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<OrderDTO> findByCustomerCpf(@PathVariable Long id) {
+        OrderDTO order = orderService.findById(id);
+        return ResponseEntity.ok().body(order);
+    }
+
     @GetMapping()
     public ResponseEntity<List<OrderDTO>> findAll() {
         List<OrderDTO> list = orderService.findAll();

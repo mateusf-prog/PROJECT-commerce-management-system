@@ -6,4 +6,6 @@ import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.Bill
 public interface PaymentApiService {
 
     BillingResponse createPayment(Payment payment);
+    BillingResponse cancelPayment(Payment payment);
+    BillingResponse setStatus(Payment payment);
 }
