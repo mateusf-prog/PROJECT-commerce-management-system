@@ -23,19 +23,21 @@ public class CustomerApiService{
 
     public CustomerDTO createCustomer(Customer customer) {
 
-        // TODO: implementar repetição 
         // create customerDTO
         CustomerDTO customerDTO = convertCustomerToCustomerDTO(customer);
 
         // define headers, create entity and call API
-        HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
-        ResponseEntity<CustomerDTO> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                entity,
-                CustomerDTO.class
-        );
-        return response.getBody();
+        if (customer.getIdApiExternal() == null) {
+            HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
+            ResponseEntity<CustomerDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    CustomerDTO.class
+            );
+            return response.getBody();
+        }
+        return null;
     }
 
     public CustomerDTO updateCustomer(Customer customer) {
