@@ -7,7 +7,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundExcepti
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.services.CustomerService;
-import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl.CustomerApiServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.CustomerApiServiceImpl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

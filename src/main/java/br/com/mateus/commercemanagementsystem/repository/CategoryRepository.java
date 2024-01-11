@@ -9,5 +9,4 @@ import br.com.mateus.commercemanagementsystem.model.Category;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByName(String name);
-    
 }

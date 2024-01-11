@@ -11,7 +11,7 @@ import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
 import br.com.mateus.commercemanagementsystem.services.PaymentService;
-import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl.PaymentApiServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.PaymentApiServiceImpl;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {

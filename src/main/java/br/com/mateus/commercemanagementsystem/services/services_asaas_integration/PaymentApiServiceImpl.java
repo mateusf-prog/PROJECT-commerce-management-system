@@ -1,10 +1,9 @@
-package br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl;
+package br.com.mateus.commercemanagementsystem.services.services_asaas_integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingRequest;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingResponse;
-import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.PaymentApiService;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -19,7 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @Service
-public class PaymentApiServiceImpl implements PaymentApiService {
+public class PaymentApiServiceImpl {
 
     @Value("https://sandbox.asaas.com/api/v3/payments")
     private String url;
@@ -33,7 +32,6 @@ public class PaymentApiServiceImpl implements PaymentApiService {
         this.customerApiService = customerApiService;
     }
 
-    @Override
     public BillingResponse createPayment(Payment payment) {
 
         CustomerDTO customerCreatedApi = new CustomerDTO();
@@ -79,13 +77,11 @@ public class PaymentApiServiceImpl implements PaymentApiService {
         return headers;
     }
 
-    @Override
     public BillingResponse cancelPayment(Payment payment) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cancelPayment'");
     }
 
-    @Override
     public BillingResponse setStatus(Payment payment) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setStatus'");

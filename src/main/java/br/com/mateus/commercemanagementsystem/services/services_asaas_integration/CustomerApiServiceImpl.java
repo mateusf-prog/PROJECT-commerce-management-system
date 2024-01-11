@@ -1,9 +1,8 @@
-package br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl;
+package br.com.mateus.commercemanagementsystem.services.services_asaas_integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Customer;
-import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.CustomerApiService;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -12,7 +11,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class CustomerApiServiceImpl implements CustomerApiService {
+public class CustomerApiServiceImpl{
 
     @Value("https://sandbox.asaas.com/api/v3/customers")
     private String url;
@@ -24,7 +23,6 @@ public class CustomerApiServiceImpl implements CustomerApiService {
     public CustomerApiServiceImpl() {
     }
 
-    @Override
     public CustomerDTO createCustomer(Customer customer) {
 
         // create customerDTO
@@ -41,7 +39,6 @@ public class CustomerApiServiceImpl implements CustomerApiService {
         return response.getBody();
     }
 
-    @Override
     public CustomerDTO findCustomer(String id) {
 
         // create entity and call API
@@ -59,7 +56,6 @@ public class CustomerApiServiceImpl implements CustomerApiService {
         }
     }
 
-    @Override
     public CustomerDTO updateCustomer(Customer customer) {
 
         CustomerDTO customerDTO = null;
@@ -82,7 +78,6 @@ public class CustomerApiServiceImpl implements CustomerApiService {
         }
     }
 
-    @Override
     public void deleteCustomer(String id) {
 
         try {
