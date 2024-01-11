@@ -1,7 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
-import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 
 public interface CustomerService {

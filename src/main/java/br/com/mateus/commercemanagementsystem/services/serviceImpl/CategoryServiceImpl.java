@@ -2,13 +2,13 @@ package br.com.mateus.commercemanagementsystem.services.serviceImpl;
 
 import br.com.mateus.commercemanagementsystem.dto.CategoryDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
-import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
+import br.com.mateus.commercemanagementsystem.exceptions.IntegrityViolationException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Category;
-import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
-import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import br.com.mateus.commercemanagementsystem.services.CategoryService;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category updateCategory(Category category) {
 
-        Category entity = categoryRepository.findById(category.getId()).orElseThrow(
+        categoryRepository.findById(category.getId()).orElseThrow(
                 () -> new ResourceNotFoundException("Categoria não encontrada. ID: " + category.getId()));
         categoryRepository.save(category);
         return category;
@@ -49,11 +49,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteByName(String name) {
-
+    
         Category category = categoryRepository.findByName(name).orElseThrow(
                 () -> new ResourceNotFoundException("Categoria não encontrada. Nome: " + name));
-
-        categoryRepository.delete(category);
+    
+        try {
+            categoryRepository.delete(category);
+            categoryRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new IntegrityViolationException("Categoria não pôde ser apagada pois possui produtos associados.");
+        }
     }
 
     @Override

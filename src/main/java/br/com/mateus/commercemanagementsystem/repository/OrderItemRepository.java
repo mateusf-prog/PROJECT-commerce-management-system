@@ -1,6 +1,5 @@
 package br.com.mateus.commercemanagementsystem.repository;
 
-import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.OrderItemPK;
 import org.springframework.data.jpa.repository.JpaRepository;
 

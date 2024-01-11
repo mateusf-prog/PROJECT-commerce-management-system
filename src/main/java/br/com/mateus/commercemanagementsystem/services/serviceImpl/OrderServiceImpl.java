@@ -8,7 +8,6 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataExcept
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
-import br.com.mateus.commercemanagementsystem.repository.OrderItemRepository;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import br.com.mateus.commercemanagementsystem.services.OrderService;
 import org.springframework.stereotype.Service;

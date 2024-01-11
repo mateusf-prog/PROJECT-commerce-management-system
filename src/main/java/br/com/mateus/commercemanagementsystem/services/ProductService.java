@@ -4,7 +4,6 @@ import br.com.mateus.commercemanagementsystem.dto.ProductDTO;
 import br.com.mateus.commercemanagementsystem.model.OrderItem;
 import br.com.mateus.commercemanagementsystem.model.Product;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {

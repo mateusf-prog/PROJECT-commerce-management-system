@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,6 +38,14 @@ public class GlobalExceptionHandler {
         StandardError error = new StandardError(exc.getMessage(), 400);
 
         return ResponseEntity.status(400).body(error);
+    }
+
+    @ExceptionHandler(IntegrityViolationException.class)
+    public ResponseEntity<StandardError> integrityViolation(IntegrityViolationException exc) {
+
+        StandardError error = new StandardError(exc.getMessage(), 500);
+
+        return ResponseEntity.status(500).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

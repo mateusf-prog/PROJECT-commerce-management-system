@@ -3,7 +3,6 @@ package br.com.mateus.commercemanagementsystem.controllers;
 import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderPostDTO;
-import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.services.serviceImpl.OrderServiceImpl;
 import jakarta.validation.Valid;
 

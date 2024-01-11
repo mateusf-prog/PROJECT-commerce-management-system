@@ -3,8 +3,6 @@ package br.com.mateus.commercemanagementsystem.model;
 import java.math.BigDecimal;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
