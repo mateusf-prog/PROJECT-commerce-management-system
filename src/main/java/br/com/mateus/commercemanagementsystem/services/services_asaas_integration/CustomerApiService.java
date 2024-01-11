@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.integration;
+package br.com.mateus.commercemanagementsystem.services.services_asaas_integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Customer;

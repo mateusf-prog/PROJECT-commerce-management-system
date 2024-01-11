@@ -1,9 +1,10 @@
-package br.com.mateus.commercemanagementsystem.integration.integrationImpl;
+package br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
-import br.com.mateus.commercemanagementsystem.integration.CustomerApiService;
 import br.com.mateus.commercemanagementsystem.model.Customer;
+import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.CustomerApiService;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;

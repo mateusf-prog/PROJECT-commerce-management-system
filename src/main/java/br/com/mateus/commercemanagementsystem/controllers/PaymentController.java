@@ -1,7 +1,8 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.model.Payment;
-import br.com.mateus.commercemanagementsystem.services.serviceImpl.PaymentServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.services_impl.PaymentServiceImpl;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

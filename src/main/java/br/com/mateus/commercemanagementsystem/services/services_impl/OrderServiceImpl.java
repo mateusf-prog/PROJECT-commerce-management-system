@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.services.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.services_impl;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderCreatedDTO createOrder(OrderPostDTO dto) {
 
-        Customer customer = customerService.findByCpf(dto.getCustomerCpf());
+        customerService.findByCpf(dto.getCustomerCpf());
         Order order = convertOrderPostDTOtoOrder(dto);
         order = orderRepository.save(order);
 

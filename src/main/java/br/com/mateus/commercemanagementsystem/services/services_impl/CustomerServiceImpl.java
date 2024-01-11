@@ -1,12 +1,13 @@
-package br.com.mateus.commercemanagementsystem.services.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.services_impl;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
-import br.com.mateus.commercemanagementsystem.integration.integrationImpl.CustomerApiServiceImpl;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.services.CustomerService;
+import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl.CustomerApiServiceImpl;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

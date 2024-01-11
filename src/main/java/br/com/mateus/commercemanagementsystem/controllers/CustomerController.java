@@ -2,7 +2,7 @@ package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
 import br.com.mateus.commercemanagementsystem.model.Customer;
-import br.com.mateus.commercemanagementsystem.services.serviceImpl.CustomerServiceImpl;
+import br.com.mateus.commercemanagementsystem.services.services_impl.CustomerServiceImpl;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;

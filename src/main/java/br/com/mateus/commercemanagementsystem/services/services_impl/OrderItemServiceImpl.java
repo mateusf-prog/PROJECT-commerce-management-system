@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.services.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.services_impl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;

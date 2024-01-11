@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.integration.model;
+package br.com.mateus.commercemanagementsystem.model.model_asaas_integration;
 
 import java.time.LocalDate;
 

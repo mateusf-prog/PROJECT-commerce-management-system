@@ -1,13 +1,14 @@
-package br.com.mateus.commercemanagementsystem.services.serviceImpl;
+package br.com.mateus.commercemanagementsystem.services.services_impl;
 
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
-import br.com.mateus.commercemanagementsystem.integration.integrationImpl.PaymentApiServiceImpl;
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
 import br.com.mateus.commercemanagementsystem.services.PaymentService;
+import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl.PaymentApiServiceImpl;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

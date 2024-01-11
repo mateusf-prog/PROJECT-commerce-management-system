@@ -1,9 +1,10 @@
-package br.com.mateus.commercemanagementsystem.integration.integrationImpl;
+package br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl;
 
-import br.com.mateus.commercemanagementsystem.integration.PaymentApiService;
-import br.com.mateus.commercemanagementsystem.integration.model.BillingRequest;
-import br.com.mateus.commercemanagementsystem.integration.model.BillingResponse;
 import br.com.mateus.commercemanagementsystem.model.Payment;
+import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingRequest;
+import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingResponse;
+import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.PaymentApiService;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
