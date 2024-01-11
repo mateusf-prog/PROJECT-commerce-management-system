@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CustomerDTO {
 
-    private String idApiExternal;
+    private String id;
     private String name;
     private String cpfCnpj;
     private String email;
     private String phoneNumber;
 
     public CustomerDTO(Customer entity) {
-        idApiExternal = entity.getIdApiExternal();
+        id = entity.getIdApiExternal();
         name = entity.getName();
         cpfCnpj = entity.getCpf();
         email = entity.getEmail();

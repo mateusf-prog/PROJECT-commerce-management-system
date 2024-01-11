@@ -26,13 +26,16 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerServiceImpl customerService;
     private final OrderItemServiceImpl orderItemService;
     private final ProductServiceImpl productService;
+    private final PaymentServiceImpl paymentService;
 
     public OrderServiceImpl(OrderRepository orderRepository, CustomerServiceImpl customerService,
-                            OrderItemServiceImpl orderItemService, ProductServiceImpl productService) {
+                            OrderItemServiceImpl orderItemService, ProductServiceImpl productService,
+                            PaymentServiceImpl paymentService) {
         this.orderRepository = orderRepository;
         this.customerService = customerService;
         this.orderItemService = orderItemService;
         this.productService = productService;
+        this.paymentService = paymentService;
     }
 
     @Override
@@ -41,7 +44,6 @@ public class OrderServiceImpl implements OrderService {
 
         customerService.findByCpf(dto.getCustomerCpf());
         Order order = convertOrderPostDTOtoOrder(dto);
-        order = orderRepository.save(order);
 
         for (OrderItemDTO item : dto.getItems()) {
             Product product = productService.checkProductExistsById(item.getProductId());
@@ -50,6 +52,10 @@ public class OrderServiceImpl implements OrderService {
             orderItemService.createOrderItem(orderItem);
         }
 
+        Payment payment = paymentService.createPayment(order, dto.getPaymentType());
+        order.setPayment(payment);
+
+        order = orderRepository.save(order);
         return new OrderCreatedDTO(order, dto.getItems());
     }
 

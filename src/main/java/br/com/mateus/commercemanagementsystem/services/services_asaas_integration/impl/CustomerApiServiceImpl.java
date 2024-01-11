@@ -101,7 +101,7 @@ public class CustomerApiServiceImpl implements CustomerApiService {
     public CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
 
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setIdApiExternal(customer.getIdApiExternal());
+        customerDTO.setId(customer.getIdApiExternal());
         customerDTO.setName(customer.getName());
         customerDTO.setCpfCnpj(customer.getCpf());
         customerDTO.setEmail(customer.getEmail());

@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.services.services_impl;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
+import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Customer;
@@ -33,7 +34,9 @@ public class CustomerServiceImpl implements CustomerService {
         if (queryCustomer.isPresent()) {
             throw new EntityAlreadyExistsException("Cliente já cadastrado.");
         }
+        CustomerDTO customerWithIdApiExternal = integrationPaymentApi.createCustomer(customer);
 
+        customer.setIdApiExternal(customerWithIdApiExternal.getId());
         customerRepository.save(customer);
         return new CustomerCreatedOrUpdatedDTO(customer);
     }
@@ -45,10 +48,9 @@ public class CustomerServiceImpl implements CustomerService {
         Customer queryCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente não encontrado"));
 
-        if (queryCustomer.getIdApiExternal() != null) {
-            integrationPaymentApi.updateCustomer(customer);
-        }
-
+        
+        customer.setIdApiExternal(queryCustomer.getIdApiExternal());
+        integrationPaymentApi.updateCustomer(customer);
         customerRepository.save(customer);
         return new CustomerCreatedOrUpdatedDTO(queryCustomer);
     }

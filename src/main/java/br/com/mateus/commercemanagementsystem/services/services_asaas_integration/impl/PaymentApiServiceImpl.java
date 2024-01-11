@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl;
 
+import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingRequest;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingResponse;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 public class PaymentApiServiceImpl implements PaymentApiService {
@@ -23,14 +26,25 @@ public class PaymentApiServiceImpl implements PaymentApiService {
     @Value("${asaas.token}")
     private String token;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final CustomerApiServiceImpl customerApiService;
+
+
+    public PaymentApiServiceImpl(CustomerApiServiceImpl customerApiService) {
+        this.customerApiService = customerApiService;
+    }
 
     @Override
     public BillingResponse createPayment(Payment payment) {
 
+        CustomerDTO customerCreatedApi = new CustomerDTO();
+        if (payment.getOrder().getCustomer().getIdApiExternal() == null) {
+            customerCreatedApi = customerApiService.createCustomer(payment.getOrder().getCustomer());
+        }
+
         BillingRequest billingRequest = new BillingRequest();
-        billingRequest.setCustomer(payment.getOrder().getCustomer().getIdApiExternal());
+        billingRequest.setCustomer(customerCreatedApi.getId());
         billingRequest.setBillingType(payment.getPaymentType().name());
-        billingRequest.setDescription("ORDER " + payment.getOrder().getId());
+        billingRequest.setDescription("ORDER ID: " + payment.getOrder().getId());
         billingRequest.setValue(payment.getValue().doubleValue());
         billingRequest.setDueDate(getDueDate(payment, billingRequest));
 
@@ -46,12 +60,15 @@ public class PaymentApiServiceImpl implements PaymentApiService {
     }
 
     private static LocalDate getDueDate(Payment payment, BillingRequest billingRequest) {
+        ZoneId zoneId = ZoneId.systemDefault();
 
         if ("PIX".equals(payment.getOrder().getPayment().getPaymentType().toString())) {
-            billingRequest.setDueDate(LocalDate.from(payment.getDate().plusMinutes(10)));
+            LocalDateTime dueDate = LocalDateTime.ofInstant(payment.getMoment(), zoneId).plusMinutes(10);
+            billingRequest.setDueDate(dueDate.toLocalDate());
         }
         if ("BOLETO".equals(payment.getOrder().getPayment().getPaymentType().toString())) {
-            billingRequest.setDueDate(LocalDate.from(payment.getDate().plusDays(1)));
+            LocalDateTime dueDate = LocalDateTime.ofInstant(payment.getMoment(), zoneId).plusDays(1);
+            billingRequest.setDueDate(dueDate.toLocalDate());
         }
         return billingRequest.getDueDate();
     }

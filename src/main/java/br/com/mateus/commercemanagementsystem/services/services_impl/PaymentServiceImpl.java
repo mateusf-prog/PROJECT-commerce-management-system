@@ -1,25 +1,43 @@
 package br.com.mateus.commercemanagementsystem.services.services_impl;
 
+import java.time.Instant;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
+import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
 import br.com.mateus.commercemanagementsystem.services.PaymentService;
+import br.com.mateus.commercemanagementsystem.services.services_asaas_integration.impl.PaymentApiServiceImpl;
 
+@Service
 public class PaymentServiceImpl implements PaymentService {
 
-     private final PaymentRepository repository;
-     private final OrderServiceImpl orderService;
-
-     public PaymentServiceImpl(PaymentRepository repository, OrderServiceImpl orderService) {
+     private PaymentRepository repository;
+     private final PaymentApiServiceImpl paymentApiService;
+     
+     public PaymentServiceImpl(PaymentRepository repository, PaymentApiServiceImpl paymentApiService) {
           this.repository = repository;
-          this.orderService = orderService;
+          this.paymentApiService = paymentApiService;
      }
 
      @Override
-     public Payment createPayment(String customerCpf) {
-          return null;
+     @Transactional
+     public Payment createPayment(Order order, PaymentType type) {
           
+          Payment payment = new Payment();
+          payment.setMoment(Instant.now());
+          payment.setStatus(PaymentStatus.PENDING);
+          payment.setOrder(order);
+          payment.setPaymentType(type);
+
+          // call API Asaas
+          paymentApiService.createPayment(payment);
+
+          return null;
      }
 
      @Override

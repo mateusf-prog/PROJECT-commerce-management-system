@@ -1,7 +1,7 @@
 package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
@@ -27,7 +27,7 @@ public class Payment {
     @Column(nullable = false)
     private BigDecimal value;
 
-    private LocalDateTime date;
+    private Instant moment;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -45,11 +45,11 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(PaymentType paymentType, BigDecimal value, LocalDateTime date,
+    public Payment(PaymentType paymentType, BigDecimal value, Instant moment,
                    PaymentStatus status, Order order) {
         this.paymentType = paymentType;
         this.value = value;
-        this.date = date;
+        this.moment = moment;
         this.status = status;
         this.order = order;
     }
