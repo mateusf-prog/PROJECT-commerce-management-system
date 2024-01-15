@@ -10,6 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+
+/*
+ * The CustomerApiService class is responsible for integrating with the Asaas API.
+ * It is responsible for creating and updating customers in the Asaas API.
+ * This class does not have a delete and list all method because it is not necessary.
+ */
+
 @Service
 public class CustomerApiService{
 
