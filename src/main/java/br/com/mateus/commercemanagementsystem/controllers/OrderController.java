@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.config.controllers;
+package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderDTO;

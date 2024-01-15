@@ -1,4 +1,4 @@
-package br.com.mateus.commercemanagementsystem.config.controllers;
+package br.com.mateus.commercemanagementsystem.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

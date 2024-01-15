@@ -33,7 +33,7 @@ public class PaymentApiService {
     }
 
     public BillingResponse createPayment(Payment payment) {
-        // TODO: implementar e verificar logica
+        
         CustomerDTO customerCreatedApi = new CustomerDTO();
         if (payment.getOrder().getCustomer().getIdApiExternal() == null) {
             customerCreatedApi = customerApiService.createCustomer(payment.getOrder().getCustomer());
@@ -71,7 +71,7 @@ public class PaymentApiService {
         return billingRequest.getDueDate();
     }
 
-    private org.springframework.http.HttpHeaders headers() {
+    private HttpHeaders headers() {
         org.springframework.http.HttpHeaders headers = new HttpHeaders();
         headers.set("access_token", token);
         return headers;
