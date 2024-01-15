@@ -47,6 +47,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(500).body(error);
     }
 
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<StandardError> unauthorizedAcccess(UnauthorizedAccessException exc) {
+
+        StandardError error = new StandardError(exc.getMessage(), 401);
+
+        return ResponseEntity.status(401).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> methodArgumentNotValidException(MethodArgumentNotValidException exc) {
         Map<String, Object> body = new LinkedHashMap<>();

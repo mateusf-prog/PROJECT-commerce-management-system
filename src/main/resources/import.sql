@@ -1,3 +1,4 @@
+/*
 INSERT INTO tb_category(name) VALUES ('Livros');
 INSERT INTO tb_category(name) VALUES ('Eletrônicos');
 INSERT INTO tb_category(name) VALUES ('Roupas');
@@ -26,3 +27,4 @@ INSERT INTO tb_order(date, customer_id, total_value, status) VALUES(TIMESTAMP WI
 INSERT INTO tb_order_item (order_id, product_id, quantity) VALUES (1, 1, 2);
 INSERT INTO tb_order_item (order_id, product_id, quantity) VALUES (2, 3, 3);
 INSERT INTO tb_order_item (order_id, product_id, quantity) VALUES (3, 4, 4);
+*/

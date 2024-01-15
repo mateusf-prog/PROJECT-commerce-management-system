@@ -1,11 +1,13 @@
 package br.com.mateus.commercemanagementsystem.services.asaas_integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
+import br.com.mateus.commercemanagementsystem.exceptions.UnauthorizedAccessException;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -27,15 +29,21 @@ public class CustomerApiService{
         CustomerDTO customerDTO = convertCustomerToCustomerDTO(customer);
 
         // define headers, create entity and call API
-        if (customer.getIdApiExternal() == null) {
-            HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
-            ResponseEntity<CustomerDTO> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.POST,
-                    entity,
-                    CustomerDTO.class
-            );
-            return response.getBody();
+        try {
+            if (customer.getIdApiExternal() == null) {
+                HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
+                ResponseEntity<CustomerDTO> response = restTemplate.exchange(
+                        url,
+                        HttpMethod.POST,
+                        entity,
+                        CustomerDTO.class
+                );
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new UnauthorizedAccessException("Não foi possível criar o usuário na API. Cliente não autorizado.");
+            }
         }
         return null;
     }
@@ -51,15 +59,22 @@ public class CustomerApiService{
         
         customerDTO = convertCustomerToCustomerDTO(customer);
 
-        // create entity and call API
-        HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
-        ResponseEntity<CustomerDTO> response = restTemplate.exchange(
-                url + "/" + customer.getIdApiExternal(),
-                HttpMethod.PUT,
-                entity,
-                CustomerDTO.class
-        );
-        return response.getBody();
+        try {
+            // create entity and call API
+            HttpEntity<CustomerDTO> entity = new HttpEntity<>(customerDTO, headers());
+            ResponseEntity<CustomerDTO> response = restTemplate.exchange(
+                    url + "/" + customer.getIdApiExternal(),
+                    HttpMethod.PUT,
+                    entity,
+                    CustomerDTO.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new UnauthorizedAccessException("Não foi possível atualizar o usuário na API. Cliente não autorizado.");
+            }
+        }
+        return null;
     }
 
     public CustomerDTO convertCustomerToCustomerDTO(Customer customer) {

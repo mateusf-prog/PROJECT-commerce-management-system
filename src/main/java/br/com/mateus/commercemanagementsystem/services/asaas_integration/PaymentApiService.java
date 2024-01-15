@@ -33,7 +33,7 @@ public class PaymentApiService {
     }
 
     public BillingResponse createPayment(Payment payment) {
-
+        // TODO: implementar e verificar logica
         CustomerDTO customerCreatedApi = new CustomerDTO();
         if (payment.getOrder().getCustomer().getIdApiExternal() == null) {
             customerCreatedApi = customerApiService.createCustomer(payment.getOrder().getCustomer());
