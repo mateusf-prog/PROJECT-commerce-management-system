@@ -43,18 +43,14 @@ public class OrderService {
         customerService.findByCpf(dto.getCustomerCpf());
         Order order = convertOrderPostDTOtoOrder(dto);
 
-        for (OrderItemDTO item : dto.getItems()) {
-            Product product = productService.checkProductExistsById(item.getProductId());
-            OrderItem orderItem = new OrderItem(order, product, item.getQuantity(), product.getPrice());
+        Order orderCreated = orderRepository.save(order);
+        orderItemService.createOrderItem(orderCreated);
+        orderCreated = orderRepository.save(orderCreated);
 
-            orderItemService.createOrderItem(orderItem);
-        }
+        /*Payment payment = paymentService.createPayment(order, dto.getPaymentType());
+        order.setPayment(payment);*/
 
-        Payment payment = paymentService.createPayment(order, dto.getPaymentType());
-        order.setPayment(payment);
-
-        order = orderRepository.save(order);
-        return new OrderCreatedDTO(order, dto.getItems());
+        return new OrderCreatedDTO(orderCreated, dto.getItems());
     }
 
     @Transactional(readOnly = true)
@@ -120,15 +116,17 @@ public class OrderService {
     }
 
     private Order convertOrderPostDTOtoOrder(OrderPostDTO dto) {
+        List<OrderItem> newListItems = orderItemService.convertOrderItemDTOtoOrderItemList(dto.getItems());
 
         // get customer from database
         Customer customer = customerService.findByCpf(dto.getCustomerCpf());
 
-        Order order = new Order();
+        Order order = new Order(newListItems);
         order.setDate(Instant.now());
         order.setTotalValue(calculateTotalPrice(dto.getItems()));
         order.setCustomer(customer);
         order.setStatus(OrderStatus.WAITING_PAYMENT);
+
         return order;
     }
 

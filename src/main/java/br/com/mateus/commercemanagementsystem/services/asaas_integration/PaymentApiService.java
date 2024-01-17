@@ -33,14 +33,12 @@ public class PaymentApiService {
     }
 
     public BillingResponse createPayment(Payment payment) {
-        
-        CustomerDTO customerCreatedApi = new CustomerDTO();
-        if (payment.getOrder().getCustomer().getIdApiExternal() == null) {
-            customerCreatedApi = customerApiService.createCustomer(payment.getOrder().getCustomer());
-        }
 
+        String customerId = payment.getOrder().getCustomer().getIdApiExternal();
+
+        // create entity to send to API
         BillingRequest billingRequest = new BillingRequest();
-        billingRequest.setCustomer(customerCreatedApi.getId());
+        billingRequest.setCustomer(customerId);
         billingRequest.setBillingType(payment.getPaymentType().name());
         billingRequest.setDescription("ORDER ID: " + payment.getOrder().getId());
         billingRequest.setValue(payment.getValue().doubleValue());

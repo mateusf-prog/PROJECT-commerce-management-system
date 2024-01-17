@@ -1,9 +1,10 @@
-package br.com.mateus.commercemanagementsystem.model;
+/*package br.com.mateus.commercemanagementsystem.model;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -56,4 +57,4 @@ public class OrderItemPK implements Serializable {
         result = 31 * result + (product != null ? product.hashCode() : 0);
         return result;
     }
-}
+}*/

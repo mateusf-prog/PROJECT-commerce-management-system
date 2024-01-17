@@ -1,5 +1,6 @@
 package br.com.mateus.commercemanagementsystem.model;
 
+import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -32,7 +33,7 @@ public class Order {
 
     // define relationships
 
-    @OneToMany(mappedBy = "id.order", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<OrderItem> items = new ArrayList<>();
 
