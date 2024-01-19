@@ -8,6 +8,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataExcept
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.*;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
+import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 
 import org.springframework.stereotype.Service;
@@ -17,21 +18,22 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final CustomerService customerService;
+    private final CustomerRepository customerRepository;
     private final OrderItemService orderItemService;
     private final ProductService productService;
     private final PaymentService paymentService;
 
-    public OrderService(OrderRepository orderRepository, CustomerService customerService,
+    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository,
                             OrderItemService orderItemService, ProductService productService,
                             PaymentService paymentService) {
         this.orderRepository = orderRepository;
-        this.customerService = customerService;
+        this.customerRepository = customerRepository;
         this.orderItemService = orderItemService;
         this.productService = productService;
         this.paymentService = paymentService;
@@ -40,7 +42,7 @@ public class OrderService {
     @Transactional
     public OrderCreatedDTO createOrder(OrderPostDTO dto) {
 
-        customerService.findByCpf(dto.getCustomerCpf());
+        customerRepository.findByCpf(dto.getCustomerCpf());
         Order order = convertOrderPostDTOtoOrder(dto);
 
         Order orderCreated = orderRepository.save(order);
@@ -119,7 +121,8 @@ public class OrderService {
         List<OrderItem> newListItems = orderItemService.convertOrderItemDTOtoOrderItemList(dto.getItems());
 
         // get customer from database
-        Customer customer = customerService.findByCpf(dto.getCustomerCpf());
+        Customer customer = customerRepository.findByCpf(dto.getCustomerCpf()).orElseThrow(
+                () -> new ResourceNotFoundException("Cliente não encontrado: CPF: " + dto.getCustomerCpf()));
 
         Order order = new Order(newListItems);
         order.setDate(Instant.now());

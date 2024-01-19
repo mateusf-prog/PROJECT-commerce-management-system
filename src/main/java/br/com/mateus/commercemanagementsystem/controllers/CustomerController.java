@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
+import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.services.CustomerService;
 import jakarta.validation.Valid;
@@ -33,8 +34,8 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> findByCpf(@PathVariable String id) {
-        Customer entity = customerService.findByCpf(id);
+    public ResponseEntity<CustomerDTO> findByCpf(@PathVariable String id) {
+        CustomerDTO entity = customerService.findByCpf(id);
         return ResponseEntity.ok().body(entity);
     }
 

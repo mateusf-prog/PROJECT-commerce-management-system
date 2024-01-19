@@ -60,7 +60,7 @@ public class Customer {
 
     // define relationships
 
-    @OneToMany(mappedBy = "customer", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", fetch=FetchType.LAZY)
     @Setter(AccessLevel.NONE)
     private List<Order> orders = new ArrayList<>();
 

@@ -56,10 +56,12 @@ public class CustomerService {
         return new CustomerCreatedOrUpdatedDTO(queryCustomer);
     }
     @Transactional(readOnly = true)
-    public Customer findByCpf(String cpf) {
+    public CustomerDTO findByCpf(String cpf) {
 
-        return customerRepository.findByCpf(cpf).orElseThrow(
+        Customer entity = customerRepository.findByCpf(cpf).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente não encontrado"));
+
+        return new CustomerDTO(entity);
     }
 
     @Transactional(readOnly = true)
