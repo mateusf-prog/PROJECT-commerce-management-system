@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.Past;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -19,6 +23,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "tb_customer")
 @Data
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "cpf")
 public class Customer {
     
     @Column(nullable = false)

@@ -2,6 +2,9 @@ package br.com.mateus.commercemanagementsystem.model;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -15,6 +18,9 @@ import java.util.List;
 @Entity
 @Table(name = "tb_order")
 @Data
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Order {
 
     @Id

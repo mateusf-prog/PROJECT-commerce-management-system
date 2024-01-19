@@ -37,6 +37,7 @@ public class OrderItemService {
             if (quantity < item.getQuantity()) {
                 throw new EntityInvalidDataException("Quantidade indisponível no estoque. Produto: " + item.getProduct().getName());
             }
+            subtractingItemFromStockOnProductsDatabase(item);
             OrderItem newItem = new OrderItem(order, product, item.getQuantity());
             orderItemRepository.save(newItem);
         }

@@ -1,4 +1,4 @@
-
+/*
 INSERT INTO tb_category(name) VALUES ('Livros');
 INSERT INTO tb_category(name) VALUES ('Eletrônicos');
 INSERT INTO tb_category(name) VALUES ('Roupas');
@@ -23,3 +23,4 @@ INSERT INTO tb_customer(name, cpf, email, phone_number, birthdate, address) VALU
 INSERT INTO tb_order(date, customer_id, total_value, status) VALUES(TIMESTAMP WITH TIME ZONE '2022-07-25T13:00:00Z', '75143595088', 11000.0, 0);
 INSERT INTO tb_order(date, customer_id, total_value, status) VALUES(TIMESTAMP WITH TIME ZONE '2020-03-23T15:00:00Z', '67895765094', 300.0, 3);
 INSERT INTO tb_order(date, customer_id, total_value, status) VALUES(TIMESTAMP WITH TIME ZONE '2018-09-25T16:00:00Z', '86190621740', 14000.0, 2);
+*/

@@ -61,7 +61,7 @@ public class CategoryService {
     public Category findByName(String name) {
 
         return categoryRepository.findByName(name).orElseThrow(
-                () -> new ResourceNotFoundException("Categoria não encontrada. ID: " + name));
+                () -> new ResourceNotFoundException("Categoria não encontrada. Nome: " + name));
     }
 
     @Transactional(readOnly = true)

@@ -86,7 +86,7 @@ public class ProductService {
         List<Product> products = productRepository.findAll();
 
         if(products.isEmpty()) {
-            throw new ResourceNotFoundException("Lista vazia!");
+            throw new ResourceNotFoundException("Lista de produtos vazia!");
         }
 
         List<ProductDTO> listDTO = new ArrayList<>();
