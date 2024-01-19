@@ -36,6 +36,9 @@ public class Payment {
     @Column(name = "id_api_external")
     private String idApiExternal;
 
+    private String description;
+    private String linkPagamento;
+
     // define relationships
 
     @OneToOne

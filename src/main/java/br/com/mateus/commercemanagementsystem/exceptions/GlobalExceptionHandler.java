@@ -47,8 +47,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(500).body(error);
     }
 
-    @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<StandardError> unauthorizedAcccess(UnauthorizedAccessException exc) {
+    @ExceptionHandler(ExternalApiException.class)
+    public ResponseEntity<StandardError> unauthorizedAcccess(ExternalApiException exc) {
 
         StandardError error = new StandardError(exc.getMessage(), 401);
 

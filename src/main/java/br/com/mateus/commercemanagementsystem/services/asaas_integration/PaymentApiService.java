@@ -1,16 +1,16 @@
 package br.com.mateus.commercemanagementsystem.services.asaas_integration;
 
-import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
+import br.com.mateus.commercemanagementsystem.exceptions.ExternalApiException;
 import br.com.mateus.commercemanagementsystem.model.Payment;
+import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingRequest;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingResponse;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -24,6 +24,7 @@ public class PaymentApiService {
     private String url;
     @Value("${asaas.token}")
     private String token;
+
     private final RestTemplate restTemplate = new RestTemplate();
     private final CustomerApiService customerApiService;
 
@@ -34,39 +35,45 @@ public class PaymentApiService {
 
     public BillingResponse createPayment(Payment payment) {
 
-        String customerId = payment.getOrder().getCustomer().getIdApiExternal();
 
-        // create entity to send to API
+
         BillingRequest billingRequest = new BillingRequest();
-        billingRequest.setCustomer(customerId);
+        billingRequest.setCustomer(payment.getOrder().getCustomer().getIdApiExternal());
         billingRequest.setBillingType(payment.getPaymentType().name());
         billingRequest.setDescription("ORDER ID: " + payment.getOrder().getId());
         billingRequest.setValue(payment.getValue().doubleValue());
-        billingRequest.setDueDate(getDueDate(payment, billingRequest));
+        billingRequest.setDueDate(getDueDate(payment, payment.getPaymentType()).toString());
 
-        // define headers, create entity and call API
-        HttpEntity<BillingRequest> entity = new HttpEntity<>(billingRequest, headers());
-        ResponseEntity<BillingResponse> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                entity,
-                BillingResponse.class
-        );
-        return response.getBody();
+        try {
+            HttpEntity<BillingRequest> entity = new HttpEntity<>(billingRequest, headers());
+            ResponseEntity<BillingResponse> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    BillingResponse.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new ExternalApiException("Não foi possível processar a solicitação. Erro de autorização com a API");
+            }
+            throw new RuntimeException("Erro ao criar pagamento: " + e.getMessage());
+        } catch (RestClientException e) {
+            throw new RuntimeException("Erro ao criar pagamento: " + e.getMessage());
+        }
     }
 
-    private static LocalDate getDueDate(Payment payment, BillingRequest billingRequest) {
+    private static LocalDate getDueDate(Payment payment, PaymentType type) {
         ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime dueDate = null;
 
-        if ("PIX".equals(payment.getOrder().getPayment().getPaymentType().toString())) {
-            LocalDateTime dueDate = LocalDateTime.ofInstant(payment.getMoment(), zoneId).plusMinutes(10);
-            billingRequest.setDueDate(dueDate.toLocalDate());
+        if (PaymentType.PIX.name().equals(payment.getOrder().getPayment().getPaymentType().name())) {
+            dueDate = LocalDateTime.ofInstant(payment.getMoment(), zoneId).plusMinutes(30);
         }
-        if ("BOLETO".equals(payment.getOrder().getPayment().getPaymentType().toString())) {
-            LocalDateTime dueDate = LocalDateTime.ofInstant(payment.getMoment(), zoneId).plusDays(1);
-            billingRequest.setDueDate(dueDate.toLocalDate());
+        if (PaymentType.BOLETO.name().equals(payment.getOrder().getPayment().getPaymentType().name())) {
+            dueDate = LocalDateTime.ofInstant(payment.getMoment(), zoneId).plusDays(3);
         }
-        return billingRequest.getDueDate();
+        return dueDate.toLocalDate();
     }
 
     private HttpHeaders headers() {

@@ -10,7 +10,7 @@ public class BillingRequest {
     private String customer;
     private String billingType;
     private Double value;
-    private LocalDate dueDate;
+    private String dueDate;
 
     // id order
     private String description;

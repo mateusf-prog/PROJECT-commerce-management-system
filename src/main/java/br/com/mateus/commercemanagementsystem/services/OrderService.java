@@ -49,8 +49,6 @@ public class OrderService {
         orderItemService.createOrderItem(orderCreated);
         orderCreated = orderRepository.save(orderCreated);
 
-        /*Payment payment = paymentService.createPayment(order, dto.getPaymentType());
-        order.setPayment(payment);*/
 
         return new OrderCreatedDTO(orderCreated, dto.getItems());
     }

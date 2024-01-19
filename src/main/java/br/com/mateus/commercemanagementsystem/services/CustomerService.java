@@ -4,7 +4,7 @@ import br.com.mateus.commercemanagementsystem.dto.CustomerCreatedOrUpdatedDTO;
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
-import br.com.mateus.commercemanagementsystem.exceptions.UnauthorizedAccessException;
+import br.com.mateus.commercemanagementsystem.exceptions.ExternalApiException;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.repository.CustomerRepository;
 import br.com.mateus.commercemanagementsystem.services.asaas_integration.CustomerApiService;
@@ -27,7 +27,7 @@ public class CustomerService {
     }
 
     // if throws UnauthorizedAccessException, the transaction will not be rolled back
-    @Transactional(noRollbackFor = UnauthorizedAccessException.class)
+    @Transactional(noRollbackFor = ExternalApiException.class)
     public CustomerCreatedOrUpdatedDTO createCustomer(Customer customer) {
 
         Optional<Customer> queryCustomer = customerRepository.findByCpf(customer.getCpf());

@@ -1,7 +1,7 @@
 package br.com.mateus.commercemanagementsystem.services.asaas_integration;
 
 import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
-import br.com.mateus.commercemanagementsystem.exceptions.UnauthorizedAccessException;
+import br.com.mateus.commercemanagementsystem.exceptions.ExternalApiException;
 import br.com.mateus.commercemanagementsystem.model.Customer;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +49,7 @@ public class CustomerApiService{
             }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new UnauthorizedAccessException("Não foi possível criar o usuário na API. Cliente não autorizado.");
+                throw new ExternalApiException("Não foi possível criar o usuário na API. Cliente não autorizado.");
             }
         }
         return null;
@@ -78,7 +78,7 @@ public class CustomerApiService{
             return response.getBody();
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new UnauthorizedAccessException("Não foi possível atualizar o usuário na API. Cliente não autorizado.");
+                throw new ExternalApiException("Não foi possível atualizar o usuário na API. Cliente não autorizado.");
             }
         }
         return null;

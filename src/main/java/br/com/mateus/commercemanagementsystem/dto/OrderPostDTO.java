@@ -22,9 +22,6 @@ public class OrderPostDTO {
     
     @CPF
     private String customerCpf;
-    @NotNull(message = "Tipo de pagamento é obrigatório")
-    @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
     @NotEmpty(message = "Lista de items não pode ser vazia")
     private List<OrderItemDTO> items;
 }
