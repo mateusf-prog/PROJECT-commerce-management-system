@@ -6,6 +6,7 @@ import br.com.mateus.commercemanagementsystem.dto.PaymentReturnDTO;
 import br.com.mateus.commercemanagementsystem.dto.PaymentPostDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
+import br.com.mateus.commercemanagementsystem.exceptions.ExternalApiException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingResponse;
@@ -28,12 +29,12 @@ public class PaymentService {
      
      public PaymentService(PaymentRepository repository, OrderRepository orderRepository, PaymentApiService paymentApiService) {
           this.repository = repository;
-         this.orderRepository = orderRepository;
-         this.paymentApiService = paymentApiService;
+          this.orderRepository = orderRepository;
+          this.paymentApiService = paymentApiService;
      }
 
      @Transactional
-     public PaymentReturnDTO createPayment(PaymentPostDTO dto) {
+     public PaymentReturnDTO create(PaymentPostDTO dto) {
 
           Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(
                   () -> new ResourceNotFoundException("Pedido " + dto.getOrderId() + " não encontrado."));
@@ -47,7 +48,6 @@ public class PaymentService {
           
           Payment payment = new Payment();
           payment.setMoment(Instant.now());
-          payment.setStatus(PaymentStatus.PENDING);
           payment.setOrder(order);
           payment.setPaymentType(dto.getPaymentType());
           payment.setValue(order.getTotalValue());
@@ -57,34 +57,40 @@ public class PaymentService {
           // call API Asaas
           BillingResponse responseApi = paymentApiService.createPayment(payment);
 
+          payment.setStatus(responseApi.getStatus());
           payment.setIdApiExternal(responseApi.getId());
-          payment.setDescription("Pedido nº " + order.getId());
+          payment.setDescription("Pedido Nº " + order.getId());
           payment.setLinkPagamento(responseApi.getBankSlipUrl());
 
           payment = repository.save(payment);
           return new PaymentReturnDTO(payment);
      }
 
-     public PaymentReturnDTO findByOrderId(Long id) {
+     public PaymentReturnDTO findById(Long id) {
 
-          Order order = orderRepository.findById(id).orElseThrow(
-                  () -> new ResourceNotFoundException("Pedido " + id + " não encontrado."));
+          Payment payment = repository.findById(id).orElseThrow(
+                  () -> new ResourceNotFoundException("Pagamento com ID '" + id + "' não encontrado!"));
 
-          if (order.getPayment() == null) {
-               throw new ResourceNotFoundException("Pedido ainda não possui um pagamento");
-          }
+          BillingResponse responseExternalApi = paymentApiService.findById(payment.getIdApiExternal());
+          payment.setStatus(responseExternalApi.getStatus());
+          repository.save(payment);
 
-          return new PaymentReturnDTO(order.getPayment());
+          return new PaymentReturnDTO(payment);
      }
 
-     public String setStatus(Payment payment, PaymentStatus status) {
-          // TODO Auto-generated method stub
-          throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+     public PaymentReturnDTO cancel(Long id) {
+
+          Payment payment = repository.findById(id).orElseThrow(
+                  () -> new ResourceNotFoundException("Pagamento com ID " + id + " não encontrado!"));
+
+          BillingResponse responseExternalApi = paymentApiService.cancel(payment.getIdApiExternal());
+
+          payment.setStatus(responseExternalApi.getStatus());
+          repository.save(payment);
+
+          return new PaymentReturnDTO(payment);
      }
 
-     public String sendToEmail(Payment payment, String email) {
-          // TODO Auto-generated method stub
-          throw new UnsupportedOperationException("Unimplemented method 'sendToEmail'");
-     }
+     // todo verificar como é o envio do email dos pagamentos
      
 }

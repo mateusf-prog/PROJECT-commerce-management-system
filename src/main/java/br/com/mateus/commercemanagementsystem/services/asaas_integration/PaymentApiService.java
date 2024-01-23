@@ -28,14 +28,11 @@ public class PaymentApiService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final CustomerApiService customerApiService;
 
-
     public PaymentApiService(CustomerApiService customerApiService) {
         this.customerApiService = customerApiService;
     }
 
     public BillingResponse createPayment(Payment payment) {
-
-
 
         BillingRequest billingRequest = new BillingRequest();
         billingRequest.setCustomer(payment.getOrder().getCustomer().getIdApiExternal());
@@ -47,7 +44,7 @@ public class PaymentApiService {
         try {
             HttpEntity<BillingRequest> entity = new HttpEntity<>(billingRequest, headers());
             ResponseEntity<BillingResponse> response = restTemplate.exchange(
-                    url,
+                    url + "/",
                     HttpMethod.POST,
                     entity,
                     BillingResponse.class
@@ -57,10 +54,57 @@ public class PaymentApiService {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new ExternalApiException("Não foi possível processar a solicitação. Erro de autorização com a API");
             }
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                throw new ExternalApiException("Limite de cobranças na API ASAAS excedido");
+            }
             throw new RuntimeException("Erro ao criar pagamento: " + e.getMessage());
         } catch (RestClientException e) {
             throw new RuntimeException("Erro ao criar pagamento: " + e.getMessage());
         }
+    }
+
+    public BillingResponse findById(String id) {
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(id, headers());
+            ResponseEntity<BillingResponse> response = restTemplate.exchange(
+                    url + "/",
+                    HttpMethod.GET,
+                    entity,
+                    BillingResponse.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new ExternalApiException("Não foi possível processar a solicitação. Erro de autorização com a API");
+            }
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new ExternalApiException("Pagamento não encontrado na API de pagamentos");
+            }
+        }
+        return null;
+    }
+
+    public BillingResponse cancel(String id) {
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(id, headers());
+            ResponseEntity<BillingResponse> response = restTemplate.exchange(
+                    url + "/",
+                    HttpMethod.DELETE,
+                    entity,
+                    BillingResponse.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new ExternalApiException("Não foi possível processar a solicitação. Erro de autorização com a API");
+            }
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new ExternalApiException("Pagamento não encontrado na API de pagamentos");
+            }
+        }
+        return null;
     }
 
     private static LocalDate getDueDate(Payment payment, PaymentType type) {
@@ -80,15 +124,5 @@ public class PaymentApiService {
         org.springframework.http.HttpHeaders headers = new HttpHeaders();
         headers.set("access_token", token);
         return headers;
-    }
-
-    public BillingResponse cancelPayment(Payment payment) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cancelPayment'");
-    }
-
-    public BillingResponse setStatus(Payment payment) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
     }
 }

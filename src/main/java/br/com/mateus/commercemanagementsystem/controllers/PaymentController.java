@@ -2,7 +2,6 @@ package br.com.mateus.commercemanagementsystem.controllers;
 
 import br.com.mateus.commercemanagementsystem.dto.PaymentReturnDTO;
 import br.com.mateus.commercemanagementsystem.dto.PaymentPostDTO;
-import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.services.PaymentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +19,20 @@ public class PaymentController {
 
     @PostMapping()
     public ResponseEntity<PaymentReturnDTO> create(@Valid @RequestBody PaymentPostDTO dto) {
-        PaymentReturnDTO payment = paymentService.createPayment(dto);
+        PaymentReturnDTO payment = paymentService.create(dto);
         return ResponseEntity.ok().body(payment);
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<PaymentReturnDTO> findByOrderId(@PathVariable Long orderId) {
-        PaymentReturnDTO payment = paymentService.findByOrderId(orderId);
+    @GetMapping("/{id}")
+    public ResponseEntity<PaymentReturnDTO> findById(@PathVariable Long id) {
+        PaymentReturnDTO payment = paymentService.findById(id);
         return ResponseEntity.ok().body(payment);
+    }
+
+    @PatchMapping("/cancel/{id}")
+    public ResponseEntity<PaymentReturnDTO> cancelPayment(@PathVariable Long id) {
+        PaymentReturnDTO paymment = null;
+        return null;
     }
 
 }

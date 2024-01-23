@@ -30,8 +30,7 @@ public class Payment {
     private Instant moment;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    private String status;
 
     @Column(name = "id_api_external")
     private String idApiExternal;
@@ -49,7 +48,7 @@ public class Payment {
     }
 
     public Payment(PaymentType paymentType, BigDecimal value, Instant moment,
-                   PaymentStatus status, Order order) {
+                   String status, Order order) {
         this.paymentType = paymentType;
         this.value = value;
         this.moment = moment;
