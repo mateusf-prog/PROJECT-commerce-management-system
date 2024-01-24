@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.mateus.commercemanagementsystem.model.Order;
 import br.com.mateus.commercemanagementsystem.model.Payment;
-import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.repository.PaymentRepository;
 import br.com.mateus.commercemanagementsystem.services.asaas_integration.PaymentApiService;
 

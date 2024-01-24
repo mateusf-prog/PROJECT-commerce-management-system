@@ -31,8 +31,8 @@ public class PaymentController {
 
     @PatchMapping("/cancel/{id}")
     public ResponseEntity<PaymentReturnDTO> cancelPayment(@PathVariable Long id) {
-        PaymentReturnDTO paymment = null;
-        return null;
+        PaymentReturnDTO payment = paymentService.cancel(id);
+        return ResponseEntity.ok().body(payment);
     }
 
 }

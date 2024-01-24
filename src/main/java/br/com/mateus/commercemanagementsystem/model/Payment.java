@@ -3,7 +3,6 @@ package br.com.mateus.commercemanagementsystem.model;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-import br.com.mateus.commercemanagementsystem.model.enums.PaymentStatus;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
