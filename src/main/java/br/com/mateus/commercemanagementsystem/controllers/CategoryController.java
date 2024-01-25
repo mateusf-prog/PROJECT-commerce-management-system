@@ -28,8 +28,9 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> create(@Valid @RequestBody Category category) {
-        return ResponseEntity.ok().body(categoryService.createCategory(category));
+    public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryDTO dto) {
+        CategoryDTO entity = categoryService.createCategory(dto);
+        return ResponseEntity.ok().body(entity);
     }
 
     @GetMapping

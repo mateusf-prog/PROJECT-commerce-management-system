@@ -24,14 +24,19 @@ public class CategoryService {
     }
 
     @Transactional
-    public Category createCategory(Category category) {
+    public CategoryDTO createCategory(CategoryDTO dto) {
 
-        Optional<Category> entity = categoryRepository.findByName(category.getName());
+        Optional<Category> entity = categoryRepository.findByName(dto.getName());
 
         if(entity.isPresent()) {
-            throw new EntityAlreadyExistsException("Categoria já existe.");
+            throw new EntityAlreadyExistsException("Categoria já cadastrada. Nome: " + dto.getName());
         }
-        return categoryRepository.save(category);
+
+        Category category = new Category();
+        category.setName(dto.getName());
+        categoryRepository.saveAndFlush(category);
+        dto.setId(category.getId());
+        return dto;
     }
 
     @Transactional
@@ -46,11 +51,13 @@ public class CategoryService {
     @Transactional
     public void deleteByName(String name) {
     
-        Category category = categoryRepository.findByName(name).orElseThrow(
-                () -> new ResourceNotFoundException("Categoria não encontrada. Nome: " + name));
+        Optional<Category> category = categoryRepository.findByName(name);
+        if(category.isEmpty()) {
+            throw new ResourceNotFoundException("Categoria não encontrada. Nome: " + name);
+        }
     
         try {
-            categoryRepository.delete(category);
+            categoryRepository.delete(category.get());
             categoryRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new IntegrityViolationException("Categoria não pôde ser apagada pois possui produtos associados.");
@@ -60,8 +67,12 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public Category findByName(String name) {
 
-        return categoryRepository.findByName(name).orElseThrow(
-                () -> new ResourceNotFoundException("Categoria não encontrada. Nome: " + name));
+        Optional<Category> category = categoryRepository.findByName(name);
+        if(category.isEmpty()) {
+            throw new ResourceNotFoundException("Categoria não encontrada. Nome: " + name);
+        }
+
+        return category.get();
     }
 
     @Transactional(readOnly = true)
