@@ -1,13 +1,16 @@
 package br.com.mateus.commercemanagementsystem.services;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
+import br.com.mateus.commercemanagementsystem.dto.CustomerDTO;
 import br.com.mateus.commercemanagementsystem.dto.PaymentReturnDTO;
 import br.com.mateus.commercemanagementsystem.dto.PaymentPostDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsException;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
-import br.com.mateus.commercemanagementsystem.exceptions.ExternalApiException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
+import br.com.mateus.commercemanagementsystem.model.Customer;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingResponse;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
@@ -22,14 +25,16 @@ import br.com.mateus.commercemanagementsystem.services.asaas_integration.Payment
 @Service
 public class PaymentService {
 
-     private PaymentRepository repository;
+     private final PaymentRepository repository;
      private final OrderRepository orderRepository;
      private final PaymentApiService paymentApiService;
+     private final CustomerService customerService;
      
-     public PaymentService(PaymentRepository repository, OrderRepository orderRepository, PaymentApiService paymentApiService) {
+     public PaymentService(PaymentRepository repository, OrderRepository orderRepository, PaymentApiService paymentApiService, CustomerService customerService) {
           this.repository = repository;
           this.orderRepository = orderRepository;
           this.paymentApiService = paymentApiService;
+         this.customerService = customerService;
      }
 
      @Transactional
@@ -83,6 +88,20 @@ public class PaymentService {
           orderRepository.save(payment.getOrder());
 
           return new PaymentReturnDTO(payment);
+     }
+
+     public List<PaymentReturnDTO> findAllPaymentsByCpf(String cpf) {
+
+          customerService.findByCpf(cpf);
+
+          List<Order> orders = orderRepository.findByCustomerCpf(cpf);
+          List<PaymentReturnDTO> listPayments = new ArrayList<>();
+          try {
+               orders.stream().map(x -> listPayments.add(new PaymentReturnDTO(x.getPayment()))).toList();
+               return listPayments;
+          } catch (NullPointerException e) {
+               throw new ResourceNotFoundException("Alguns pedidos não possuem pagamentos");
+          }
      }
 
      public PaymentReturnDTO cancel(Long id) {

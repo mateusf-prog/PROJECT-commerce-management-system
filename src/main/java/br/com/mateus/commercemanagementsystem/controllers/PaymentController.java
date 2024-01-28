@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/payments")
 public class PaymentController {
@@ -21,6 +23,11 @@ public class PaymentController {
     public ResponseEntity<PaymentReturnDTO> create(@Valid @RequestBody PaymentPostDTO dto) {
         PaymentReturnDTO payment = paymentService.create(dto);
         return ResponseEntity.ok().body(payment);
+    }
+
+    @GetMapping("/byCpf/{cpf}")
+    public ResponseEntity<List<PaymentReturnDTO>> findAllPaymentsByCpf(@PathVariable String cpf) {
+        return ResponseEntity.ok().body(paymentService.findAllPaymentsByCpf(cpf));
     }
 
     @GetMapping("/{id}")
