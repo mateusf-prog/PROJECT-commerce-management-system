@@ -24,12 +24,9 @@ public class PaymentApiService {
     private String url;
     @Value("${asaas.token}")
     private String token;
-
     private final RestTemplate restTemplate = new RestTemplate();
-    private final CustomerApiService customerApiService;
 
-    public PaymentApiService(CustomerApiService customerApiService) {
-        this.customerApiService = customerApiService;
+    public PaymentApiService() {
     }
 
     public BillingResponse createPayment(Payment payment) {

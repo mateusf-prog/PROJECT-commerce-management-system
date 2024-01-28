@@ -27,16 +27,13 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final OrderItemService orderItemService;
     private final ProductService productService;
-    private final PaymentService paymentService;
 
     public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository,
-                            OrderItemService orderItemService, ProductService productService,
-                            PaymentService paymentService) {
+                            OrderItemService orderItemService, ProductService productService) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.orderItemService = orderItemService;
         this.productService = productService;
-        this.paymentService = paymentService;
     }
 
     @Transactional
@@ -45,12 +42,10 @@ public class OrderService {
         customerRepository.findByCpf(dto.getCustomerCpf());
         Order order = convertOrderPostDTOtoOrder(dto);
 
-        Order orderCreated = orderRepository.save(order);
-        orderItemService.createOrderItem(orderCreated);
-        orderCreated = orderRepository.save(orderCreated);
+        orderItemService.createOrderItem(order);
+        orderRepository.save(order);
 
-
-        return new OrderCreatedDTO(orderCreated, dto.getItems());
+        return new OrderCreatedDTO(order, dto.getItems());
     }
 
     @Transactional(readOnly = true)
@@ -116,6 +111,8 @@ public class OrderService {
     }
 
     private Order convertOrderPostDTOtoOrder(OrderPostDTO dto) {
+
+        // create a list of OrderItem
         List<OrderItem> newListItems = orderItemService.convertOrderItemDTOtoOrderItemList(dto.getItems());
 
         // get customer from database

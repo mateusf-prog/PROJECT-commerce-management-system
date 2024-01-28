@@ -29,6 +29,7 @@ public class OrderItemService {
 
     @Transactional
     public void createOrderItem(Order order) {
+        List<OrderItem> newItems = new ArrayList<>();
 
         for (OrderItem item : order.getItems()) {
             validateQuantity(item);
@@ -39,8 +40,9 @@ public class OrderItemService {
             }
             subtractingItemFromStockOnProductsDatabase(item);
             OrderItem newItem = new OrderItem(order, product, item.getQuantity());
-            orderItemRepository.save(newItem);
+            newItems.add(newItem);
         }
+        orderItemRepository.saveAll(newItems);
     }
 
     @Transactional

@@ -39,7 +39,7 @@ public class Order {
 
     // define relationships
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     @Setter(AccessLevel.NONE)
     private List<OrderItem> items = new ArrayList<>();
 
