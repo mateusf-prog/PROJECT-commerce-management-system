@@ -61,6 +61,8 @@ public class PaymentService {
           payment.setDescription("Pedido Nº " + order.getId());
           payment.setLinkPagamento(responseApi.getBankSlipUrl());
 
+
+
           payment = repository.save(payment);
           return new PaymentReturnDTO(payment);
      }
@@ -72,7 +74,13 @@ public class PaymentService {
 
           BillingResponse responseExternalApi = paymentApiService.findById(payment.getIdApiExternal());
           payment.setStatus(responseExternalApi.getStatus());
+
+          if (responseExternalApi.getStatus().equals("RECEIVED")) {
+               payment.getOrder().setStatus(OrderStatus.PAID);
+          }
+
           repository.save(payment);
+          orderRepository.save(payment.getOrder());
 
           return new PaymentReturnDTO(payment);
      }

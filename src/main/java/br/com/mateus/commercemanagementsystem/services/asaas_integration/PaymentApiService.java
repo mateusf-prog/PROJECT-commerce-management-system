@@ -37,7 +37,7 @@ public class PaymentApiService {
         BillingRequest billingRequest = new BillingRequest();
         billingRequest.setCustomer(payment.getOrder().getCustomer().getIdApiExternal());
         billingRequest.setBillingType(payment.getPaymentType().name());
-        billingRequest.setDescription("ORDER ID: " + payment.getOrder().getId());
+        billingRequest.setDescription("Pedido Nº : " + payment.getOrder().getId());
         billingRequest.setValue(payment.getValue().doubleValue());
         billingRequest.setDueDate(getDueDate(payment, payment.getPaymentType()).toString());
 
@@ -68,7 +68,7 @@ public class PaymentApiService {
         try {
             HttpEntity<String> entity = new HttpEntity<>(id, headers());
             ResponseEntity<BillingResponse> response = restTemplate.exchange(
-                    url + "/",
+                    url + "/" + id,
                     HttpMethod.GET,
                     entity,
                     BillingResponse.class
