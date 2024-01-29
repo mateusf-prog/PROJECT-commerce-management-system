@@ -17,8 +17,11 @@ public class CategoryIT {
     @Autowired
     public WebTestClient testClient;
 
+    /**
+     * This test verifies that a category can be created successfully.
+     */
     @Test
-    public void createCategory_WithNameAnd_ShouldReturnCreated() {
+    public void createCategory_WithName_ShouldReturnCreated() {
         CategoryDTO response = testClient
                 .post()
                 .uri("/api/categories")
@@ -32,5 +35,23 @@ public class CategoryIT {
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getId()).isNotNull();
         Assertions.assertThat(response.getName()).isEqualTo("Electronics");
+    }
+
+    /**
+     * This test verifies that attempting to create a category without a name results in an error.
+     */
+    @Test
+    public void createCategory_WithoutName_ShouldReturnMessageStatus400() {
+        String responseBody = testClient
+                .post()
+                .uri("/api/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new CategoryDTO(null, ""))
+                .exchange()
+                .expectStatus().isEqualTo(400)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).contains("Nome da categoria não pode ficar em branco!");
     }
 }
