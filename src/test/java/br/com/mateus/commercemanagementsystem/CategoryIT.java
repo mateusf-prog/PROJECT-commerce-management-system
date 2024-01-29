@@ -54,4 +54,19 @@ public class CategoryIT {
 
         Assertions.assertThat(responseBody).contains("Nome da categoria não pode ficar em branco!");
     }
+
+    @Test
+    public void createCategory_WithAlreadyExists_ShouldReturnMessageStatus409() {
+        String responseBody = testClient
+                .post()
+                .uri("/api/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new CategoryDTO(null, "Livros"))
+                .exchange()
+                .expectStatus().isEqualTo(409)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).contains("Categoria já cadastrada. Nome: Livros");
+    }
 }
