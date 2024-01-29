@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem;
 
 import br.com.mateus.commercemanagementsystem.dto.CategoryDTO;
+import br.com.mateus.commercemanagementsystem.model.Category;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CategoryIT {
      * This test verifies that a category can be created successfully.
      */
     @Test
-    public void createCategory_WithName_ShouldReturnCreated() {
+    public void createCategory_WithName_ShouldReturnCreatedStatus201() {
         CategoryDTO response = testClient
                 .post()
                 .uri("/api/categories")
@@ -55,6 +56,9 @@ public class CategoryIT {
         Assertions.assertThat(responseBody).contains("Nome da categoria não pode ficar em branco!");
     }
 
+    /**
+     * This test verifies that attempting to create a category that already exists results in an error 409.
+     */
     @Test
     public void createCategory_WithAlreadyExists_ShouldReturnMessageStatus409() {
         String responseBody = testClient
@@ -68,5 +72,39 @@ public class CategoryIT {
                 .returnResult().getResponseBody();
 
         Assertions.assertThat(responseBody).contains("Categoria já cadastrada. Nome: Livros");
+    }
+
+    /**
+     * This test verifies if a category is found by name.
+     */
+    @Test
+    public void getCategory_WithName_ShouldReturnStatus200() {
+        Category response = testClient
+                .get()
+                .uri("/api/categories/Livros")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Category.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getId()).isNotNull();
+        Assertions.assertThat(response.getName()).isEqualTo("Livros");
+    }
+
+    /**
+     * This test verifies that attempting to found a category that not exists results in an error 404.
+     */
+    @Test
+    public void getCategory_NotExists_ShouldReturnStatus404() {
+        String response = testClient
+                .get()
+                .uri("/api/categories/Sporting")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isEqualTo("{\"message\":\"Categoria não encontrada. Nome: Sporting\",\"status\":404}");
     }
 }
