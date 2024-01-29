@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.services.CategoryService;
 import jakarta.validation.Valid;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -30,7 +32,14 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryDTO dto) {
         CategoryDTO entity = categoryService.createCategory(dto);
-        return ResponseEntity.ok().body(entity);
+
+        // create the URI of the created resource
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{name}")
+                .buildAndExpand(entity.getName())
+                .toUri();
+
+        return ResponseEntity.created(location).body(entity);
     }
 
     @GetMapping

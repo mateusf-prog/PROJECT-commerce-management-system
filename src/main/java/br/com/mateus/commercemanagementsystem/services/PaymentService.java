@@ -102,6 +102,8 @@ public class PaymentService {
           } catch (NullPointerException e) {
                throw new ResourceNotFoundException("Alguns pedidos não possuem pagamentos");
           }
+
+          // todo: testar esse recurso com mais de um pedido
      }
 
      public PaymentReturnDTO cancel(Long id) {
