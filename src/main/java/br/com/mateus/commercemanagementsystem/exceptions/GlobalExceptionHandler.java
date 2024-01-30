@@ -50,9 +50,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExternalApiException.class)
     public ResponseEntity<StandardError> unauthorizedAcccess(ExternalApiException exc) {
 
-        StandardError error = new StandardError(exc.getMessage(), 401);
+        StandardError error = new StandardError(exc.getMessage(), 400);
 
-        return ResponseEntity.status(401).body(error);
+        return ResponseEntity.status(400).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -70,5 +70,13 @@ public class GlobalExceptionHandler {
         body.put("errors", errors);
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnauthorizedApiException.class)
+    public ResponseEntity<StandardError> unauthorizedApiException(UnauthorizedApiException exc) {
+
+        StandardError error = new StandardError(exc.getMessage(), 401);
+
+        return ResponseEntity.status(401).body(error);
     }
 }

@@ -41,5 +41,4 @@ public class PaymentController {
         PaymentReturnDTO payment = paymentService.cancel(id);
         return ResponseEntity.ok().body(payment);
     }
-
 }

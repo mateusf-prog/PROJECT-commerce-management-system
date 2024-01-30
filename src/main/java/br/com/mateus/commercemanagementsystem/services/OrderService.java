@@ -136,5 +136,3 @@ public class OrderService {
         return new OrderDTO(entity);
     }
 }
-
-// TODO: implementar logica para mudar o status de um pedido após o pagamento for concluído pela API DE PAGAMENTOS

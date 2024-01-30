@@ -1,6 +1,7 @@
 package br.com.mateus.commercemanagementsystem.services.asaas_integration;
 
 import br.com.mateus.commercemanagementsystem.exceptions.ExternalApiException;
+import br.com.mateus.commercemanagementsystem.exceptions.UnauthorizedApiException;
 import br.com.mateus.commercemanagementsystem.model.Payment;
 import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -49,10 +51,11 @@ public class PaymentApiService {
             return response.getBody();
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new ExternalApiException("Não foi possível processar a solicitação. Erro de autorização com a API");
+                throw new UnauthorizedApiException("Não foi possível processar a solicitação. Erro de autenticação com a API");
             }
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new ExternalApiException("Limite de cobranças na API ASAAS excedido");
+                throw new ExternalApiException("Não foi possível processar a solicitação. " +
+                        "Valor mínimo para geração de boleto é de R$ 5,00");
             }
             throw new RuntimeException("Erro ao criar pagamento: " + e.getMessage());
         } catch (RestClientException e) {
