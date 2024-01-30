@@ -42,6 +42,10 @@ public class CategoryService {
     @Transactional
     public Category updateCategory(Category category) {
 
+        if (category.getId() == null) {
+            throw new ResourceNotFoundException("Categoria deve conter um ID válido.");
+        }
+
         categoryRepository.findById(category.getId()).orElseThrow(
                 () -> new ResourceNotFoundException("Categoria não encontrada. ID: " + category.getId()));
         categoryRepository.save(category);
@@ -79,6 +83,10 @@ public class CategoryService {
     public List<CategoryDTO> findAll() {
 
         List<Category> categoryList = categoryRepository.findAll();
+
+        if (categoryList.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhuma categoria encontrada.");
+        }
         return categoryList.stream().map(x -> new CategoryDTO(x.getId(), x.getName())).toList();
     }
 }

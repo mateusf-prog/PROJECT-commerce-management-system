@@ -107,4 +107,107 @@ public class CategoryIT {
 
         Assertions.assertThat(response).isEqualTo("{\"message\":\"Categoria não encontrada. Nome: Sporting\",\"status\":404}");
     }
+
+    /**
+     * This test verifies that attempting to found a list of categories that is empty results in an error 404.
+     */
+    @Test
+    @Sql(scripts = "/sql/categories/categories-delete.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void getCategory_FindAllEmptyList_ShouldReturnStatus404() {
+        String response = testClient
+                .get()
+                .uri("/api/categories")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isEqualTo("{\"message\":\"Nenhuma categoria encontrada.\",\"status\":404}");
+    }
+
+    /**
+     * This test verifies that attempting to update a category that not exists results in an error 404.
+     */
+    @Test
+    public void updateCategory_NotExists_ShouldReturnMessageStatus404() {
+        String responseBody = testClient
+                .put()
+                .uri("/api/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new CategoryDTO(5L, "Food"))
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).contains("Categoria não encontrada. ID: 5");
+    }
+
+    /**
+     * This test verifies that attempting to update a category without name results in an error 400.
+     */
+    @Test
+    public void updateCategory_WithoutName_ShouldReturnMessageStatus404() {
+        String responseBody = testClient
+                .put()
+                .uri("/api/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new CategoryDTO(5L, ""))
+                .exchange()
+                .expectStatus().isEqualTo(400)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).contains("Nome da categoria não pode ficar em branco!");
+    }
+
+    /**
+     * This test verifies that attempting to update a category without ID results in an error 404.
+     */
+    @Test
+    public void updateCategory_WithoutId_ShouldReturnMessageStatus404() {
+        String responseBody = testClient
+                .put()
+                .uri("/api/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new CategoryDTO(null, "Food"))
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).contains("{\"message\":\"Categoria deve conter um ID válido.\",\"status\":404}");
+    }
+
+    /**
+     * This test verifies that attempting to delete a category that not exists results in an error 404.
+     */
+    @Test
+    public void deleteCategory_NotExists_ShouldReturnMessageStatus404() {
+        String responseBody = testClient
+                .delete()
+                .uri("/api/categories/food")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).contains("{\"message\":\"Categoria não encontrada. Nome: food\",\"status\":404}");
+    }
+
+    /**
+     * This test verifies that attempting to delete a category that have a product associated results in an error 500.
+     */
+    @Test
+    @Sql(scripts = "/sql/categories/categories-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/categories/product-create-with-category.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void deleteCategory_WithProductAssociated_ShouldReturnMessageStatus404() {
+        String responseBody = testClient
+                .delete()
+                .uri("/api/categories/Eletrônicos")
+                .exchange()
+                .expectStatus().isEqualTo(500)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+    }
 }
