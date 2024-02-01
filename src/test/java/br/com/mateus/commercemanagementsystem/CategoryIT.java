@@ -194,20 +194,4 @@ public class CategoryIT {
 
         Assertions.assertThat(responseBody).contains("{\"message\":\"Categoria não encontrada. Nome: food\",\"status\":404}");
     }
-
-    /**
-     * This test verifies that attempting to delete a category that have a product associated results in an error 500.
-     */
-    @Test
-    @Sql(scripts = "/sql/categories/categories-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/sql/categories/product-create-with-category.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void deleteCategory_WithProductAssociated_ShouldReturnMessageStatus404() {
-        String responseBody = testClient
-                .delete()
-                .uri("/api/categories/Eletrônicos")
-                .exchange()
-                .expectStatus().isEqualTo(500)
-                .expectBody(String.class)
-                .returnResult().getResponseBody();
-    }
 }

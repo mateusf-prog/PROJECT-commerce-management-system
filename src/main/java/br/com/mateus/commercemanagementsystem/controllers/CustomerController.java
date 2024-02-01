@@ -8,7 +8,9 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -24,7 +26,12 @@ public class CustomerController {
     @PostMapping()
     public ResponseEntity<CustomerCreatedOrUpdatedDTO> createCustomer(@Valid @RequestBody Customer customer) {
         CustomerCreatedOrUpdatedDTO dto = customerService.createCustomer(customer);
-        return ResponseEntity.ok().body(dto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(dto.getName())
+                .toUri();
+        return ResponseEntity.created(location).body(dto);
     }
 
     @PutMapping()
