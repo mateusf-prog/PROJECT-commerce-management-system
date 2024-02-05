@@ -7,7 +7,9 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,8 @@ public class ProductController {
     @PostMapping()
     public ResponseEntity<ProductDTO> create(@Valid @RequestBody Product product) {
         ProductDTO productDTO = productService.createProduct(product);
-        return ResponseEntity.ok().body(productDTO);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(productDTO.getId()).toUri();
+        return ResponseEntity.created(uri).body(productDTO);
     }
 
     @PutMapping()

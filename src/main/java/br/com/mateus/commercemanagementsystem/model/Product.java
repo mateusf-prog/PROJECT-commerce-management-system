@@ -2,10 +2,7 @@ package br.com.mateus.commercemanagementsystem.model;
 
 import java.math.BigDecimal;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Entity
@@ -19,7 +16,6 @@ public class Product {
 
     @Column(nullable = false)
     @NotBlank(message = "Nome do produto não pode ficar em branco!")
-    @Size(min = 3, max = 50, message = "Nome deve conter entre 3 e 50 caracteres!")
     private String name;
 
     @Column(nullable = false, precision = 7, scale = 2)
@@ -31,6 +27,7 @@ public class Product {
     private int quantity;
 
     @ManyToOne()
+    @NotNull(message = "Categoria não pode ser nula")
     private Category category;
     
     public Product() {
@@ -41,5 +38,13 @@ public class Product {
         this.price = price;
         this.quantity = quantity;
         this.category = category;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 }
