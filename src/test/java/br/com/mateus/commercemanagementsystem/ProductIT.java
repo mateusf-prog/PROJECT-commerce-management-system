@@ -255,7 +255,7 @@ public class ProductIT {
     }
 
     /**
-     * This test verifies if the the product update return a status 200
+     * This test verifies if the product update return a status 200
      */
     @Test
     public void updateProduct_ShouldReturnStatus200() {
@@ -278,5 +278,58 @@ public class ProductIT {
 
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getName()).isEqualTo("Computer AMD");
+    }
+
+    /**
+     * This test verifies if the product update non-existent id return a status 404
+     */
+    @Test
+    public void updateProduct_WithNonExistentId_ShouldReturnStatus400() {
+
+        // create an entity before test
+        Category category = new Category("Conputers");
+        categoryRepository.save(category);
+        Product product = new Product("Computer AMD", BigDecimal.valueOf(1500), 20, category);
+        product = productRepository.save(product);
+
+        product.setId(50L);
+
+        String response = testClient
+                .put()
+                .uri("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(product)
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+    }
+
+    /**
+     * This test verifies if the product update null id return a status 400
+     */
+    @Test
+    public void updateProduct_WithNullId_ShouldReturnStatus400() {
+
+        // create an entity before test
+        Category category = new Category("Conputers");
+        categoryRepository.save(category);
+        Product product = new Product("Computer AMD", BigDecimal.valueOf(1500), 20, category);
+
+        String response = testClient
+                .put()
+                .uri("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(product)
+                .exchange()
+                .expectStatus().isEqualTo(400)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        String errorMessage = JsonPath.read(response, "$.message");
+        Assertions.assertThat(errorMessage).isEqualTo("O ID não pode ser nulo");
     }
 }

@@ -135,6 +135,10 @@ public class ProductService {
     @Transactional(readOnly = true)
     protected Product checkProductExistsById(Long id) {
 
+        if (id == null) {
+            throw new EntityInvalidDataException("O ID não pode ser nulo");
+        }
+
         return productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Produto não encontrado. ID: " + id));
     }
