@@ -4,19 +4,17 @@ import br.com.mateus.commercemanagementsystem.dto.ProductDTO;
 import br.com.mateus.commercemanagementsystem.model.Category;
 import br.com.mateus.commercemanagementsystem.model.Product;
 import br.com.mateus.commercemanagementsystem.repository.CategoryRepository;
+import br.com.mateus.commercemanagementsystem.repository.ProductRepository;
 import com.jayway.jsonpath.JsonPath;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProductIT {
@@ -25,6 +23,41 @@ public class ProductIT {
     private WebTestClient testClient;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ProductRepository productRepository;
+
+    /**
+     * seeding a database before each test
+     */
+    @BeforeEach
+    public void setup() {
+        Category category1 = new Category("Livros");
+        Category category2 = new Category("Eletronicos");
+        Category category3 = new Category("Roupas");
+
+        category1 = categoryRepository.save(category1);
+        category2 = categoryRepository.save(category2);
+        category3 = categoryRepository.save(category3);
+
+        Product product1 = new Product("Computer", BigDecimal.valueOf(1500), 100, category2);
+        Product product2 = new Product("SmartPhone", BigDecimal.valueOf(1000), 80, category2);
+        Product product3 = new Product("Harry Potter", BigDecimal.valueOf(80), 50, category1);
+        Product product4 = new Product("The Lord of the Kings", BigDecimal.valueOf(50), 50, category1);
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+        productRepository.save(product3);
+        productRepository.save(product4);
+    }
+
+    /**
+     * cleaning a database after each tests
+     */
+    @AfterEach
+    public void tearDown() {
+        productRepository.deleteAll();
+        categoryRepository.deleteAll();
+    }
 
     /**
      * This test verifies that a product can be created successfully.
@@ -117,11 +150,7 @@ public class ProductIT {
      * This test verifies if a list of products existent return status 200 OK
      */
     @Test
-    @Sql(scripts = "/sql/categories/categories-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/sql/products/products-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/sql/products/products-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = "/sql/categories/categories-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void getProduct_FindAll_ShouldReturn200() {
+    public void getProduct_FindAll_ShouldReturnStatus200() {
 
         String response = testClient
                 .get()
@@ -138,8 +167,9 @@ public class ProductIT {
      * This test verifies if an empty list of products return status 404
      */
     @Test
-    @Sql(scripts = "/sql/products/products-delete.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void getProduct_FindAllEmptyList_ShouldReturn404() {
+    public void getProduct_FindAllEmptyList_ShouldReturnStatus404() {
+
+        productRepository.deleteAll();
 
         String response = testClient
                 .get()
@@ -152,5 +182,101 @@ public class ProductIT {
         String errorMessage = JsonPath.read(response, "$.message");
 
         Assertions.assertThat(errorMessage).isEqualTo("Lista de produtos vazia!");
+    }
+
+    /**
+     * This test verifies that the search for a product by name return status 200
+     */
+    @Test
+    public void getProduct_FindByName_ShouldReturnStatus200() {
+
+        ProductDTO response = testClient
+                .get()
+                .uri("/api/products/name/Computer")
+                .exchange()
+                .expectStatus().isEqualTo(200)
+                .expectBody(ProductDTO.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getName()).isEqualTo("Computer");
+    }
+
+    /**
+     * This test verifies that the search for a product by id return status 200
+     */
+    @Test
+    public void getProduct_FindById_ShouldReturnStatus200() {
+
+        ProductDTO response = testClient
+                .get()
+                .uri("/api/products/1")
+                .exchange()
+                .expectStatus().isEqualTo(200)
+                .expectBody(ProductDTO.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getName()).isEqualTo("Computer");
+    }
+
+    /**
+     * This test verifies that the search for a product by id with non-existent id return status 404
+     */
+    @Test
+    public void getProduct_FindByIdWithNonExistentId_ShouldReturnStatus404() {
+
+        String response = testClient
+                .get()
+                .uri("/api/products/10")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+    }
+
+    /**
+     * This test verifies that the search for a product by id with non-existent name return status 404
+     */
+    @Test
+    public void getProduct_FindByIdWithNonExistentName_ShouldReturnStatus404() {
+
+        String response = testClient
+                .get()
+                .uri("/api/products/name/Tablet")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+    }
+
+    /**
+     * This test verifies if the the product update return a status 200
+     */
+    @Test
+    public void updateProduct_ShouldReturnStatus200() {
+
+        // create an entity before test
+        Category category = new Category("Conputers");
+        categoryRepository.save(category);
+        Product product = new Product("Computer AMD", BigDecimal.valueOf(1500), 20, category);
+        product = productRepository.save(product);
+
+        ProductDTO response = testClient
+                .put()
+                .uri("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(product)
+                .exchange()
+                .expectStatus().isEqualTo(200)
+                .expectBody(ProductDTO.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getName()).isEqualTo("Computer AMD");
     }
 }
