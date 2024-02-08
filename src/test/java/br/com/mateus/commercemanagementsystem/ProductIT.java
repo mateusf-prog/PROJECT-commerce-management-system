@@ -314,7 +314,7 @@ public class ProductIT {
     public void updateProduct_WithNullId_ShouldReturnStatus400() {
 
         // create an entity before test
-        Category category = new Category("Conputers");
+        Category category = new Category("Computers");
         categoryRepository.save(category);
         Product product = new Product("Computer AMD", BigDecimal.valueOf(1500), 20, category);
 
