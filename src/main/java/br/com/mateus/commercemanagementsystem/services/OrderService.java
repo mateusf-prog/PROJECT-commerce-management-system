@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -49,7 +48,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderDTO> findByCustomerCpf(String cpf) {
+    public List<OrderDTO> findOrderByCustomerCpf(String cpf) {
 
         List<Order> orders = orderRepository.findByCustomerCpf(cpf);
         if (orders.isEmpty()) {

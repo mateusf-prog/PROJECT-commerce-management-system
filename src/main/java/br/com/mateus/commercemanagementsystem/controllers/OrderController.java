@@ -8,7 +8,9 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,17 +25,21 @@ public class OrderController {
 
     @PostMapping()
     public ResponseEntity<OrderCreatedDTO> create(@Valid @RequestBody OrderPostDTO order) {
-        return ResponseEntity.ok(orderService.createOrder(order));
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/cpf/{id}")
+                .buildAndExpand(order.getCustomerCpf())
+                .toUri();
+        return ResponseEntity.created(uri).body(orderService.createOrder(order));
     }
 
     @GetMapping("/{cpf}")
-    public ResponseEntity<List<OrderDTO>> findByCustomerCpf(@PathVariable String cpf) {
-        List<OrderDTO> list = orderService.findByCustomerCpf(cpf);
+    public ResponseEntity<List<OrderDTO>> findOrderByCustomerCpf(@PathVariable String cpf) {
+        List<OrderDTO> list = orderService.findOrderByCustomerCpf(cpf);
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<OrderDTO> findByCustomerCpf(@PathVariable Long id) {
+    public ResponseEntity<OrderDTO> findOrderById(@PathVariable Long id) {
         OrderDTO order = orderService.findById(id);
         return ResponseEntity.ok().body(order);
     }

@@ -45,6 +45,23 @@ public class OrderItemService {
         orderItemRepository.saveAll(newItems);
     }
 
+    @Transactional
+    public OrderItem updateOrderItem(OrderItem item) {
+
+        Optional<OrderItem> orderItem = orderItemRepository.findById(item.getId());
+
+        if (orderItem.isEmpty()) {
+            throw new ResourceNotFoundException("Item do pedido não encontrado - ID "
+                    + item.getId() + " - " + item.getProduct().getName());
+        }
+
+        validateQuantity(item);
+        productService.adjustStockQuantity(item.getProduct().getId(), item.getQuantity());
+        orderItemRepository.save(item);
+
+        return orderItem.get();
+    }
+
     @Transactional(readOnly = true)
     public List<OrderItem> findAll() {
 
