@@ -1,7 +1,6 @@
 package br.com.mateus.commercemanagementsystem.services;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
-import br.com.mateus.commercemanagementsystem.dto.OrderPostDTO;
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.Order;

@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderPostDTO {
     
-    @CPF
+    @CPF(message = "CPF inválido")
     private String customerCpf;
     @NotEmpty(message = "Lista de items não pode ser vazia")
     private List<OrderItemDTO> items;

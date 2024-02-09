@@ -1,1 +1,0 @@
-INSERT INTO tb_product(name, price, quantity, category_id) VALUES ('Tablet', '500.0', 20, 2);
