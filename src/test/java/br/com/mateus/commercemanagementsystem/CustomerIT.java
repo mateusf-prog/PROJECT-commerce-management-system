@@ -13,13 +13,17 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Each time that run this test, it's create a customer in the external Api too
+ */
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "/sql/customers/customers-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "/sql/customers/customers-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class CustomerIT {
 
     @Autowired
-    WebTestClient testClient;
+    private WebTestClient testClient;
 
     /**
      * This test verifies that a customer can be created successfully.

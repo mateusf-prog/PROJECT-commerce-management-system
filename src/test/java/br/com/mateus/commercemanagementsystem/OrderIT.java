@@ -1,11 +1,11 @@
 package br.com.mateus.commercemanagementsystem;
 
 import br.com.mateus.commercemanagementsystem.dto.OrderCreatedDTO;
+import br.com.mateus.commercemanagementsystem.dto.OrderDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderItemDTO;
 import br.com.mateus.commercemanagementsystem.dto.OrderPostDTO;
-import br.com.mateus.commercemanagementsystem.model.Category;
-import br.com.mateus.commercemanagementsystem.model.Customer;
-import br.com.mateus.commercemanagementsystem.model.Product;
+import br.com.mateus.commercemanagementsystem.model.*;
+import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
 import br.com.mateus.commercemanagementsystem.repository.*;
 import com.jayway.jsonpath.JsonPath;
 import org.assertj.core.api.Assertions;
@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,10 @@ public class OrderIT {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
+    private Category category;
+    private Product product;
+    private Customer customer;
+
     /**
      * Clear database before each test
      */
@@ -57,11 +62,11 @@ public class OrderIT {
     @BeforeEach
     public void setUp() {
 
-        Category category = new Category("Electronics");
+        category = new Category("Electronics");
         category = categoryRepository.save(category);
-        Product product = new Product("Computer", BigDecimal.valueOf(2500.0), 100, category);
+        product = new Product("Computer", BigDecimal.valueOf(2500.0), 100, category);
         product = productRepository.save(product);
-        Customer customer = new Customer("Mateus", LocalDate.of(1997, 12, 15),
+        customer = new Customer("Mateus", LocalDate.of(1997, 12, 15),
                 "60017663040", "12991978003", "Rua BPL", "mateus102006@hotmail.com");
         customer = customerRepository.save(customer);
     }
@@ -234,5 +239,148 @@ public class OrderIT {
         Assertions.assertThat(response).isNotNull();
         String errorMessage = JsonPath.read(response, "$.message");
         Assertions.assertThat(errorMessage).isEqualTo("Quantidade indisponível no estoque. Produto: Computer" );
+    }
+
+    @Test
+    public void getOrders_FindAll_ShouldReturnStatus200(){
+
+        Order order = new Order(BigDecimal.valueOf(5000), null, customer, Instant.now(), OrderStatus.WAITING_PAYMENT);
+        orderRepository.save(order);
+
+        List<OrderDTO> response = testClient
+                .get()
+                .uri("/api/orders")
+                .exchange()
+                .expectStatus().isEqualTo(200)
+                .expectBodyList(OrderDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void getOrders_FindAllEmptyList_ShouldReturnStatus400(){
+
+        String response = testClient
+                .get()
+                .uri("/api/orders")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        String errorMessage = JsonPath.read(response, "$.message");
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(errorMessage).isEqualTo("Lista vazia!");
+    }
+
+    @Test
+    public void getOrders_FindByCpf_ShouldReturnStatus200(){
+
+        Order order = new Order(BigDecimal.valueOf(5000), null, customer, Instant.now(), OrderStatus.WAITING_PAYMENT);
+        orderRepository.save(order);
+
+        List<OrderDTO> response = testClient
+                .get()
+                .uri("/api/orders/" + customer.getCpf())
+                .exchange()
+                .expectStatus().isEqualTo(200)
+                .expectBodyList(OrderDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void getOrders_FindByNonExistsCpf_ShouldReturnStatus404(){
+
+        String response = testClient
+                .get()
+                .uri("/api/orders/25162354261")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        String errorMessage = JsonPath.read(response, "$.message");
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(errorMessage).isEqualTo("Cliente não possui nenhum pedido. CPF: 25162354261");
+    }
+
+    @Test
+    public void getOrder_FindById_ShouldReturnStatus200(){
+
+        Order order = new Order(BigDecimal.valueOf(5000), null, customer, Instant.now(), OrderStatus.WAITING_PAYMENT);
+        order = orderRepository.save(order);
+
+        OrderDTO response = testClient
+                .get()
+                .uri("/api/orders/id/" + order.getId())
+                .exchange()
+                .expectStatus().isEqualTo(200)
+                .expectBody(OrderDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+    }
+
+    @Test
+    public void getOrder_FindByNonExistsId_ShouldReturnStatus404(){
+
+        String response = testClient
+                .get()
+                .uri("/api/orders/id/50")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        String errorMessage = JsonPath.read(response, "$.message");
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(errorMessage).isEqualTo("Pedido não encontrado");
+    }
+
+    @Test
+    public void cancelOrder_ShouldReturnStatus200() {
+
+        Order order = new Order(BigDecimal.valueOf(5000), null, customer, Instant.now(), OrderStatus.WAITING_PAYMENT);
+        order = orderRepository.save(order);
+
+        OrderDTO response = testClient
+                .patch()
+                .uri("/api/orders/cancel/" + order.getId())
+                .exchange()
+                .expectStatus().isEqualTo(200)
+                .expectBody(OrderDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+    }
+
+    @Test
+    public void cancelOrder_WithNonExistsIdShouldReturnStatus404() {
+
+        String response = testClient
+                .patch()
+                .uri("/api/orders/cancel/15")
+                .exchange()
+                .expectStatus().isEqualTo(404)
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        String errorMessage = JsonPath.read(response, "$.message");
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(errorMessage).isEqualTo("Pedido não encontrado");
     }
 }
