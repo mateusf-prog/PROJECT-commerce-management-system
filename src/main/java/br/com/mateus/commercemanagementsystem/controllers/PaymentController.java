@@ -6,7 +6,9 @@ import br.com.mateus.commercemanagementsystem.services.PaymentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,7 +24,11 @@ public class PaymentController {
     @PostMapping()
     public ResponseEntity<PaymentReturnDTO> create(@Valid @RequestBody PaymentPostDTO dto) {
         PaymentReturnDTO payment = paymentService.create(dto);
-        return ResponseEntity.ok().body(payment);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(payment.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(payment);
     }
 
     @GetMapping("/byCpf/{cpf}")

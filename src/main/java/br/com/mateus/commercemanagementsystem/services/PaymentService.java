@@ -64,8 +64,6 @@ public class PaymentService {
           payment.setDescription("Pedido Nº " + order.getId());
           payment.setLinkPagamento(responseApi.getBankSlipUrl());
 
-
-
           payment = repository.save(payment);
           return new PaymentReturnDTO(payment);
      }
