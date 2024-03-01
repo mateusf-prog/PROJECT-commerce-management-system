@@ -3,7 +3,6 @@ package br.com.mateus.commercemanagementsystem.controllers;
 import br.com.mateus.commercemanagementsystem.dto.PaymentReturnDTO;
 import br.com.mateus.commercemanagementsystem.dto.PaymentPostDTO;
 import br.com.mateus.commercemanagementsystem.services.PaymentService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,7 +21,7 @@ public class PaymentController {
     }
 
     @PostMapping()
-    public ResponseEntity<PaymentReturnDTO> create(@Valid @RequestBody PaymentPostDTO dto) {
+    public ResponseEntity<PaymentReturnDTO> create(@RequestBody PaymentPostDTO dto) {
         PaymentReturnDTO payment = paymentService.create(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

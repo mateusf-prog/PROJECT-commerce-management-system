@@ -10,6 +10,7 @@ import br.com.mateus.commercemanagementsystem.exceptions.EntityAlreadyExistsExce
 import br.com.mateus.commercemanagementsystem.exceptions.EntityInvalidDataException;
 import br.com.mateus.commercemanagementsystem.exceptions.ResourceNotFoundException;
 import br.com.mateus.commercemanagementsystem.model.enums.OrderStatus;
+import br.com.mateus.commercemanagementsystem.model.enums.PaymentType;
 import br.com.mateus.commercemanagementsystem.model.model_asaas_integration.BillingResponse;
 import br.com.mateus.commercemanagementsystem.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class PaymentService {
           this.repository = repository;
           this.orderRepository = orderRepository;
           this.paymentApiService = paymentApiService;
-         this.customerService = customerService;
+          this.customerService = customerService;
      }
 
      @Transactional
@@ -43,6 +44,9 @@ public class PaymentService {
 
           if(order.getPayment() != null) {
                throw new EntityAlreadyExistsException("O pedido já possui um pagamento.");
+          }
+          if (!dto.getPaymentType().equals(PaymentType.PIX) && !dto.getPaymentType().equals(PaymentType.BOLETO)) {
+               throw new IllegalArgumentException("Tipo de pagamento inválido");
           }
           if (order.getStatus().equals(OrderStatus.CANCELLED)) {
                throw new EntityInvalidDataException("Não foi possível criar um pagamento para o pedido, pois o pedido se encontra cancelado");
@@ -76,6 +80,7 @@ public class PaymentService {
           BillingResponse responseExternalApi = paymentApiService.findById(payment.getIdApiExternal());
           payment.setStatus(responseExternalApi.getStatus());
 
+          // update status of payment
           if (responseExternalApi.getStatus().equals("RECEIVED")) {
                payment.getOrder().setStatus(OrderStatus.PAID);
           }
@@ -96,7 +101,7 @@ public class PaymentService {
                orders.stream().map(x -> listPayments.add(new PaymentReturnDTO(x.getPayment()))).toList();
                return listPayments;
           } catch (NullPointerException e) {
-               throw new ResourceNotFoundException("Alguns pedidos não possuem pagamentos");
+               throw new ResourceNotFoundException("Nenhum pedido encontrado para o CPF.");
           }
      }
 
